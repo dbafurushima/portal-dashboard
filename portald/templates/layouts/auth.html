@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>{% block title %} {% endblock %} - PortalD</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSRF Token -->
+<!-- TODO -->
+
+<link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+
+<!-- plugin css -->
+<link href="{% static 'assets/fonts/feather-font/css/iconfont.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" />
+<!-- end plugin css -->
+
+<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+{% block css %}
+<!-- TODO // -->
+{% endblock %}
+
+<!-- common css -->
+<link href="{% static 'css/app.css' %}" rel="stylesheet" />
+<!-- end common css -->
+
+</head>
+<body data-base-url="javascript:void(0);">
+
+    <script src="{% static 'assets/js/spinner.js' %}"></script>
+
+    <div class="main-wrapper" id="app">
+        <div class="page-wrapper full-page">
+            <!-- BEGIN CONTENT PART -->
+            {% block content %}
+            <!-- TODO // -->
+            {% endblock %}
+            <!-- END CONTENT PART -->
+        </div>
+    </div>
+
+    <!-- base js -->
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'assets/plugins/feather-icons/feather.min.js' %}"></script>
+    <!-- end base js -->
+
+    <!-- plugin js -->
+    <!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
+    {% block js_plugins %}
+    <!-- TODO // -->
+    {% endblock %}
+    <!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
+    <!-- end plugin js -->
+
+    <!-- common js -->
+    <script src="{% static 'assets/js/template.js' %}"></script>
+    <!-- end common js -->
+
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    {% block js %}
+    <!-- TODO // -->
+    {% endblock %}
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+</body>
+</html>
