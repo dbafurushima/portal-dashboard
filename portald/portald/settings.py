@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'social_django',
     'apps.accounts',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +51,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = {
+    'apps.accounts.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
 
 ROOT_URLCONF = 'portald.urls'
 
@@ -126,3 +132,18 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Auth0
+SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-tc62sq2h.us.auth0.com'
+SOCIAL_AUTH_AUTH0_KEY = 'EvZg34QDLgmsEHT20rtRMHNgb3yqM4LE'
+SOCIAL_AUTH_AUTH0_SECRET = 'YOUR_CLIENT_SECRET'
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email'
+]
+
+LOGIN_URL = '/login/auth0'
+LOGIN_REDIRECT_URL = '/auth/home'
