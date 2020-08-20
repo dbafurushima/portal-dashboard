@@ -1,10 +1,74 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html {% load static %}>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <title>{% block title %} {% endblock %} - PortalD</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- CSRF Token -->
+    <!-- TODO -->
+
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+
+    <!-- plugin css -->
+    <link href="{% static 'assets/fonts/feather-font/css/iconfont.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/flag-icon-css/css/flag-icon.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" />
+    <!-- end plugin css -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS STYLES -->
+    {% block css_plugins %}
+    <!-- TODO // -->
+    {% endblock %}
+
+    <!-- common css -->
+    <link href="{% static 'css/app.css' %}" rel="stylesheet" />
+    <!-- end common css -->
+
+    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+    {% block css %}
+    <!-- TODO // -->
+    {% endblock %}
+</head>
+<body data-base-url="javascript:void(0);">
+
+    <script src="{% static 'assets/js/spinner.js' %}"></script>
+
+    <div class="main-wrapper" id="app">
+        {% include 'constants/sidebar.html' %}
+        <div class="page-wrapper">
+            {% include 'constants/header.html' %}
+            <div class="page-content">
+                {% block content %}
+                <!-- TODO // -->
+		        {% endblock %}
+            </div>
+            {% include 'constants/footer.html' %}
+        </div>
+    </div>
+
+    <!-- base js -->
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'assets/plugins/feather-icons/feather.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <!-- end base js -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
+	{% block js_plugins %}
+	<!-- TODO // -->
+	{% endblock %}
+	<!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
+
+    <!-- common js -->
+    <script src="{% static 'assets/js/template.js' %}"></script>
+    <!-- end common js -->
+
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+	{% block js %}
+	<!-- TODO // -->
+	{% endblock %}
+	<!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
 </body>
 </html>

@@ -1,25 +1,22 @@
-from django.shortcuts import render
-from django.contrib.auth import logout as log_out
-from django.conf import settings
-from django.http import HttpResponseRedirect
-from urllib.parse import urlencode
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import auth
 
 
 def login_view(request):
-    return render(request, 'auth/sign-in.html')
-
-
-def register_view(request):
-    return render(request, 'auth/sign-out.html')
-
-
-def home_view(request):
-    return render(request, 'pages/home.html')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('portal-home')
+        else:
+            return redirect('login')
+    else:
+        return render(request, 'auth/sign-in.html')
 
 
 def logout_view(request):
-    log_out(request)
-    return_to = urlencode({'returnTo': request.build_absolute_uri('/')})
-    logout_url = 'https://%s/v2/logout?client_id=%s&%s' % \
-                 (settings.SOCIAL_AUTH_AUTH0_DOMAIN, settings.SOCIAL_AUTH_AUTH0_KEY, return_to)
-    return HttpResponseRedirect(logout_url)
+    auth.logout(request)
+    return redirect('login')
