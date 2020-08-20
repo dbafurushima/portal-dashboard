@@ -5,7 +5,7 @@ services:
     image: mysql
     container_name: portald-mysql
     networks:
-      - us-east-2
+      - us-east-1
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     volumes:
@@ -18,18 +18,18 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
-  wcm:
+  portald:
     build: .
     container_name: portald
     networks:
-      - us-east-2
+      - us-east-1
     volumes:
       - ./portald/:/var/www/portald
     ports:
-      - "8080:8080"
-      - "8080:80"
+      - "8080:8100"
+      - "9000:80"
     tty: true
-    command: ["/wait-for-mysql.sh", "database-mysql", "${MYSQL_ROOT_PASSWORD}", "/usr/sbin/apache2ctl", "-DFOREGROUND"] ## , "/usr/bin/python3", "manage.py", "runserver", "0.0.0.0:8100"
+    command: ["/wait-for-mysql.sh", "portald-mysql", "${MYSQL_ROOT_PASSWORD}", "/usr/bin/python3", "manage.py", "runserver", "0.0.0.0:8100"]
     depends_on:
       - database
 
