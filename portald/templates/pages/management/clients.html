@@ -1,0 +1,54 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} Tempalte {% endblock %}
+
+{% block css_plugins %}
+
+{% endblock %}
+
+{% block css %}
+    <style>
+    .perfect-scrollbar-example {
+        position: relative;
+        max-height: 630px;
+    }
+    </style>
+{% endblock %}
+
+{% block js_plugins %}
+    
+{% endblock %}
+
+{% block js %}
+    <script>
+    var scrollbarExample = new PerfectScrollbar('.perfect-scrollbar-example');
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row perfect-scrollbar-example">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Clientes</h6>
+                <div class="row">
+                    {% for client in clients %}
+                    <div class="col-sm-3 mt-3">
+                        <div class="card text-center">
+                            <div class="card-body" style="padding: 15px">
+                                <h5 class="card-title">
+                                    <img style="border-radius: 50%" src="https://via.placeholder.com/80x80"/>
+                                </h5>
+                                <p class="card-text">{{ client.display_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
