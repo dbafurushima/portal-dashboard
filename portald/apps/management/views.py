@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from .helper import correct_post
 
 
 @login_required
@@ -23,6 +24,11 @@ def passwords_safe_view(request):
 @login_required
 def register_client(request):
     if request.method == 'POST':
-        print(request.POST.keys())
+        if not correct_post(request.POST.keys()):
+            messages.error(request, 'incomplete post request, please fill in all necessary fields')
+            return redirect('register-client')
+        else:
+            messages.success(request, 'deu bom parceria')
+            return redirect('register-client')
     else:
         return render(request, 'pages/management/clients-register.html')
