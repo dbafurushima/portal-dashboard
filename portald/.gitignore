@@ -132,3 +132,4 @@ dmypy.json
 .idea
 config/my.cnf
 my.cnf
+archives/*

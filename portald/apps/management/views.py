@@ -8,13 +8,10 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 import logging
 
+
 @login_required
 def clients_view(request):
-    armpb = {
-        'display_name': 'Armazém Paraíba',
-        'img': 'https://via.placeholder.com/80x80'
-    }
-    clients = [armpb for x in range(20)]
+    clients = Client.objects.all()
     return render(request, 'pages/management/clients.html',
                   {'clients': clients})
 

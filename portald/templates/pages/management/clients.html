@@ -1,7 +1,7 @@
 {% extends 'layouts/master.html' %}
 {% load static %}
 
-{% block title %} Tempalte {% endblock %}
+{% block title %} Clients {% endblock %}
 
 {% block css_plugins %}
 
@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block js %}
+    <script src="{% static 'js/list-clients.js' %}"></script>
     <script>
     var scrollbarExample = new PerfectScrollbar('.perfect-scrollbar-example');
     </script>
@@ -34,8 +35,13 @@
             <div class="card-body">
                 <h6 class="card-title">Clientes</h6>
                 <div class="row">
+
                     {% for client in clients %}
-                    <div class="col-sm-3 mt-3">
+                    <div class="col-sm-3 mt-3 show-info" data-company_name="{{ client.company_name }}"
+                         data-display_name="{{ client.display_name }}" data-cnpj="{{ client.cnpj }}"
+                         data-city="{{ client.city }}" data-state="{{ client.state }}" data-cep="{{ client.cep }}"
+                         data-state_registration="{{ client.state_registration }}"
+                         data-municipal_registration="{{ client.municipal_registration }}" data-created_at="{{ client.created_at }}">
                         <div class="card text-center">
                             <div class="card-body" style="padding: 15px">
                                 <h5 class="card-title">
@@ -46,9 +52,29 @@
                         </div>
                     </div>
                     {% endfor %}
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <ul class="list-group">
+                <li class="list-group-item" id="company_name"></li>
+                <li class="list-group-item" id="display_name"></li>
+                <li class="list-group-item" id="cnpj"></li>
+                <li class="list-group-item" id="city"></li>
+                <li class="list-group-item" id="state"></li>
+                <li class="list-group-item" id="cep"></li>
+                <li class="list-group-item" id="state_registration"></li>
+                <li class="list-group-item" id="municipal_registration"></li>
+                <li class="list-group-item" id="created_at"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

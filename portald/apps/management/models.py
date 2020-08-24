@@ -30,4 +30,13 @@ class Client(models.Model):
 
 
 class Notification(models.Model):
-    pass
+    ICONS = [
+        ('warning', 'alert-triangle'),
+        ('complete', 'check-circle'),
+        ('block-user', 'user-minus')
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    icon = models.CharField(max_length=20, choices=ICONS, blank=True, null=True)
+    message = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
