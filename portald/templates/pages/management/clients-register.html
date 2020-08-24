@@ -50,6 +50,8 @@
 
 {% include 'constants/alerts/register-client.html' %}
 
+<div id="alerts"></div>
+
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -69,14 +71,14 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label">Display Name</label>
-                                    <input type="text" name="display-name" class="form-control"
+                                    <input type="text" name="display-name" id="display-name" class="form-control"
                                            placeholder="Nome de exibição (apelido)">
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">CNPJ</label>
-                                    <input type="text" name="cnpj" class="form-control"
+                                    <input type="text" name="cnpj" id="cnpj" class="form-control"
                                            placeholder="ex. 999.999.999-99" >
                                 </div>
                             </div><!-- Col -->
@@ -85,21 +87,21 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label">City</label>
-                                    <input type="text" name="city" class="form-control"
+                                    <input type="text" name="city" id="city" class="form-control"
                                            placeholder="Sua cidade" >
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label">State</label>
-                                    <input type="text" name="state" class="form-control"
+                                    <input type="text" name="state" id="state" class="form-control"
                                            placeholder="Seu estado" >
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="control-label">CEP</label>
-                                    <input type="text" name="cep" class="form-control"
+                                    <input type="text" name="cep" id="cep" class="form-control"
                                            placeholder="ex. 99999-999" >
                                 </div>
                             </div><!-- Col -->
@@ -108,7 +110,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Inscrição Estadual</label>
-                                    <input type="text" name="state-registration" class="form-control"
+                                    <input type="text" name="state-registration" id="state-registration" class="form-control"
                                            placeholder="Sua inscrição estadual" >
                                 </div>
                             </div><!-- Col -->
@@ -116,18 +118,17 @@
                                 <div class="form-group">
                                     <label class="control-label">Inscrição Munincipal</label>
                                     <input type="text" class="form-control" name="municipal-registration"
-                                           placeholder="Sua inscrição munincipal" >
+                                           placeholder="Sua inscrição munincipal" id="municipal-registration" >
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-12">
-                                <button class="btn btn-primary" type="submit">Cadastrar cliente</button>
+                                <button class="btn btn-primary" id="submit-form" type="button">Cadastrar cliente</button>
                                 <button type="button" class="btn btn-success btn-icon-text"
                                         data-toggle="modal" data-target="#add-user">
                                     <i class="btn-icon-prepend" data-feather="user-plus"></i>
                                     Adicionar usuário
                                 </button>
                             </div>
-
                         </div><!-- Row -->
                     </form>
                 </div>
@@ -176,7 +177,7 @@
         </div>
     </div>
     <div class="col-sm-4">
-        <input type="file" id="logo" data-allowed-file-extensions="jpg png jpeg" class="border"/>
+        <input type="file" name="logo" id="logo" data-allowed-file-extensions="jpg png jpeg" class="border"/>
     </div>
 </div>
 

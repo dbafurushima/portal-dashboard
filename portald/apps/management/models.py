@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 import datetime
 
 
@@ -15,6 +16,7 @@ class Client(models.Model):
     logo = models.ImageField(verbose_name="logo", upload_to='logos/%d/%m/%Y/', default='default-logo.png',
                              blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         verbose_name = _('clients')
