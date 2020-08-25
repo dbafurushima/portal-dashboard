@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'apps.portal',
     'apps.public',
     'apps.accounts',
@@ -160,7 +161,7 @@ kdf = PBKDF2HMAC(
     iterations=100000,
     backend=default_backend()
 )
-key = base64.urlsafe_b64encode(kdf.derive(password))
+KEY = base64.urlsafe_b64encode(kdf.derive(password))
 
 # Auth0 -
 # SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes

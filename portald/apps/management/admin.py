@@ -5,7 +5,7 @@ from .models import Client, Notification, PasswordSafe
 @admin.register(Client)
 class ClientList(admin.ModelAdmin):
     list_display = ('display_name', 'company_name', 'cnpj', 'city', 'created_at')
-    search_fields = ('display_name','company_name', 'cnpj')
+    search_fields = ('display_name', 'company_name', 'cnpj')
     list_filter = ('city',)
     list_display_links = ('display_name',)
     list_per_page = 20
@@ -22,8 +22,8 @@ class NotificationList(admin.ModelAdmin):
 
 @admin.register(PasswordSafe)
 class PasswordSafeList(admin.ModelAdmin):
-    list_display = ('user', 'password', 'updated_at')
-    search_fields = ('user', 'password')
-    list_display_links = ('password',)
+    list_display = ('user', 'password')
+    search_fields = ('user',)
+    list_display_links = ('user',)
     list_per_page = 20
 

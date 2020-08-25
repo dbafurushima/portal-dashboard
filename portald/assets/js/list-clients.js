@@ -13,7 +13,7 @@ $(function() {
         let municipal_registration = e.currentTarget.getAttribute('data-municipal_registration');
         let created_at = e.currentTarget.getAttribute('data-created_at');
 
-        $('#company_name').text('Company Name: '+company_name);
+        $('#company_name').text(company_name);
         $('#display_name').text(display_name);
         $('#cnpj').text(cnpj);
         $('#city').text(city);
