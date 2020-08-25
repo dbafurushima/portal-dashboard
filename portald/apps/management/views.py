@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from .helper import create_client, create_users, create_default_user, save_password_safe
 from .models import Client
+from apps.api.models import Message
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 import logging
@@ -11,14 +12,29 @@ import logging
 
 @login_required
 def clients_view(request):
-    clients = Client.objects.all()
     return render(request, 'pages/management/clients.html',
-                  {'clients': clients})
+                  {'clients': Client.objects.all()})
+
+
+@login_required
+def messages_view(request):
+    return render(request, 'pages/management/messages.html',
+                  {'messages': Message.objects.all()})
 
 
 @login_required
 def passwords_safe_view(request):
-    return render(request, 'pages/management/passwords-safe.html')
+    clients = Client.objects.all()
+    ps_clients = []
+    for client in clients:
+        cl = {
+            'display_name': client.display_name,
+            'email': client.user.email,
+            'username': client.user.username
+        }
+        ps_clients.append(cl)
+    return render(request, 'pages/management/passwords-safe.html',
+                  {'clients': ps_clients})
 
 
 @login_required
