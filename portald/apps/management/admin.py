@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Notification
+from .models import Client, Notification, PasswordSafe
 
 
 @admin.register(Client)
@@ -18,3 +18,12 @@ class NotificationList(admin.ModelAdmin):
     list_filter = ('user',)
     list_display_links = ('message',)
     list_per_page = 20
+
+
+@admin.register(PasswordSafe)
+class PasswordSafeList(admin.ModelAdmin):
+    list_display = ('user', 'password', 'updated_at')
+    search_fields = ('user', 'password')
+    list_display_links = ('password',)
+    list_per_page = 20
+

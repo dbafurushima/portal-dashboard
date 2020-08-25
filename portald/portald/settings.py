@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 import environ
+import base64
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -44,7 +48,8 @@ INSTALLED_APPS = [
     'apps.portal',
     'apps.public',
     'apps.accounts',
-    'apps.management'
+    'apps.management',
+    'apps.api'
 ]
 
 MIDDLEWARE = [
@@ -144,6 +149,18 @@ MESSAGE_TAGS = {
     messages.INFO: 'primary', messages.WARNING: 'warning', messages.SUCCESS: 'success',
     messages.DEBUG: 'info', messages.ERROR: 'danger'
 }
+
+password_provided = env('PASSWORD_PROVIDED')  # This is input in the form of a string
+password = password_provided.encode()  # Convert to type bytes
+salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
+kdf = PBKDF2HMAC(
+    algorithm=hashes.SHA256(),
+    length=32,
+    salt=salt,
+    iterations=100000,
+    backend=default_backend()
+)
+key = base64.urlsafe_b64encode(kdf.derive(password))
 
 # Auth0 -
 # SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes

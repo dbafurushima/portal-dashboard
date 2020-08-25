@@ -40,3 +40,9 @@ class Notification(models.Model):
     icon = models.CharField(max_length=20, choices=ICONS, blank=True, null=True)
     message = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
+
+
+class PasswordSafe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    password = models.CharField(max_length=255)
+    updated_at = models.DateTimeField(default=datetime.datetime.now, blank=True)

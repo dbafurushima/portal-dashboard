@@ -4,10 +4,11 @@ import os
 import random
 import string
 from django.contrib.auth.models import User
-from ..models import Client
+from ..models import Client, PasswordSafe
+from .encrypt import _encrypt
 
 FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'state-registration',
-          'municipal-registration']
+          'municipal-registration', 'email']
 LENGTH_PASSWORD = 15
 
 
@@ -16,10 +17,6 @@ def _correct_post(keys) -> bool:
     """
     sec_list = list(filter(lambda i: i in FIELDS, keys))
     return len(sec_list) == len(FIELDS)
-
-
-def scape_xss(string):
-    pass
 
 
 def _len_min(string, length):
@@ -66,6 +63,11 @@ def _municipal_registration(municipal_registration):
     return _len_min(municipal_registration, 6)
 
 
+def _email(email):
+    return (_len_min(email, 8) and _len_max(email, 50)) and \
+           re.match(r'^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$', email)
+
+
 def _rand_passwd(length):
     chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     random.seed = (os.urandom(1024))
@@ -74,21 +76,40 @@ def _rand_passwd(length):
 
 def create_users(post: dict):
     _users = post.get('users-json')
+
     if not len(_users) > 0:
         return
+
     users_json = json.loads(_users)
     for _user in users_json:
         user = User(username=_user.get('username'), email=_user.get('email'))
-        if user.save():
-            user.set_password(_user.get('password') if _user.get('password') else 'mudar123')
-            user.save()
+        raw_password = _user.get('password') if _user.get('password') else 'mudar123'
+        passwd = _encrypt(raw_password).decode('utf-8')
+        user.set_password(passwd)
+        user.save()
 
 
-def create_default_user(username):
-    user = User(username=username)
+def create_default_user(email: str, client: Client) -> tuple:
+    username = email.split('@')[0]
+    password = _rand_passwd(LENGTH_PASSWORD)
+
+    user = User(username=username, email=email)
+    user.set_password(password)
     user.save()
-    user.set_password(_rand_passwd(LENGTH_PASSWORD))
-    user.save()
+
+    # relate user to client
+    client.user = user
+    client.save()
+
+    return password, user
+
+
+def save_password_safe(password: str, user: User):
+    """save password in the password vault
+    """
+    passwd = _encrypt(password).decode('utf-8')
+    ps = PasswordSafe(user=user, password=passwd)
+    ps.save()
 
 
 def create_client(post: dict) -> tuple:
@@ -106,6 +127,7 @@ def create_client(post: dict) -> tuple:
     cep = post.get('cep')
     state_registration = post.get('state-registration')
     municipal_registration = post.get('municipal-registration')
+    email = post.get('email')
 
     if not _company_name(company_name):
         return False, 'company name'
@@ -130,6 +152,9 @@ def create_client(post: dict) -> tuple:
 
     if not _municipal_registration(municipal_registration):
         return False, 'municipal registration'
+
+    if not _email(email):
+        return False, 'email'
 
     client = Client(company_name=company_name, display_name=display_name, cnpj=cnpj, city=city, state=state, cep=cep,
                     state_registration=state_registration, municipal_registration=municipal_registration)
