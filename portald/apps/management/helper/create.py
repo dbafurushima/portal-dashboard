@@ -5,7 +5,7 @@ import random
 import string
 from django.contrib.auth.models import User
 from ..models import Client, PasswordSafe
-from .encrypt import _encrypt
+from .encrypt import _encrypt, _decrypt
 
 FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'state-registration',
           'municipal-registration', 'email']
@@ -87,6 +87,17 @@ def create_users(post: dict):
         passwd = _encrypt(raw_password).decode('utf-8')
         user.set_password(passwd)
         user.save()
+
+
+def passwd_from_username(username: str) -> str or None:
+    try:
+        user = User.objects.get(username=username)
+        client = Client.objects.get(user=user)
+        pwd = PasswordSafe.objects.get(user=client.user)
+        password = _decrypt(pwd.password)
+        return password.decode('utf-8')
+    except:
+        return None
 
 
 def create_default_user(email: str, client: Client) -> tuple:

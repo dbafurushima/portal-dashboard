@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
-from .helper import create_client, create_users, create_default_user, save_password_safe
-from .models import Client
+from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username
+from .models import Client, PasswordSafe
 from apps.api.models import Message
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
@@ -24,6 +24,11 @@ def messages_view(request):
 
 @login_required
 def passwords_safe_view(request):
+    if request.method == 'POST':
+        if 'username' not in request.POST.keys():
+            return JsonResponse({'code': 400, 'msg': 'incorrect request'})
+        pwd = passwd_from_username(request.POST['username'])
+        return JsonResponse({'code': 200 if pwd is not None else 404, 'msg': pwd or 'user not found!'})
     clients = Client.objects.all()
     ps_clients = []
     for client in clients:

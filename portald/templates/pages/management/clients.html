@@ -59,6 +59,73 @@
     </div>
 </div>
 
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="card">
+                <ul class="nav nav-tabs nav-tabs-line" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                            Basic infos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                            Address
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">
+                            Detail
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content border border-top-0 p-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <div class="col-4">
+                                 <img src="https://www.nobleui.com/laravel/template/dark/assets/images/placeholder.jpg"
+                                      alt="logo" width="200" height="150">
+                            </div>
+                            <div class="col-md-8">
+                                <ul>
+                                    <li class="list-group-item" style="text-align: center" id="company_name"></li>
+                                    <li class="list-group-item" style="text-align: center" id="display_name"></li>
+                                    <li class="list-group-item" style="text-align: center" id="created_at"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li class="list-group-item" style="text-align: center" id="city"></li>
+                                    <li class="list-group-item" style="text-align: center" id="state"></li>
+                                    <li class="list-group-item" style="text-align: center" id="cep"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li class="list-group-item" style="text-align: center" id="cnpj"></li>
+                                    <li class="list-group-item" style="text-align: center" id="state_registration"></li>
+                                    <li class="list-group-item" style="text-align: center" id="municipal_registration"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -76,5 +143,5 @@
         </div>
     </div>
 </div>
-
+-->
 {% endblock %}
