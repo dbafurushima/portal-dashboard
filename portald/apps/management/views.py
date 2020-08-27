@@ -18,8 +18,14 @@ def clients_view(request):
 
 @login_required
 def messages_view(request):
+    metrics = {
+        'read': Message.objects.filter(read=True).filter(deleted=False).count(),
+        'not_read': Message.objects.filter(read=False).count(),
+        'trash': Message.objects.filter(deleted=True).count(),
+        'all': Message.objects.all().count()
+    }
     return render(request, 'pages/management/messages.html',
-                  {'messages': Message.objects.all()})
+                  {'data': {'messages': Message.objects.all(), 'metrics': metrics}})
 
 
 @login_required
@@ -58,7 +64,7 @@ def register_client(request):
         if not rt_create[0]:
             return JsonResponse({'code': 400, 'msg': 'o campo "%s" não atende aos requisitos.' % rt_create[1]})
 
-        client = rt_create[1]   # object Client
+        client = rt_create[1]  # object Client
 
         if request.FILES['file']:
             file = request.FILES['file']
@@ -70,11 +76,10 @@ def register_client(request):
             client.save()
             # creates all users in the system
             create_users(request.POST)
-            password, user = create_default_user(request.POST['email'], client)   # create user for enterprise
-            save_password_safe(password, user)    # save password in password safe (table)
+            password, user = create_default_user(request.POST['email'], client)  # create user for enterprise
+            save_password_safe(password, user)  # save password in password safe (table)
             return JsonResponse({'code': 200,
                                  'msg': 'cadastro da empresa %s realizado com sucesso!' % client.display_name})
         except Exception as err:
             logging.critical(err)
             return JsonResponse({'code': 500, 'msg': 'ocorreu um erro interno no servidor.'})
-

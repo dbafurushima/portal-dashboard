@@ -45,7 +45,7 @@
                         <div class="card text-center">
                             <div class="card-body" style="padding: 15px">
                                 <h5 class="card-title">
-                                    <img style="border-radius: 50%" src="https://via.placeholder.com/80x80"/>
+                                    <img style="border-radius: 50%" src="{% static 'images/company.png' %}"/>
                                 </h5>
                                 <p class="card-text">{{ client.display_name }}</p>
                             </div>
@@ -89,7 +89,7 @@
                                       alt="logo" width="200" height="150">
                             </div>
                             <div class="col-md-8">
-                                <ul>
+                                <ul class="list-group list-group-flush">
                                     <li class="list-group-item" style="text-align: center" id="company_name"></li>
                                     <li class="list-group-item" style="text-align: center" id="display_name"></li>
                                     <li class="list-group-item" style="text-align: center" id="created_at"></li>
@@ -100,7 +100,7 @@
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         <div class="row">
                             <div class="col-md-12">
-                                <ul>
+                                <ul class="list-group list-group-flush" >
                                     <li class="list-group-item" style="text-align: center" id="city"></li>
                                     <li class="list-group-item" style="text-align: center" id="state"></li>
                                     <li class="list-group-item" style="text-align: center" id="cep"></li>
@@ -111,7 +111,7 @@
                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                         <div class="row">
                             <div class="col-md-12">
-                                <ul>
+                                <ul class="list-group list-group-flush">
                                     <li class="list-group-item" style="text-align: center" id="cnpj"></li>
                                     <li class="list-group-item" style="text-align: center" id="state_registration"></li>
                                     <li class="list-group-item" style="text-align: center" id="municipal_registration"></li>

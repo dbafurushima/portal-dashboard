@@ -14,9 +14,9 @@
 		<ul class="nav">
 			<li class="nav-item nav-category">Main</li>
 			<li class="nav-item ">
-				<a href="" class="nav-link">
+				<a href="{% url 'portal-home' %}" class="nav-link">
 					<i class="link-icon" data-feather="box"></i>
-					<span class="link-title">Dashboard</span>
+					<span class="link-title">PortalD</span>
 				</a>
 			</li>
             <li class="nav-item nav-category">Management</li>
@@ -24,31 +24,31 @@
 				<li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#clients" role="button" aria-expanded="" aria-controls="clients">
 					<i class="link-icon" data-feather="users"></i>
-					<span class="link-title">Clients</span>
+					<span class="link-title">Clientes</span>
 					<i class="link-arrow" data-feather="chevron-down"></i>
 				</a>
 				<div class="collapse" id="clients">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-							<a href="{% url 'clients' %}" class="nav-link ">My clients</a>
+							<a href="{% url 'clients' %}" class="nav-link ">Meus Clientes</a>
 						</li>
 						<li class="nav-item">
-							<a href="{% url 'passwords-safe' %}" class="nav-link ">Password Safe</a>
+							<a href="{% url 'passwords-safe' %}" class="nav-link ">Cofre de Senhas</a>
 						</li>
 						<li class="nav-item">
-							<a href="{% url 'register-client' %}" class="nav-link ">Register</a>
+							<a href="{% url 'register-client' %}" class="nav-link ">Cadastrar Cliente</a>
 						</li>
                         <li class="nav-item">
-							<a href="{% url 'messages' %}" class="nav-link ">Messages</a>
+							<a href="{% url 'messages' %}" class="nav-link ">Mensagens</a>
 						</li>
 					</ul>
 				</div>
 			</li>
 			<li class="nav-item nav-category">Docs</li>
 			<li class="nav-item">
-				<a href="https://www.nobleui.com/laravel/documentation/docs.html" target="_blank" class="nav-link">
+				<a href="https://github.com/dbafurushima/portal-dashboard/wiki" target="_blank" class="nav-link">
 					<i class="link-icon" data-feather="hash"></i>
-					<span class="link-title">Documentation</span>
+					<span class="link-title">Documentação</span>
 				</a>
 			</li>
 		</ul>

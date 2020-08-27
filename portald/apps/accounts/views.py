@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import auth
+from django.contrib import messages
 
 
 def login_view(request):
@@ -12,6 +13,7 @@ def login_view(request):
             login(request, user)
             return redirect('portal-home')
         else:
+            messages.error(request, 'usuário ou senha inválido.')
             return redirect('login')
     else:
         return render(request, 'auth/sign-in.html')

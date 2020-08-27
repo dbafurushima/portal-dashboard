@@ -20,6 +20,9 @@ $(function() {
                 cache: false,
                 contentType: false,
                 processData: false,
+                beforeSend: function () {
+                    $('#icon-v').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div>')
+                },
                 success: function(data) {
                     if ( data.code === 200 ) {
                         $(_id).text(data.msg);
