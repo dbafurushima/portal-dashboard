@@ -10,9 +10,9 @@ class Message:
 	"""
 
 	def __init__(self):
-		self.url = 'http://localhost:8000/api/message/'
-		self.api_user = ''
-		self.api_password = ''
+		self.url = 'http://3.218.152.230:8080/api/message/'
+		self.api_user = 'administrator'
+		self.api_password = '@default@'
 		self.base64auth = base64.encodestring('%s:%s' % (self.api_user, self.api_password)).replace('\n', '')
 
 
@@ -36,6 +36,7 @@ class Message:
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
 		ms = Message()
-		print ms.save(sys.argv[1], sys.argv[2])
+		ip = sys.argv[2] if len(sys.argv) >= 3 else None
+		print ms.save(sys.argv[1], ip)
 	else:
 		print 'usage: ' + sys.argv[0] + ' message [ip]'
