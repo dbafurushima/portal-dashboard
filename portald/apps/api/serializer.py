@@ -5,4 +5,4 @@ from rest_framework import serializers
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['ip', 'timestamp', 'msg']
+        fields = ['subject', 'timestamp', 'msg']

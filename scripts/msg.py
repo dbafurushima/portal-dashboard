@@ -10,15 +10,15 @@ class Message:
 	"""
 
 	def __init__(self):
-		self.url = 'http://3.218.152.230:8080/api/message/'
-		self.api_user = 'administrator'
-		self.api_password = '@default@'
+		self.url = ''
+		self.api_user = ''
+		self.api_password = ''
 		self.base64auth = base64.encodestring('%s:%s' % (self.api_user, self.api_password)).replace('\n', '')
 
 
-	def save(self, message, ip=None):
+	def save(self, message, subject):
 		data = {
-			'ip': ip,
+			'subject': subject,
 			'msg': message,
 			'timestamp': time.time()
 		}
@@ -34,9 +34,8 @@ class Message:
 
 
 if __name__ == '__main__':
-	if len(sys.argv) >= 2:
+	if len(sys.argv) >= 3:
 		ms = Message()
-		ip = sys.argv[2] if len(sys.argv) >= 3 else None
-		print ms.save(sys.argv[1], ip)
+		print ms.save(sys.argv[2], sys.argv[1])
 	else:
-		print 'usage: ' + sys.argv[0] + ' message [ip]'
+		print 'usage: ' + sys.argv[0] + 'subject message'
