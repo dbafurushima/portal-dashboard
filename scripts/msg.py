@@ -4,6 +4,7 @@ import sys
 import time
 import base64
 import argparse
+import os
 
 URL_BASE = 'http://localhost:8000'
 
@@ -12,8 +13,8 @@ class Message:
     """
 
     def __init__(self, user=None, passwd=None):
-        self.api_user = user or ''
-        self.api_password = passwd or ''
+        self.api_user = user or os.getenv('USER_API', 'user')
+        self.api_password = passwd or os.getenv('USER_PASS', 'pass')
         self.base64auth = base64.encodestring('%s:%s' % (self.api_user, self.api_password)).replace('\n', '')
 
 
