@@ -12,8 +12,8 @@ class Message:
     """
 
     def __init__(self, user=None, passwd=None):
-        self.api_user = user or 'administrator'
-        self.api_password = passwd or '@default@'
+        self.api_user = user or ''
+        self.api_password = passwd or ''
         self.base64auth = base64.encodestring('%s:%s' % (self.api_user, self.api_password)).replace('\n', '')
 
 
