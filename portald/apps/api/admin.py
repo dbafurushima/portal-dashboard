@@ -13,8 +13,8 @@ class MessageList(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentList(admin.ModelAdmin):
-    list_display = ('id', 'origin_message', 'commented_by', 'created_at', 'updated_at')
-    search_fields = ('commented_by', 'origin_message')
+    list_display = ('id', 'message', 'commented_by', 'created_at', 'updated_at')
+    search_fields = ('commented_by', 'message')
     list_filter = ('commented_by',)
-    list_display_links = ('commented_by',)
+    list_display_links = ('message',)
     list_per_page = 20

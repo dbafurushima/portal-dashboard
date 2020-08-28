@@ -11,4 +11,4 @@ class MessageSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['origin_message', 'comment_text', 'commented_by']
+        fields = ['message', 'comment', 'commented_by']
