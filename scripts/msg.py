@@ -5,6 +5,15 @@ import time
 import base64
 import argparse
 import os
+"""
+# windows
+set USER_API=YOUR_USERNAME
+set USER_PASS=YOUR_PASSWORD
+
+# linux
+export USER_API=YOUR_USERNAME
+export USER_PASS=YOUR_PASSWORD
+"""
 
 URL_BASE = 'http://localhost:8000'
 
@@ -66,7 +75,7 @@ def comment(ms, args):
     """
     print ms.new_comment(args.id, args.comment)
 
-def setup_message(subparsers):
+def setup_message(subparsers):    
     parser = subparsers.add_parser('new', help="send a new message")
 
     parser.add_argument('subject', help="message subject")
@@ -90,7 +99,6 @@ if __name__ == '__main__':
 
     subparsers = parser.add_subparsers(dest='command', metavar='COMMAND')
     subparsers.required = True
-
     # -- add subparsers
     setup_message(subparsers)
     setup_comment(subparsers)
