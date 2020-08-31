@@ -49,7 +49,26 @@ class PasswordSafe(models.Model):
 
 
 class Host(models.Model):
-    pass
+    os_name = models.CharField(max_length=40, verbose_name='os.name')
+    arch = models.CharField(max_length=30, verbose_name='arch')
+    platform = models.CharField(max_length=30, verbose_name='platform')
+    processor = models.CharField(max_length=80)
+    hostname = models.CharField(max_length=125)
+    ram = models.FloatField(verbose_name='RAM')
+    physical_cores = models.IntegerField(verbose_name='physical cores')
+    current_frequency = models.FloatField(verbose_name='current frequency')
+
+
+class Locator(models.Model):
+    locator = models.CharField(max_length=20)
+    size = models.IntegerField(blank=True, null=True)
+    speed = models.IntegerField(blank=True, null=True)
+    host = models.ForeignKey(Host, on_delete=models.SET_NULL, blank=True, null=True)
+
+
+class Application(models.Model):
+    name = models.CharField(max_length=20)
+    host = models.ForeignKey(Host, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 class Inventory(models.Model):
@@ -59,6 +78,7 @@ class Inventory(models.Model):
         ('docker', 'Container Docker')
     ]
 
-    host = models.CharField(max_length=30, blank=True)
+    host = models.ForeignKey(Host, on_delete=models.SET_NULL, blank=True, null=True)
     equipment = models.CharField(choices=EQUIPMENT, max_length=30, verbose_name='equipamento')
-    app = models.CharField(max_length=50, verbose_name='application')
+
+    models.ManyToOneRel

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Notification, PasswordSafe
+from .models import Client, Notification, PasswordSafe, Host, Locator, Inventory
 
 
 @admin.register(Client)
@@ -27,3 +27,26 @@ class PasswordSafeList(admin.ModelAdmin):
     list_display_links = ('user',)
     list_per_page = 20
 
+
+@admin.register(Host)
+class HostList(admin.ModelAdmin):
+    list_display = ('os_name', 'platform', 'ram', 'physical_cores', 'current_frequency')
+    search_fields = ('platform',)
+    list_display_links = ('platform',)
+    list_per_page = 20
+
+
+@admin.register(Locator)
+class LocatorList(admin.ModelAdmin):
+    list_display = ('locator', 'size', 'speed', 'host')
+    search_fields = ('locator',)
+    list_display_links = ('locator',)
+    list_per_page = 20
+
+
+@admin.register(Inventory)
+class InventoryList(admin.ModelAdmin):
+    list_display = ('host', 'equipment')
+    search_fields = ('host',)
+    list_display_links = ('host',)
+    list_per_page = 20

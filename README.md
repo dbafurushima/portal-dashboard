@@ -66,8 +66,11 @@ E agora só subir o servidor com o comando ``python manage.py runserver``
 
 ## Task list
 
-- [ ] modelagem das novas tabelas e alteração nas novas existentes.
+- [x] informações sobre hardware da máquina com python.
+  - [x] coletar todos os campos possíveis.
+  - [x] filtrar quais serão coletados.
+- [x] modelagem das novas tabelas e alteração nas novas existentes.
 - [ ] criação dos grupos de permissão.
 - [ ] back-end para os grupos para exibir e conceder acesso apenas a quem tem permissão
-- [ ] trazer para python3 a ferramenta cli.
+- [x] trazer para python3 a ferramenta cli.
 - [ ] campo para criar senhas e usuários no cofre de senhas.
