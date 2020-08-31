@@ -106,6 +106,20 @@ def identity(payload):
     user_id = payload['identity']
     return userid_table.get(user_id, None)
 
+def save(obj):
+    """save object to database
+    Args:
+        obj ([type]): [ApiMessage or ApiComment]
+    Returns:
+        [dict]: [{'code': int, 'msg': str, 'data': dict or str}]
+    """
+    db.session.add(obj)
+    try:
+        db.session.commit()
+    except Exception as err:
+        return jsonify({'code': 500, 'msg': 'bad', 'data': err})
+    return jsonify({'code': 200, 'msg': 'successful', 'data': obj.serialize})
+
 jwt = JWT(app, authenticate, identity)
 
 # =============================================================================
@@ -144,12 +158,7 @@ def new_message():
         return jsonify({'code': 400, 'msg': 'bad args'})
     msg = ApiMessage(subject=content.get('subject'), msg=content.get('msg'),
         timestamp=content.get('timestamp') or str(time.time()))
-    db.session.add(msg)
-    try:
-        db.session.commit()
-    except Exception as err:
-        return jsonify({'code': 500, 'msg': 'bad', 'data': err})
-    return jsonify({'code': 200, 'msg': 'successful', 'data': msg.serialize})
+    return save(msg)
 
 @app.route('/comment', methods=['POST'])
 @jwt_required()
@@ -162,12 +171,7 @@ def new_comment():
     if (content.get('message') is None) or (content.get('comment') is None):
         return jsonify({'code': 400, 'msg': 'bad args'})
     comment = ApiComment(message_id=int(content.get('message')), comment=content.get('comment'))
-    db.session.add(comment)
-    try:
-        db.session.commit()
-    except Exception as err:
-        return jsonify({'code': 500, 'msg': 'bad', 'data': err})
-    return jsonify({'code': 200, 'msg': 'successful', 'data': comment.serialize})
+    return save(comment)
 
 @app.route('/list', methods=['GET'])
 @jwt_required()

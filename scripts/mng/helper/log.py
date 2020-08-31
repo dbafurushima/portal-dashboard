@@ -1,0 +1,50 @@
+from logging import getLogger, Formatter, StreamHandler, DEBUG, INFO
+from mng.helper.formatting import format_text
+import logging
+
+
+class ColoredFormatter(Formatter):
+    """[summary]
+    """
+    COLORS = {
+        'DEBUG': 'green',
+        'INFO': 'blue',
+        'WARNING': 'yellow',
+        'ERROR': 'red',
+        'CRITICAL': 'magenta'
+    }
+
+    def __init__(self, fmt=None, datefmt=None, style='%'):
+        """[summary]
+    """
+        super().__init__(fmt, datefmt, style)
+
+    def format(self, record):
+        """[summary]
+    """
+        os = super().format(record)
+        return format_text(os, ColoredFormatter.COLORS[record.levelname])
+
+
+_fmtr = ColoredFormatter('[mng](%(levelname)s)> %(message)s')
+_hdlr = StreamHandler()
+_hdlr.setFormatter(_fmtr)
+app_log = getLogger('MNG')
+app_log.setLevel(DEBUG)
+app_log.addHandler(_hdlr)
+
+
+def log_enable_debug(enable=True):
+    """[summary]
+    """
+    app_log.setLevel(DEBUG if enable else INFO)
+
+
+def log_enable_logging(enable=True):
+    """[summary]
+    """
+    handlers = app_log.handlers
+    if enable and _hdlr not in handlers:
+        app_log.addHandler(_hdlr)
+    elif not enable and _hdlr in handlers:
+        app_log.removeHandler(_hdlr)

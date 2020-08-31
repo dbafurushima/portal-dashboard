@@ -1,0 +1,2 @@
+class SaTException(Exception):
+    pass

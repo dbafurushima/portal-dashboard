@@ -46,3 +46,19 @@ class PasswordSafe(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     password = models.CharField(max_length=255)
     updated_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
+
+
+class Host(models.Model):
+    pass
+
+
+class Inventory(models.Model):
+    EQUIPMENT = [
+        ('virtual', 'Virtual Machine'),
+        ('real', 'Physical Machine'),
+        ('docker', 'Container Docker')
+    ]
+
+    host = models.CharField(max_length=30, blank=True)
+    equipment = models.CharField(choices=EQUIPMENT, max_length=30, verbose_name='equipamento')
+    app = models.CharField(max_length=50, verbose_name='application')
