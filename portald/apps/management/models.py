@@ -47,6 +47,17 @@ class PasswordSafe(models.Model):
     password = models.CharField(max_length=255)
     updated_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
+    def __str__(self):
+        return f"<PS {self.user.username}:{self.password[:15]}>"
+
+
+class EnterpriseUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    enterprise = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return f'<{self.enterprise.display_name}:{self.user.username}>'
+
 
 class Host(models.Model):
     os_name = models.CharField(max_length=40, verbose_name='os.name')

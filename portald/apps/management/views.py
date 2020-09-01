@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.contrib import messages
-from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username
-from .models import Client, PasswordSafe
+from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
+    create_user
+from .models import Client, PasswordSafe, EnterpriseUser
 from apps.api.models import Message
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
@@ -31,21 +30,26 @@ def messages_view(request):
 @login_required
 def passwords_safe_view(request):
     if request.method == 'POST':
+        if 'add' and 'username' and 'enterprise' and 'passwd' in request.POST.keys():
+            client: Client = Client.objects.get(id=int(request.POST['enterprise']))
+            username = request.POST['username']
+            email = username + '@' + client.user.email.split('@')[-1]
+            create_user(username, email, request.POST['passwd'], client)
+            return JsonResponse({'code': 200, 'msg': 'user created!'})
+
         if 'username' not in request.POST.keys():
             return JsonResponse({'code': 400, 'msg': 'incorrect request'})
+
         pwd = passwd_from_username(request.POST['username'])
         return JsonResponse({'code': 200 if pwd is not None else 404, 'msg': pwd or 'user not found!'})
-    clients = Client.objects.all()
-    ps_clients = []
-    for client in clients:
-        cl = {
-            'display_name': client.display_name,
-            'email': client.user.email,
-            'username': client.user.username
-        }
-        ps_clients.append(cl)
+
     return render(request, 'pages/management/passwords-safe.html',
-                  {'clients': ps_clients})
+                  {'data': {'users': [{'id': eu.enterprise.id, 'username': eu.user.username, 'email': eu.user.email,
+                                       'display_name': eu.enterprise.display_name,
+                                       'username2': eu.user.username.replace('.', '-')} for eu in
+                                      EnterpriseUser.objects.all()],
+                   'clients': [{'id': client.id, 'display_name': client.display_name} for client in
+                               Client.objects.all()]}})
 
 
 @login_required
@@ -75,7 +79,7 @@ def register_client(request):
         try:
             client.save()
             # creates all users in the system
-            create_users(request.POST)
+            create_users(request.POST, client)
             password, user = create_default_user(request.POST['email'], client)  # create user for enterprise
             save_password_safe(password, user)  # save password in password safe (table)
             return JsonResponse({'code': 200,

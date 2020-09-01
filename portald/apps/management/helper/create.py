@@ -4,7 +4,7 @@ import os
 import random
 import string
 from django.contrib.auth.models import User
-from ..models import Client, PasswordSafe
+from ..models import Client, PasswordSafe, EnterpriseUser
 from .encrypt import _encrypt, _decrypt
 
 FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'state-registration',
@@ -71,10 +71,21 @@ def _email(email):
 def _rand_passwd(length):
     chars = string.ascii_letters + string.digits + '!@#$%^&*()'
     random.seed = (os.urandom(1024))
-    return ''.join(random.choice(chars) for i in range(length))
+    return ''.join(random.choice(chars) for _ in range(length))
 
 
-def create_users(post: dict):
+def create_user(username, email, password, enterprise=None):
+    user = User(username=username, email=email)
+    passwd = _encrypt(password).decode('utf-8')
+    user.set_password(password)
+    user.save()
+    if enterprise:
+        eu = EnterpriseUser(user=user, enterprise=enterprise)
+        eu.save()
+    return PasswordSafe(user=user, password=passwd).save()
+
+
+def create_users(post: dict, enterprise):
     _users = post.get('users-json')
 
     if not len(_users) > 0:
@@ -87,13 +98,14 @@ def create_users(post: dict):
         passwd = _encrypt(raw_password).decode('utf-8')
         user.set_password(passwd)
         user.save()
+        EnterpriseUser(user=user, enterprise=enterprise).save()
 
 
 def passwd_from_username(username: str) -> str or None:
     try:
         user = User.objects.get(username=username)
-        client = Client.objects.get(user=user)
-        pwd = PasswordSafe.objects.get(user=client.user)
+        # client = Client.objects.get(user=user)
+        pwd = PasswordSafe.objects.get(user=user)
         password = _decrypt(pwd.password)
         return password.decode('utf-8')
     except:
@@ -111,6 +123,8 @@ def create_default_user(email: str, client: Client) -> tuple:
     # relate user to client
     client.user = user
     client.save()
+
+    EnterpriseUser(user=user, enterprise=client).save()
 
     return password, user
 

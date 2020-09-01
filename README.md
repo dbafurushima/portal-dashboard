@@ -73,4 +73,4 @@ E agora só subir o servidor com o comando ``python manage.py runserver``
 - [ ] criação dos grupos de permissão.
 - [ ] back-end para os grupos para exibir e conceder acesso apenas a quem tem permissão
 - [x] trazer para python3 a ferramenta cli.
-- [ ] campo para criar senhas e usuários no cofre de senhas.
+- [x] campo para criar senhas e usuários no cofre de senhas.
