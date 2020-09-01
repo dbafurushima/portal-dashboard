@@ -14,9 +14,7 @@ mysqlclient
 Pillow
 psutil
 requests
-rsa
 ruamel.yaml
-six
 SQLAlchemy
 sqlparse
 tabulate
