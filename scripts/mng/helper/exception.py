@@ -1,2 +1,2 @@
-class SaTException(Exception):
+class MNGException(Exception):
     pass

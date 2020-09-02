@@ -1,5 +1,5 @@
 from ruamel.yaml import YAML
-from mng.helper.exception import SaTException
+from mng.helper.exception import MNGException
 from mng.helper.log import app_log
 
 
@@ -37,7 +37,7 @@ class Configuration(dict, metaclass=MetaConfiguration):
                 conf = cls(conf)
             except:
                 app_log.critical(f"failed to load {cls.TYPE} configuration from {path}")
-                raise SaTException("configuration load failed.")
+                raise MNGException("configuration load failed.")
         return conf
 
     @property
@@ -70,7 +70,7 @@ class Configuration(dict, metaclass=MetaConfiguration):
         """
         if not self.__dict_check(self, self.DEFINITION):
             if throw:
-                raise SaTException(f"{self.TYPE} configuration is missing or invalid.")
+                raise MNGException(f"{self.TYPE} configuration is missing or invalid.")
             else:
                 return False
         return True

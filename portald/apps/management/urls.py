@@ -9,4 +9,5 @@ urlpatterns = [
     path('passwords-safe', views.passwords_safe_view, name='passwords-safe'),
     path('register-client', views.register_client, name='register-client'),
     path('messages', views.messages_view, name='messages'),
+    path('kanban', views.kanban_view, name='kanban'),
 ]

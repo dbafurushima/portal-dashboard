@@ -16,6 +16,11 @@ def clients_view(request):
 
 
 @login_required
+def kanban_view(request):
+    return render(request, 'pages/management/kanban.html')
+
+
+@login_required
 def messages_view(request):
     metrics = {
         'read': Message.objects.filter(read=True).filter(deleted=False).count(),
@@ -56,10 +61,8 @@ def passwords_safe_view(request):
 def register_client(request):
     if request.method != 'POST':
         return render(request, 'pages/management/clients-register.html')
-
     # checks if all required fields exist
     rt_create = create_client(request.POST)
-
     if len(rt_create) == 3:
         # incorrect request, doesn't have all fields
         return JsonResponse({'code': 400, 'msg': rt_create[1]})
@@ -68,7 +71,8 @@ def register_client(request):
         if not rt_create[0]:
             return JsonResponse({'code': 400, 'msg': 'o campo "%s" não atende aos requisitos.' % rt_create[1]})
 
-        client = rt_create[1]  # object Client
+        # object Client
+        client = rt_create[1]
 
         if request.FILES['file']:
             file = request.FILES['file']
@@ -86,4 +90,5 @@ def register_client(request):
                                  'msg': 'cadastro da empresa %s realizado com sucesso!' % client.display_name})
         except Exception as err:
             logging.critical(err)
-            return JsonResponse({'code': 500, 'msg': 'ocorreu um erro interno no servidor.'})
+            return JsonResponse(
+                {'code': 500, 'msg': 'ocorreu um erro interno no servidor.'})

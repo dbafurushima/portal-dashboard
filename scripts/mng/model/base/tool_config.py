@@ -1,19 +1,20 @@
 from pathlib import Path
-from mng.helper.exception import SaTException
+from mng.helper.exception import MNGException
 from .configuration import Configuration
 
 
-class ApiConfiguration(Configuration):
+class ToolConfiguration(Configuration):
     """[summary]
     """
     TYPE = 'api'
     DEFINITION = {
-        'host': {
+        'api': {
             'ip': (str,),
             'port': (int,), 
             'credentials': {
                 'user': (str,),
-                'passwd': (str,)
+                'passwd': (str,),
+                'base64auth': (str,)
             }
         }
     }
@@ -23,21 +24,25 @@ class ApiConfiguration(Configuration):
     @classmethod
     def load(cls, path):
         if not path:
-            path = ApiConfiguration.LOCATION
-        return super(ApiConfiguration, cls).load(path)
+            path = ToolConfiguration.LOCATION
+        return super(ToolConfiguration, cls).load(path)
 
     @property
     def ip(self) -> str:
-        return self['host']['ip']
+        return self['api']['ip']
     
     @property
     def port(self) -> int:
-        return self['host']['port']
+        return self['api']['port']
 
     @property
     def user(self) -> str:
-        return self['host']['credentials']['user']
+        return self['api']['credentials']['user']
 
     @property
     def passwd(self) -> str:
-        return self['host']['credentials']['passwd']
+        return self['api']['credentials']['passwd']
+    
+    @property
+    def base64auth(self) -> str:
+        return self['api']['credentials']['base64auth']
