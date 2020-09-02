@@ -133,3 +133,4 @@ dmypy.json
 config/my.cnf
 my.cnf
 archives/*
+static/*
