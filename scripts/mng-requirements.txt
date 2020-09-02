@@ -1,0 +1,7 @@
+requests
+urllib3
+ujson
+ruamel.yaml
+pick
+aiohttp
+termcolor

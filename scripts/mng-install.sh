@@ -157,7 +157,7 @@ warning() {
 	if [ "${INTERACTIVE}" = "0" ]; then
 		fatal "Stopping due to non-interactive mode. Fix the issue or retry installation in an interactive mode."
 	else
-		read -r -p "Press ENTER to attempt installation > sudo " CMD
+		read -r -p "Press ENTER to attempt installation > " CMD
         run $CMD
 		progress "OK, let's give it a try..."
 	fi
@@ -200,7 +200,7 @@ fi
 progress "clone repository portal-dashboard"
 run git clone $REPOSITORY "$HOME/.portal-dashboard" || fatal "you have no communication with repo"
 cd "$HOME_PATH_INSTALL"
-pip3 install -r portald/requirements.txt
+pip3 install -r scripts/mng-requirements.txt
 SCRIPT_ENTRY_POINT="$HOME_PATH_INSTALL/scripts/mngcli.py"
 chmod 0744 $SCRIPT_ENTRY_POINT
 alias mngcli=$SCRIPT_ENTRY_POINT
