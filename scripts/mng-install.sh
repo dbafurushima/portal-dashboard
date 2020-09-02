@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 #
 # fast install:
-# bash <(curl -Ss http://kickstart.sh)
+# bash <(curl -Ss https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
 #
 # links externos
 REPOSITORY="https://github.com/dbafurushima/portal-dashboard.git"
 # ------------------------------------------------------------------------------------------------
-HOME_PATH_INSTALL="~/.portal-dashboard"
-if [ ! -d $HOME_PATH_INSTALL ]; then
+HOME_PATH_INSTALL="$HOME/.portal-dashboard"
+if [ -d $HOME_PATH_INSTALL ]; then
     echo "atualizando repostório..."
     cd $HOME_PATH_INSTALL
     git pull
@@ -157,7 +157,7 @@ warning() {
 	if [ "${INTERACTIVE}" = "0" ]; then
 		fatal "Stopping due to non-interactive mode. Fix the issue or retry installation in an interactive mode."
 	else
-		read -r -p "Press ENTER to attempt installation > " CMD
+		read -r -p "Press ENTER to attempt installation > sudo " CMD
         run $CMD
 		progress "OK, let's give it a try..."
 	fi
@@ -198,7 +198,7 @@ else
 fi
 # ------------------------------------------------------------------------------------------------
 progress "clone repository portal-dashboard"
-run git clone $REPOSITORY ~/.portal-dashboard || fatal "you have no communication with repo"
+run git clone $REPOSITORY "$HOME/.portal-dashboard" || fatal "you have no communication with repo"
 cd "$HOME_PATH_INSTALL"
 pip3 install -r portald/requirements.txt
 SCRIPT_ENTRY_POINT="$HOME_PATH_INSTALL/scripts/mngcli.py"
