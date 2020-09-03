@@ -4,6 +4,19 @@ DESCRIPTION...
 
 ### INSTALAÇÃO
 
+### MNG cli
+
+Ao instalar a ferramenta CLI na sua máquina ela ficará no home do seu usuário em uma pasta oculta ``~/.portal-dashboard`` os arquivos de configuração com as credenciais de acesso a API ficará no caminho `~/.config/mng/mng.yml` para inicializar basta chamar o script com o parametro `init`
+
+Ao final da instalação da ferramenta com o script será gerado um alias com o path do *entry point* que você poderá adicionar ao seu `~/.bashrc` caso não queria terá que chamado no path `~/.portal-dashboard/scripts/mngcli.py`
+
+Se você executar o script de instalação `mng-install.sh` e a ferramenta já estiver instalada o script apenas atualizara o repositório caso haja uma nova release.
+```bash
+bash <(curl -Ss https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
+```
+
+> para facilitar a instalação e atualização é clonado o repositório todo, não apenas a pasta de scripts
+
 #### CONFIGURAÇÃO DA APLICAÇÃO WEB
 
 Iniciamos configurando o arquivo variáveis de ambiente, para isso copie o arquivo 
