@@ -12,7 +12,8 @@ Ao final da instalação da ferramenta com o script será gerado um alias com o 
 
 Se você executar o script de instalação `mng-install.sh` e a ferramenta já estiver instalada o script apenas atualizara o repositório caso haja uma nova release.
 ```bash
-bash <(curl -Ss https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
+bash <(curl -Ss \
+https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
 ```
 
 > para facilitar a instalação e atualização é clonado o repositório todo, não apenas a pasta de scripts
@@ -75,15 +76,3 @@ python manage.py migrate
 > você deve está na pasta ``portald/``
 
 E agora só subir o servidor com o comando ``python manage.py runserver``
-
-
-## Task list
-
-- [x] informações sobre hardware da máquina com python.
-  - [x] coletar todos os campos possíveis.
-  - [x] filtrar quais serão coletados.
-- [x] modelagem das novas tabelas e alteração nas novas existentes.
-- [ ] criação dos grupos de permissão.
-- [ ] back-end para os grupos para exibir e conceder acesso apenas a quem tem permissão
-- [x] trazer para python3 a ferramenta cli.
-- [x] campo para criar senhas e usuários no cofre de senhas.

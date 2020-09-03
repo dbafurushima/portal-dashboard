@@ -22,6 +22,7 @@ elif [ ! -z $(command -v dnf 2> /dev/null) ]; then
     package_manager="dnf"
     hidden_install="-q"
 elif [ ! -z $(command -v yum 2> /dev/null) ]; then
+    package_manager="yum"
     hidden_install="-q"
 fi
 if [ -z $package_manager ]; then
@@ -200,7 +201,11 @@ fi
 progress "clone repository portal-dashboard"
 run git clone $REPOSITORY "$HOME/.portal-dashboard" || fatal "you have no communication with repo"
 cd "$HOME_PATH_INSTALL"
+# ------------------------------------------------------------------------------------------------
+progress "install pip requirements"
 pip3 install -r scripts/mng-requirements.txt
+# ------------------------------------------------------------------------------------------------
+progress "create alias and set script permissions"
 SCRIPT_ENTRY_POINT="$HOME_PATH_INSTALL/scripts/mngcli.py"
 chmod 0744 $SCRIPT_ENTRY_POINT
 alias mngcli=$SCRIPT_ENTRY_POINT
