@@ -5,8 +5,11 @@ from .helper import create_client, create_users, create_default_user, save_passw
 from .models import Client, PasswordSafe, EnterpriseUser
 from apps.api.models import Message
 from django.http import JsonResponse
+from apps.api.serializer import MessageSerializer
 from django.core.files.storage import FileSystemStorage
+import requests
 import logging
+import json
 
 
 @login_required
@@ -21,15 +24,11 @@ def kanban_view(request):
 
 
 @login_required
-def messages_view(request):
-    metrics = {
-        'read': Message.objects.filter(read=True).filter(deleted=False).count(),
-        'not_read': Message.objects.filter(read=False).count(),
-        'trash': Message.objects.filter(deleted=True).count(),
-        'all': Message.objects.all().count()
-    }
-    return render(request, 'pages/management/messages.html',
-                  {'data': {'messages': Message.objects.all(), 'metrics': metrics}})
+def kanban_view(request):
+
+    return render(request, 'pages/management/kanban.html',
+                  {'notes': json.loads(requests.get('http://localhost:8000/api/message/',
+                   headers={'Authorization': 'Basic cGF1bG8uYmVzZXJyYTpwQHNzd2RAMDE='}).text)})
 
 
 @login_required
