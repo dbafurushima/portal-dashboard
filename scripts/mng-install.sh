@@ -3,6 +3,10 @@
 # fast install:
 # bash <(curl -Ss https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
 #
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
 # links externos
 REPOSITORY="https://github.com/dbafurushima/portal-dashboard.git"
 # ------------------------------------------------------------------------------------------------
@@ -181,21 +185,24 @@ download() {
 # ------------------------------------------------------------------------------------------------
 # init configurations
 # RUN pip3 --quiet install -r /var/www/warn/requirements.txt
+RUN_COLOR="${TPUT_BGGREEN}${TPUT_WHITE}${TPUT_BOLD} RUN ${TPUT_RESET} $package_manager"
 progress "check system dependencies"
+packages_for_install=""
+required_install=1
 if [ -z $(command -v git --version 2> /dev/null) ]; then
-    warning "${TPUT_BGGREEN}${TPUT_WHITE}${TPUT_BOLD} RUN ${TPUT_RESET} $package_manager install git -y $hidden_install"
-else
-    ok_dependencie "$(git --version)"
+    required_install=2
+    packages_for_install+=" git"
 fi
 if [ -z $(command -v python3 -V 2> /dev/null) ]; then
-    warning "${TPUT_BGGREEN}${TPUT_WHITE}${TPUT_BOLD} RUN ${TPUT_RESET} $package_manager install python3 -y $hidden_install"
-else
-    ok_dependencie "$(python3 --version)"
+    required_install=2
+    packages_for_install+=" python3"
 fi
 if [ -z $(command -v pip3 2> /dev/null) ]; then
-    warning "${TPUT_BGGREEN}${TPUT_WHITE}${TPUT_BOLD} RUN ${TPUT_RESET} $package_manager install python3-pip -y $hidden_install"
-else
-    ok_dependencie "$(pip3 --version)"
+    required_install=2
+    packages_for_install+=" python3-pip"
+fi
+if [ $required_install -eq 2 ]; then
+    warning "$RUN_COLOR install$packages_for_install -y $hidden_install"
 fi
 # ------------------------------------------------------------------------------------------------
 progress "clone repository portal-dashboard"
@@ -209,4 +216,5 @@ progress "create alias and set script permissions"
 SCRIPT_ENTRY_POINT="$HOME_PATH_INSTALL/scripts/mngcli.py"
 chmod 0744 $SCRIPT_ENTRY_POINT
 alias mngcli=$SCRIPT_ENTRY_POINT
-echo "alias mngcli=$SCRIPT_ENTRY_POINT >> ~/.bashrc"
+echo "echo \"alias mngcli=$SCRIPT_ENTRY_POINT\" >> ~/.bashrc"
+echo "exec \"$SHELL\""
