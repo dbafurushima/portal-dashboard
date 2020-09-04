@@ -17,7 +17,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
-        fields = ['id', 'os_name', 'arch', 'platform', 'processor', 'hostname', 'ram', 'physical_cores', 'current_frequency']
+        fields = ['id', 'os_name', 'arch', 'platform', 'processor', 'hostname', 'ram', 'cores', 'frequency']
 
 
 class ApplicationSerializer(serializers.ModelSerializer):

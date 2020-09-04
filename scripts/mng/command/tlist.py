@@ -3,7 +3,7 @@
 # =============================================================================
 import time
 import json
-from pprint import pprint
+import pprint
 from mng.helper.formatting import format_dict2str
 # =============================================================================
 #  FUNCTIONS
@@ -11,18 +11,45 @@ from mng.helper.formatting import format_dict2str
 async def tlist(api, args):
     """Request for list tables
     """
-    if 'message' in args.table:
-        response = await api.get_json('/api/message/')
-    elif 'comment' in args.table:
-        response = await api.get_json('/api/comment/')
-    else:
-        return False
+    pp = pprint.PrettyPrinter(indent=2, width=41, compact=False)
 
-    [print(format_dict2str(_)) for _ in response] if isinstance(response, list) else pprint(response)
+    if args.list:
+        pp.pprint({
+            'message': {
+                'route': '/api/message/', 
+                'method': 
+                    ['GET', 'POST', 'PUT']
+            },
+            'comment': {
+                'route': '/api/comment/', 
+                'method': 
+                    ['GET', 'POST', 'DELETE']
+            },
+            'host': {
+                'route': '/api/host', 
+                'method': 
+                    ['GET', 'POST']
+            }})
+    elif args.table:
+        if 'message' in args.table:
+            response = await api.get_json('/api/message/')
+        elif 'comment' in args.table:
+            response = await api.get_json('/api/comment/')
+        elif 'host' in args.table:
+            response = await api.get_json('/api/host/')
+        else: 
+            return False
+
+        [pp.pprint(_) for _ in response] if isinstance(response, list) else pp.pprint(response)
+    else:
+        print('arguments not found')
+        return True
+
     return True
 
 
 def setup_tlist(subparsers):
-    parser = subparsers.add_parser('list', help="listar dados salvos. (message ou comment)")
-    parser.add_argument('table', help='nome da tabela para listagem')
+    parser = subparsers.add_parser('list', help="listar dados salvos. (message, comment, host)")
+    parser.add_argument('-t', '--table', help='nome da tabela para listagem')
+    parser.add_argument('--list', action='store_true', help='listar todas as rotas e nome de tabelas')
     parser.set_defaults(func=tlist)

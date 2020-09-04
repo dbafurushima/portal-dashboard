@@ -7,7 +7,7 @@ import psutil
 def get_machine_infos() -> bool:
     cpufreq = psutil.cpu_freq()
     return {
-        'os.name': os.name,
+        'os_name': os.name,
         'arch': platform.machine(),
         'platform': platform.platform(),
         'processor': platform.processor(),

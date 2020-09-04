@@ -42,14 +42,14 @@ def format_dict2str(dictionary):
     text = ""
     for key, value in dictionary.items():
         if isinstance(value, dict):
-            text += f"\n- {key}:"
+            text += f"\n> {key}:"
             text += format_dict2str(value).replace("\n", f"\n{TAB}")
         elif isinstance(value, list):
-            text += f"\n- {key}: [\n"
+            text += f"\n> {key}: [\n"
             for item in value:
                 text += format_dict2str(item).replace("\n", f"\n{TAB}")
                 text += "\n"
             text += "\n]\n"
         else:
-            text += f"\n- {key}: {value}"
+            text += f"\n> {key}: {value}"
     return text

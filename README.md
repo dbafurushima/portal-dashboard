@@ -6,17 +6,19 @@ DESCRIPTION...
 
 ### MNG cli
 
-Ao instalar a ferramenta CLI na sua máquina ela ficará no home do seu usuário em uma pasta oculta ``~/.portal-dashboard`` os arquivos de configuração com as credenciais de acesso a API ficará no caminho `~/.config/mng/mng.yml` para inicializar basta chamar o script com o parametro `init`
+Ao instalar a ferramenta CLI na sua máquina ela ficará no *home* do seu usuário em uma pasta oculta ``~/.portal-dashboard`` os arquivos de configuração com as credenciais de acesso a API ficará no caminho `~/.config/mng/mng.yml` para inicializar basta chamar o script com o parametro `init`
 
-Ao final da instalação da ferramenta com o script será gerado um alias com o path do *entry point* que você poderá adicionar ao seu `~/.bashrc` caso não queria terá que chamado no path `~/.portal-dashboard/scripts/mngcli.py`
+Ao final da instalação da ferramenta com o script *sh* será gerado um alias com o path do *entry point* que você poderá adicionar ao seu `~/.bashrc` caso não queria terá que chamado no path `~/.portal-dashboard/scripts/mngcli.py`
 
-Se você executar o script de instalação `mng-install.sh` e a ferramenta já estiver instalada o script apenas atualizara o repositório caso haja uma nova release.
+Se você executar o script de instalação `mng-install.sh` e a ferramenta já estiver instalada o script apenas atualizara o repositório caso haja uma nova release. Ao adicionar o *alias* você pode chamar o script de qualquer path com o nome `mngcli`
 ```bash
 bash <(curl -Ss \
 https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
 ```
 
 > para facilitar a instalação e atualização é clonado o repositório todo, não apenas a pasta de scripts
+
+> a instalação de depêndencias (pacotes) será feita também pelo script
 
 #### CONFIGURAÇÃO DA APLICAÇÃO WEB
 
@@ -76,3 +78,29 @@ python manage.py migrate
 > você deve está na pasta ``portald/``
 
 E agora só subir o servidor com o comando ``python manage.py runserver``
+
+### Informações adicionais
+
+#### `mng-install.sh`
+
+Script em shell para instalação da ferramenta `mng` em abientes Linux.
+
+Para que o script funcione corretamente seu terminal deve ter suporte a codificação `UTF-8` você pode fazer isso executando os seguintes comandos e opicionalmente de preferência adicionando ao seu `.bashrc`
+
+```bash
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
+exec "bash"
+```
+
+> Testado apenas em `ubunut:20.4` e `centos:7`
+
+### MNG CLI
+
+É um utilitário linha de comando escript em python com suporte a operações assíncronas para permitir máxima eficiência na execução de operações `IO` e paralelas.
+
+Com uma estrutura modular para fornecer facilidade na expansão de novas funcionalidades, correção bugs e manutenção do código. Permitindo também a instalação como bibioteca do python.
+

@@ -36,10 +36,13 @@ class Host(models.Model):
     arch = models.CharField(max_length=30, verbose_name='arch')
     platform = models.CharField(max_length=30, verbose_name='platform')
     processor = models.CharField(max_length=80)
-    hostname = models.CharField(max_length=125)
+    hostname = models.CharField(max_length=125, unique=True, blank=True, null=False)
     ram = models.FloatField(verbose_name='RAM')
-    physical_cores = models.IntegerField(verbose_name='physical cores')
-    current_frequency = models.FloatField(verbose_name='current frequency')
+    cores = models.IntegerField(verbose_name='physical cores')
+    frequency = models.FloatField(verbose_name='current frequency')
+
+    def __str__(self):
+        return f'<Host: {self.hostname}>'
 
 
 class Locator(models.Model):

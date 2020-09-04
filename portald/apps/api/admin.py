@@ -22,7 +22,7 @@ class CommentList(admin.ModelAdmin):
 
 @admin.register(Host)
 class HostList(admin.ModelAdmin):
-    list_display = ('os_name', 'platform', 'ram', 'physical_cores', 'current_frequency')
+    list_display = ('os_name', 'platform', 'ram', 'cores', 'frequency')
     search_fields = ('platform',)
     list_display_links = ('platform',)
     list_per_page = 20
