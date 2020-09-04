@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'apps.portal',
     'apps.public',
     'apps.accounts',
@@ -163,22 +164,4 @@ kdf = PBKDF2HMAC(
 )
 KEY = base64.urlsafe_b64encode(kdf.derive(password))
 
-# Auth0 -
-# SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
-# SOCIAL_AUTH_AUTH0_DOMAIN = env('SOCIAL_AUTH_AUTH0_DOMAIN')
-# SOCIAL_AUTH_AUTH0_KEY = env('SOCIAL_AUTH_AUTH0_KEY')
-# SOCIAL_AUTH_AUTH0_SECRET = env('SOCIAL_AUTH_AUTH0_SECRET')
-
-# SOCIAL_AUTH_AUTH0_SCOPE = [
-#     'openid',
-#     'profile',
-#     'email'
-# ]
-
-# AUTHENTICATION_BACKENDS = {
-#     'auth0login.auth0backend.Auth0',
-#     'django.contrib.auth.backends.ModelBackend'
-# }
-
-# LOGIN_URL = '/login/auth0/'
-# LOGIN_REDIRECT_URL = '/portal/home'
+USER_API_KEY = env('USER_API_TOKEN')

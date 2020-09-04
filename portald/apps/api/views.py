@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from .serializer import MessageSerializer, CommentSerializer, ApplicationSerializer, HostSerializer, InventorySerializer
 from .models import Message, Comment, Application, Host, Inventory
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from collections import OrderedDict
@@ -18,7 +18,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
@@ -37,7 +37,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):

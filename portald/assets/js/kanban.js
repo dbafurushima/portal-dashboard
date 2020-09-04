@@ -237,8 +237,10 @@ $(function() {
         today = mm + '.' + dd + '.' + yyyy;
 
         var $_listTitle = document.getElementById('s-list-name').value;
+        var $_listSubject = document.getElementById('s-list-subject').value;
 
         var $_listTitleLower = $_listTitle.toLowerCase();
+        var $_listSubjectLower = $_listSubject.toLowerCase();
         var $_listTitleRemoveWhiteSpaces = $_listTitleLower.split(' ').join('_') ;
         var $_listSectionDataAttr = $_listTitleRemoveWhiteSpaces;
 
@@ -246,7 +248,7 @@ $(function() {
         $html = '<div data-section="s-'+$_listSectionDataAttr+'" class="task-list-container  mb-4 " data-connect="sorting">'+
                     '<div class="connect-sorting">'+
                         '<div class="task-container-header">'+
-                            '<h6 class="s-heading" data-listTitle="'+$_listTitle+'">'+$_listTitle+'</h6>'+
+                            '<h6 class="s-heading" data-listTitle="'+$_listTitle+'"> ('+$_listSubject+') '+$_listTitle+'</h6>'+
                             '<div class="dropdown">'+
                                 '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">'+
                                     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>'+
@@ -368,19 +370,19 @@ $(function() {
 
         if ($(this).parents('.card').hasClass('img-task')) {
 
-            var $_taskTitle = $_outerThis.parents('.card').find('h4').attr('data-taskTitle');
+            var $_taskTitle = $_outerThis.parents('.card').find('p').attr('data-taskTitle');
             var get_value_title = $('.task-image #s-image-task').val($_taskTitle);
             $('.task-image .collapse').collapse('show');
 
         } else if ($(this).parents('.card').hasClass('simple-title-task')) {
 
-            var $_taskTitle = $_outerThis.parents('.card').find('h4').attr('data-taskTitle');
+            var $_taskTitle = $_outerThis.parents('.card').find('p').attr('data-taskTitle');
             var get_value_title = $('.task-simple #s-simple-task').val($_taskTitle);
             $('.task-simple .collapse').collapse('show');
 
         } else if ($(this).parents('.card').hasClass('task-text-progress')) {
 
-            var $_taskTitle = $_outerThis.parents('.card').find('h4').attr('data-taskTitle');
+            var $_taskTitle = $_outerThis.parents('.card').find('p').attr('data-taskTitle');
             var get_value_title = $('.task-text-progress #s-task').val($_taskTitle);
 
             var $_taskText = $_outerThis.parents('.card').find('p:not(".progress-count")').attr('data-taskText');
@@ -400,14 +402,14 @@ $(function() {
             if ($_outerThis.parents('.card').hasClass('img-task')) {
 
                 var $_task = document.getElementById('s-image-task').value;
-                var $_taskDataAttr = $_outerThis.parents('.card').find('h4').attr('data-taskTitle' , $_task);
-                var $_taskTitle = $_outerThis.parents('.card').find('h4').html($_task);
+                var $_taskDataAttr = $_outerThis.parents('.card').find('p').attr('data-taskTitle' , $_task);
+                var $_taskTitle = $_outerThis.parents('.card').find('p').html($_task);
 
             } else if ($_outerThis.parents('.card').hasClass('simple-title-task')) {
 
                 var $_task = document.getElementById('s-simple-task').value;
-                var $_taskDataAttr = $_outerThis.parents('.card').find('h4').attr('data-taskTitle' , $_task);
-                var $_taskTitle = $_outerThis.parents('.card').find('h4').html($_task);
+                var $_taskDataAttr = $_outerThis.parents('.card').find('p').attr('data-taskTitle' , $_task);
+                var $_taskTitle = $_outerThis.parents('.card').find('p').html($_task);
 
             } else if ($_outerThis.parents('.card').hasClass('task-text-progress')) {
 
@@ -415,8 +417,8 @@ $(function() {
                 var $_taskTextValue = document.getElementById('s-text').value;
                 var $_taskProgressValue = $('.range-count-number').attr('data-rangeCountNumber');
 
-                var $_taskDataAttr = $_outerThis.parents('.card').find('h4').attr('data-taskTitle' , $_taskValue);
-                var $_taskTitle = $_outerThis.parents('.card').find('h4').html($_taskValue);
+                var $_taskDataAttr = $_outerThis.parents('.card').find('p').attr('data-taskTitle' , $_taskValue);
+                var $_taskTitle = $_outerThis.parents('.card').find('p').html($_taskValue);
                 var $_taskTextDataAttr = $_outerThis.parents('.card').find('p:not(".progress-count")').attr('data-tasktext' , $_taskTextValue);
                 var $_taskText = $_outerThis.parents('.card').find('p:not(".progress-count")').html($_taskTextValue);
 

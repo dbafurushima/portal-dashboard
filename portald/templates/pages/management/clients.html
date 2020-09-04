@@ -59,7 +59,7 @@
     </div>
 </div>
 
-
+<!--
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -85,7 +85,7 @@
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                         <div class="row">
                             <div class="col-4">
-                                 <img src="{% static 'images/company.png' %}"
+                                 <img src=""
                                       alt="logo" width="150" height="150" style="border-radius: 50%">
                             </div>
                             <div class="col-md-8">
@@ -124,24 +124,34 @@
         </div>
     </div>
 </div>
+-->
 
-<!--
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal" tabindex="-1" id="info-modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <ul class="list-group">
-                <span class="badge badge-pill badge-info">Company Name</span><li class="list-group-item" style="text-align: center" id="company_name"></li>
-                <span class="badge badge-pill badge-info">Display Name</span><li class="list-group-item" style="text-align: center" id="display_name"></li>
-                <span class="badge badge-pill badge-info">CNPJ</span><li class="list-group-item" style="text-align: center" id="cnpj"></li>
-                <span class="badge badge-pill badge-info">City</span><li class="list-group-item" style="text-align: center" id="city"></li>
-                <span class="badge badge-pill badge-info">State</span><li class="list-group-item" style="text-align: center" id="state"></li>
-                <span class="badge badge-pill badge-info">CEP</span><li class="list-group-item" style="text-align: center" id="cep"></li>
-                <span class="badge badge-pill badge-info">State Registration</span><li class="list-group-item" style="text-align: center" id="state_registration"></li>
-                <span class="badge badge-pill badge-info">Munincipal Registration</span><li class="list-group-item" style="text-align: center" id="municipal_registration"></li>
-                <span class="badge badge-pill badge-info">Created At</span><li class="list-group-item" style="text-align: center" id="created_at"></li>
-            </ul>
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Razão Social: </b> <span id="company_name"></span> </p>
+                <p><b>Cidade: </b> <span id="city"></span> </p>
+                <p><b>UF: </b> <span id="state"></span> </p>
+                <p><b>CEP: </b> <span id="cep"></span> </p>
+                <p>Identificação</p>
+                <p><b>CNPJ: </b> <span id="cnpj"></span> </p>
+                <p><b>Insc. Estadual: </b> <span id="state_registration"></span> </p>
+                <p><b>Insc. Municipal: </b> <span id="municipal_registration"></span> </p>
+                <p><b>CNPJ sem ponto: </b> <span id="cnpj_s"></span> </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
--->
+
+
 {% endblock %}

@@ -7,6 +7,7 @@ from apps.api.models import Message
 from django.http import JsonResponse
 from apps.api.serializer import MessageSerializer
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 import requests
 import logging
 import json
@@ -19,16 +20,20 @@ def clients_view(request):
 
 
 @login_required
+def todolist_view(request):
+    return render(request, 'pages/management/todolist.html')
+
+
+@login_required
 def kanban_view(request):
     return render(request, 'pages/management/kanban.html')
 
 
 @login_required
 def kanban_view(request):
-
     return render(request, 'pages/management/kanban.html',
                   {'notes': json.loads(requests.get('http://localhost:8000/api/message/',
-                   headers={'Authorization': 'Basic cGF1bG8uYmVzZXJyYTpwQHNzd2RAMDE='}).text)})
+                                                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)})
 
 
 @login_required
@@ -52,8 +57,8 @@ def passwords_safe_view(request):
                                        'display_name': eu.enterprise.display_name,
                                        'username2': eu.user.username.replace('.', '-')} for eu in
                                       EnterpriseUser.objects.all()],
-                   'clients': [{'id': client.id, 'display_name': client.display_name} for client in
-                               Client.objects.all()]}})
+                            'clients': [{'id': client.id, 'display_name': client.display_name} for client in
+                                        Client.objects.all()]}})
 
 
 @login_required
@@ -73,7 +78,7 @@ def register_client(request):
         # object Client
         client = rt_create[1]
 
-        if request.FILES['file']:
+        if request.FILES:
             file = request.FILES['file']
             if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
                 client.logo = file

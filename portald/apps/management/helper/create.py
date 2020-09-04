@@ -48,7 +48,7 @@ def _city(city):
 
 
 def _state(state):
-    return _len_min(state, 5)
+    return _len_min(state, 2)
 
 
 def _cep(cep):
