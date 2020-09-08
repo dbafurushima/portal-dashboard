@@ -5,7 +5,13 @@ import psutil
 
 
 def get_machine_infos() -> bool:
-    cpufreq = psutil.cpu_freq()
+
+    try:
+        cpufreq = psutil.cpu_freq()
+        cpufreq_max = f'{cpufreq.max:.2f}'
+    except:
+        cpufreq_max = None
+
     return {
         'os_name': os.name,
         'arch': platform.machine(),
@@ -14,7 +20,7 @@ def get_machine_infos() -> bool:
         'hostname': socket.gethostname(),
         'ram': str(round(psutil.virtual_memory().total / (1024.0 **3))),
         'cores': psutil.cpu_count(logical=True),
-        'frequency': f'{cpufreq.max:.2f}'
+        'frequency': cpufreq_max
     }
 
 

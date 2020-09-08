@@ -11,7 +11,7 @@ from mng.helper.formatting import format_dict2str
 async def tlist(api, args):
     """Request for list tables
     """
-    pp = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
 
     if args.routes:
         pp.pprint({
