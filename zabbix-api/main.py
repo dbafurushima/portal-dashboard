@@ -1,0 +1,119 @@
+import asyncio
+import aiohttp
+import ujson
+import pprint
+import getpass
+
+
+pp = pprint.PrettyPrinter(indent=2, compact=False, width=51, sort_dicts=False)
+cprint = lambda h, b: (print(h), pp.pprint(b))
+
+uri_base = 'http://zabbix.dbafurushima.com.br/api_jsonrpc.php'
+headers_json = {'Content-Type': 'application/json-rpc'}
+
+_login_data_json = {
+        "jsonrpc": "2.0",
+        "method": "user.login",
+        "params": {
+            "user": "Admin",
+            "password": "admin"
+        },
+        "id": 1,
+        "auth": None
+    }
+
+_get_graph = {
+    "jsonrpc": "2.0",
+    "method": "graph.get",
+    "params": {
+        "output": "extend",
+        "hostids": [10326]
+    },
+    "auth": "",
+    "id": 0
+}
+
+_get_graphitem = {
+    "jsonrpc": "2.0",
+    "method": "graphitem.get",
+    "params": {
+        "output": "extend",
+        "graphids": []
+    },
+    "auth": "",
+    "id": 0
+}
+
+_get_hosts = {
+    "jsonrpc": "2.0",
+    "method": "host.get",
+    "params": {
+        "filter": {
+            "name": [
+                "PORTALDOC - ORASRV9"
+            ]
+        }
+    },
+    "auth": "",
+    "id": 0
+}
+
+_user_token = ""
+_user_id = 0
+
+
+async def post(url, data_json, headers=None):
+    async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+        async with session.post(url, json=data_json, headers=headers) as resp:
+            raw_data = await resp.json()
+    
+    pp.pprint(raw_data)
+    return raw_data
+ 
+
+async def _get_token(uri, user, passwd):
+
+    _login_data_json["params"]["user"] = user
+    _login_data_json["params"]["password"] = passwd
+
+    token = await post(uri, _login_data_json, headers=headers_json)
+
+    return token.get('id', 0), token.get('result', None)
+
+
+async def get_graph():
+    _get_graph["auth"] = _user_token
+    _get_graph["id"] = _user_id
+
+    # _get_graph["params"]["graphids"] = itemids
+
+    cprint('request body json >>> \n', _get_graph)
+
+    return await post(uri_base, _get_graph, headers=headers_json)
+
+
+async def get_hosts():
+    _get_hosts["auth"] = _user_token
+    _get_hosts["id"] = _user_id
+
+    cprint('request body json >>> \n', _get_hosts)
+
+    return await post(uri_base, _get_hosts, headers=headers_json)
+
+
+async def entry_point(user, passwd):
+    global _user_id
+    global _user_token
+
+    _user_id, _user_token = await _get_token(uri_base, user, passwd)
+
+    await get_graph()
+
+
+if __name__ == '__main__':
+    user = 'paulo_dev' # input('user: ')
+    passwd = getpass.getpass(prompt='password: ', stream=None)
+
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(entry_point(user, passwd))
+    loop.run_until_complete(task)

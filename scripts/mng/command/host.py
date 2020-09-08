@@ -17,7 +17,7 @@ async def host(api, args):
     data_post = get_machine_infos()
 
     if args.json:
-        pp.pprint(data_post)
+        print(json.dumps(data_post))
     
     response = None
     try:
