@@ -5,3 +5,4 @@ ruamel.yaml
 pick
 aiohttp
 termcolor
+psutil

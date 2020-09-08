@@ -13,7 +13,7 @@ async def tlist(api, args):
     """
     pp = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=False)
 
-    if args.list:
+    if args.routes:
         pp.pprint({
             'message': {
                 'route': '/api/message/', 
