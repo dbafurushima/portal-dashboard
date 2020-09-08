@@ -1,7 +1,7 @@
+import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-import datetime
 
 
 class Client(models.Model):
@@ -11,6 +11,8 @@ class Client(models.Model):
     city = models.CharField(verbose_name="Cidade", max_length=40, blank=True)
     state = models.CharField(verbose_name="Estado", max_length=40, blank=True)
     cep = models.CharField(verbose_name="CEP", max_length=15, blank=True)
+    district = models.CharField(verbose_name="Bairro", max_length=30, blank=True)
+    address = models.CharField(verbose_name="Endereço", max_length=40, blank=True)
     state_registration = models.CharField(verbose_name="inscrição estadual", max_length=30, blank=True)
     municipal_registration = models.CharField(verbose_name="inscrição municipal", max_length=30, blank=True)
     logo = models.ImageField(verbose_name="logo", upload_to='logos/%d/%m/%Y/', default='default-logo.png',
@@ -21,6 +23,10 @@ class Client(models.Model):
     class Meta:
         verbose_name = _('clients')
         verbose_name_plural = _('clients')
+
+    @property
+    def cnpj_text(self):
+        return self.cnpj.replace('.', '').replace('/', '').replace('-', '')
 
     def __str__(self):
         return "<Client: {}>".format(self.display_name)

@@ -40,8 +40,10 @@
                     <div class="col-sm-3 mt-3 show-info" data-company_name="{{ client.company_name }}"
                          data-display_name="{{ client.display_name }}" data-cnpj="{{ client.cnpj }}"
                          data-city="{{ client.city }}" data-state="{{ client.state }}" data-cep="{{ client.cep }}"
-                         data-state_registration="{{ client.state_registration }}"
-                         data-municipal_registration="{{ client.municipal_registration }}" data-created_at="{{ client.created_at }}">
+                         data-state_registration="{{ client.state_registration }}" data-district="{{ client.district }}"
+                         data-municipal_registration="{{ client.municipal_registration }}"
+                         data-created_at="{{ client.created_at }}" data-cnpj_s="{{ client.cnpj_text }}"
+                         data-address="{{ client.address }}">
                         <div class="card text-center">
                             <div class="card-body" style="padding: 15px">
                                 <h5 class="card-title">
@@ -59,73 +61,6 @@
     </div>
 </div>
 
-<!--
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="info-modal" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="card">
-                <ul class="nav nav-tabs nav-tabs-line" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
-                            Basic infos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
-                            Address
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">
-                            Detail
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content border border-top-0 p-3" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row">
-                            <div class="col-4">
-                                 <img src=""
-                                      alt="logo" width="150" height="150" style="border-radius: 50%">
-                            </div>
-                            <div class="col-md-8">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" style="text-align: center" id="company_name"></li>
-                                    <li class="list-group-item" style="text-align: center" id="display_name"></li>
-                                    <li class="list-group-item" style="text-align: center" id="created_at"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="list-group list-group-flush" >
-                                    <li class="list-group-item" style="text-align: center" id="city"></li>
-                                    <li class="list-group-item" style="text-align: center" id="state"></li>
-                                    <li class="list-group-item" style="text-align: center" id="cep"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" style="text-align: center" id="cnpj"></li>
-                                    <li class="list-group-item" style="text-align: center" id="state_registration"></li>
-                                    <li class="list-group-item" style="text-align: center" id="municipal_registration"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
-
 <div class="modal" tabindex="-1" id="info-modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -140,7 +75,8 @@
                 <p><b>Cidade: </b> <span id="city"></span> </p>
                 <p><b>UF: </b> <span id="state"></span> </p>
                 <p><b>CEP: </b> <span id="cep"></span> </p>
-                <p>Identificação</p>
+                <p><b>Bairro: </b> <span id="district"></span> </p>
+                <p><b>Endereço: </b> <span id="address"></span> </p>
                 <p><b>CNPJ: </b> <span id="cnpj"></span> </p>
                 <p><b>Insc. Estadual: </b> <span id="state_registration"></span> </p>
                 <p><b>Insc. Municipal: </b> <span id="municipal_registration"></span> </p>

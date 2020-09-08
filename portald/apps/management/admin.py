@@ -4,7 +4,7 @@ from .models import Client, Notification, PasswordSafe, EnterpriseUser
 
 @admin.register(Client)
 class ClientList(admin.ModelAdmin):
-    list_display = ('id', 'display_name', 'company_name', 'cnpj', 'city', 'created_at')
+    list_display = ('id', 'display_name', 'company_name', 'cnpj', 'city')
     search_fields = ('display_name', 'company_name', 'cnpj')
     list_filter = ('city',)
     list_display_links = ('display_name',)

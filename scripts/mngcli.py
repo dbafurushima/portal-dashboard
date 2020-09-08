@@ -36,10 +36,10 @@ def parse_args():
     subparsers.required = True
     setup_init(subparsers)
     setup_configure(subparsers)
+    setup_host(subparsers)
     setup_note(subparsers)
     setup_comment(subparsers)
     setup_tlist(subparsers)
-    setup_host(subparsers)
 
     # -- parse args and pre-process if needed
     return parser.parse_args()

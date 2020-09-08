@@ -35,6 +35,8 @@ $(function() {
             let city = $('#city').val();
             let state = $('#state').val();
             let cep = $('#cep').val();
+            let district = $('#district').val();
+            let address = $('#address').val();
             let state_registration = $('#state-registration').val();
             let municipal_registration = $('#municipal-registration').val();
             let email = $('#email').val();
@@ -50,6 +52,8 @@ $(function() {
             fd.append('city', city);
             fd.append('state', state);
             fd.append('cep', cep);
+            fd.append('district', district);
+            fd.append('address', address);
             fd.append('state-registration', state_registration);
             fd.append('municipal-registration', municipal_registration);
             fd.append('email', email);

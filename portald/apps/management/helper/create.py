@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from ..models import Client, PasswordSafe, EnterpriseUser
 from .encrypt import _encrypt, _decrypt
 
-FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'state-registration',
+FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'district', 'address', 'state-registration',
           'municipal-registration', 'email']
 LENGTH_PASSWORD = 15
 
@@ -19,16 +19,16 @@ def _correct_post(keys) -> bool:
     return len(sec_list) == len(FIELDS)
 
 
-def _len_min(string, length):
-    return len(string) >= length
+def _len_min(text, length):
+    return len(text) >= length
 
 
-def _len_max(string, length):
-    return len(string) <= length
+def _len_max(text, length):
+    return len(text) <= length
 
 
-def _len(string, length):
-    return len(string) == length
+def _len(text, length):
+    return len(text) == length
 
 
 def _company_name(company_name):
@@ -53,6 +53,14 @@ def _state(state):
 
 def _cep(cep):
     return (_len(cep, 8) or _len(cep, 9)) and (re.match(r'^\d{5}-?\d{3}$', cep))
+
+
+def _district(district):
+    return _len_min(district, 4) and _len_max(district, 40)
+
+
+def _address(address):
+    return _len_min(address, 4) and _len_max(address, 40)
 
 
 def _state_registration(state_registration):
@@ -93,12 +101,8 @@ def create_users(post: dict, enterprise):
 
     users_json = json.loads(_users)
     for _user in users_json:
-        user = User(username=_user.get('username'), email=_user.get('email'))
         raw_password = _user.get('password') if _user.get('password') else 'mudar123'
-        passwd = _encrypt(raw_password).decode('utf-8')
-        user.set_password(passwd)
-        user.save()
-        EnterpriseUser(user=user, enterprise=enterprise).save()
+        create_user(_user.get('username'), _user.get('email'), raw_password, enterprise)
 
 
 def passwd_from_username(username: str) -> str or None:
@@ -108,7 +112,7 @@ def passwd_from_username(username: str) -> str or None:
         pwd = PasswordSafe.objects.get(user=user)
         password = _decrypt(pwd.password)
         return password.decode('utf-8')
-    except:
+    except Exception as err:
         return None
 
 
@@ -150,6 +154,8 @@ def create_client(post: dict) -> tuple:
     city = post.get('city')
     state = post.get('state')
     cep = post.get('cep')
+    district = post.get('district')
+    address = post.get('address')
     state_registration = post.get('state-registration')
     municipal_registration = post.get('municipal-registration')
     email = post.get('email')
@@ -172,6 +178,12 @@ def create_client(post: dict) -> tuple:
     if not _cep(cep):
         return False, 'cep'
 
+    if not _district(district):
+        return False, 'district'
+
+    if not _address(address):
+        return False, 'address'
+
     if not _state_registration(state_registration):
         return False, 'state registration'
 
@@ -182,6 +194,7 @@ def create_client(post: dict) -> tuple:
         return False, 'email'
 
     client = Client(company_name=company_name, display_name=display_name, cnpj=cnpj, city=city, state=state, cep=cep,
-                    state_registration=state_registration, municipal_registration=municipal_registration)
+                    district=district, address=address, state_registration=state_registration,
+                    municipal_registration=municipal_registration)
 
     return True, client

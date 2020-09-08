@@ -61,18 +61,25 @@
                     <form action="{% url 'register-client' %}" method="post">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-sm-5">
+                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Company Name</label>
                                     <input type="text" id="company-name" name="company-name" class="form-control"
                                            placeholder="Razão Social" required>
                                 </div>
                             </div><!-- Col -->
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Display Name</label>
                                     <input type="text" name="display-name" id="display-name" class="form-control"
-                                           placeholder="Nome de exibição (apelido)">
+                                           placeholder="Email da empresa">
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input type="text" name="email" id="email" class="form-control"
+                                           placeholder="Email da empresa" required>
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-3">
@@ -88,21 +95,28 @@
                                 <div class="form-group">
                                     <label class="control-label">City</label>
                                     <input type="text" name="city" id="city" class="form-control"
-                                           placeholder="Sua cidade" required>
+                                           placeholder="Cidade" required>
                                 </div>
                             </div><!-- Col -->
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label class="control-label">State</label>
+                                    <label class="control-label">UF</label>
                                     <input type="text" name="state" id="state" class="form-control"
-                                           placeholder="Seu estado" required>
+                                           placeholder="Sigla" required>
                                 </div>
                             </div><!-- Col -->
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">CEP</label>
                                     <input type="text" name="cep" id="cep" class="form-control"
                                            placeholder="ex. 99999-999" required>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Bairro</label>
+                                    <input type="text" name="district" id="district" class="form-control"
+                                           placeholder="Bairro" required>
                                 </div>
                             </div><!-- Col -->
                         </div><!-- Row -->
@@ -123,9 +137,9 @@
                             </div><!-- Col -->
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="control-label">Email</label>
-                                    <input type="text" class="form-control" name="municipal-registration"
-                                           placeholder="Email da empresa" id="email">
+                                    <label class="control-label">Endereço</label>
+                                    <input type="text" class="form-control" name="address"
+                                           placeholder="Endereço ex: Rua, número" id="address">
                                 </div>
                             </div><!-- Col -->
                             <div class="col-sm-12">
