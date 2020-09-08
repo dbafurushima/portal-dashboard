@@ -34,12 +34,12 @@ class Comment(models.Model):
 class Host(models.Model):
     os_name = models.CharField(max_length=40, verbose_name='os.name')
     arch = models.CharField(max_length=30, verbose_name='arch')
-    platform = models.CharField(max_length=30, verbose_name='platform')
+    platform = models.CharField(max_length=100, verbose_name='platform')
     processor = models.CharField(max_length=80)
     hostname = models.CharField(max_length=125, unique=True, blank=True, null=False)
     ram = models.FloatField(verbose_name='RAM')
     cores = models.IntegerField(verbose_name='physical cores')
-    frequency = models.FloatField(verbose_name='current frequency')
+    frequency = models.FloatField(verbose_name='current frequency', null=True, blank=True)
 
     def __str__(self):
         return f'<Host: {self.hostname}>'

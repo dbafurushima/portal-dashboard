@@ -3,13 +3,16 @@
 # =============================================================================
 import time
 import json
-from pprint import pprint
+import pprint
+import aiohttp
 # =============================================================================
 #  FUNCTIONS
 # =============================================================================
 async def note(api, args):
     """Request for add note
     """
+    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+
     data_post = {
         "subject": args.subject,
         "timestamp": str(time.time()),
@@ -17,10 +20,15 @@ async def note(api, args):
     }
 
     if args.json:
-        print(json.dumps(data_post))
+        pp.pprint(data_post)
 
-    response = await api.post_json('/api/message/', data_post)
-    pprint(response)
+    response = None
+    try:
+        response = await api.post_json('/api/message/', data_post)
+        pp.pprint(response)
+    except aiohttp.client_exceptions.ClientConnectorError:
+        print('ops, API offline ou você não tem conexão com a internet...')
+    
     return True if isinstance(response, dict) else False
 
 def setup_note(subparsers):

@@ -1,24 +1,32 @@
 # =============================================================================
 #  IMPORTS
 # =============================================================================
-from pprint import pprint
+import pprint
 import json
+import aiohttp
 # =============================================================================
 #  FUNCTIONS
 # =============================================================================
 async def comment(api, args):
     """Request for add comment
     """
+    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+
     data_post = {
         "message": args.message,
         "comment": args.comment
     }
 
     if args.json:
-        print(json.dumps(data_post))
+        pp.pprint(data_post)
 
-    response = await api.post_json('/api/comment/', data_post)
-    pprint(response)
+    response = None
+    try:
+        response = await api.post_json('/api/comment/', data_post)
+        pp.pprint(response)
+    except aiohttp.client_exceptions.ClientConnectorError:
+        print('ops, API offline ou você não tem conexão com a internet...')
+    
     return True if isinstance(response, dict) else False
 
 def setup_comment(subparsers):
