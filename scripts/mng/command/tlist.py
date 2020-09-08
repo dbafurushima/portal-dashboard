@@ -51,5 +51,5 @@ async def tlist(api, args):
 def setup_tlist(subparsers):
     parser = subparsers.add_parser('list', help="listar dados salvos. (message, comment, host)")
     parser.add_argument('-t', '--table', help='nome da tabela para listagem')
-    parser.add_argument('--list', action='store_true', help='listar todas as rotas e nome de tabelas')
+    parser.add_argument('--routes', action='store_true', help='listar todas as rotas e nome de tabelas')
     parser.set_defaults(func=tlist)

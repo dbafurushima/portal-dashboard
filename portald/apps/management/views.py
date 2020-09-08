@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
     create_user
 from .models import Client, PasswordSafe, EnterpriseUser
@@ -8,28 +9,34 @@ from django.http import JsonResponse
 from apps.api.serializer import MessageSerializer
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
 import requests
 import logging
 import json
 
 
+def permission_check(user: User):
+    return user.is_superuser
+
+
 @login_required
+@user_passes_test(permission_check)
 def clients_view(request):
     return render(request, 'pages/management/clients.html',
                   {'clients': Client.objects.all()})
 
 
 @login_required
+@user_passes_test(permission_check)
 def todolist_view(request):
-    return render(request, 'pages/management/todolist.html')
+    return render(request, 'pages/management/todolist.html',
+                  {'notes': json.loads(requests.get('http://localhost:8000/api/message/',
+                                                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)}
+                  )
 
 
 @login_required
-def kanban_view(request):
-    return render(request, 'pages/management/kanban.html')
-
-
-@login_required
+@user_passes_test(permission_check)
 def kanban_view(request):
     return render(request, 'pages/management/kanban.html',
                   {'notes': json.loads(requests.get('http://localhost:8000/api/message/',
@@ -37,6 +44,7 @@ def kanban_view(request):
 
 
 @login_required
+@user_passes_test(permission_check)
 def passwords_safe_view(request):
     if request.method == 'POST':
         if 'add' and 'username' and 'enterprise' and 'passwd' in request.POST.keys():
@@ -62,6 +70,7 @@ def passwords_safe_view(request):
 
 
 @login_required
+@user_passes_test(permission_check)
 def register_client(request):
     if request.method != 'POST':
         return render(request, 'pages/management/clients-register.html')

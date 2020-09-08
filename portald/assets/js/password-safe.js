@@ -61,7 +61,7 @@ $(function() {
         let token = $('input[name="csrfmiddlewaretoken"]').val();
 
         let click = e.currentTarget.getAttribute('data-click');
-        if ( click === null) click = "1";
+        if ((click === null) || (click === undefined)) { click = '1' }
         let _id = '#passwd-'+username;
         let _icon_id = '#icon-v-'+username;
 

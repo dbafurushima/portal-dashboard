@@ -19,6 +19,7 @@
 					<span class="link-title">PortalD</span>
 				</a>
 			</li>
+            {% if request.user.is_superuser %}
             <li class="nav-item nav-category">Management</li>
 			<li class="nav-item">
 				<li class="nav-item ">
@@ -30,7 +31,7 @@
 				<div class="collapse" id="clients">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-							<a href="{% url 'clients' %}" class="nav-link ">Meus Clientes</a>
+                            <a href="{% url 'clients' %}" class="nav-link ">Meus Clientes</a>
 						</li>
 						<li class="nav-item">
 							<a href="{% url 'passwords-safe' %}" class="nav-link ">Cofre de Senhas</a>
@@ -44,6 +45,7 @@
 					</ul>
 				</div>
 			</li>
+            {% endif %}
 			<li class="nav-item nav-category">Docs</li>
 			<li class="nav-item">
 				<a href="https://github.com/dbafurushima/portal-dashboard/wiki" target="_blank" class="nav-link">
