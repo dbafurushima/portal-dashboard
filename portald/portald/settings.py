@@ -14,12 +14,15 @@ from pathlib import Path
 import os
 import environ
 import base64
+import sys
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+sys.path.append(str(Path(BASE_DIR).joinpath('../', 'zabbix')))
 
 # load variables from env file
 env = environ.Env()
@@ -51,7 +54,8 @@ INSTALLED_APPS = [
     'apps.public',
     'apps.accounts',
     'apps.management',
-    'apps.api'
+    'apps.api',
+    'apps.charts'
 ]
 
 MIDDLEWARE = [
@@ -165,3 +169,7 @@ kdf = PBKDF2HMAC(
 KEY = base64.urlsafe_b64encode(kdf.derive(password))
 
 USER_API_KEY = env('USER_API_TOKEN')
+
+ZABBIX_USER = env('ZABBIX_USER')
+ZABBIX_PASSWORD = env('ZABBIX_PASSWORD')
+ZABBIX_URL = env('ZABBIX_URL')

@@ -38,7 +38,20 @@ _get_graphitem = {
     "method": "graphitem.get",
     "params": {
         "output": "extend",
-        "graphids": []
+        "graphids": [31359]
+    },
+    "auth": "",
+    "id": 0
+}
+
+_get_history = {
+    "jsonrpc": "2.0",
+    "method": "history.get",
+    "params": {
+        "output": "extend",
+        "history": 0,
+        "itemids": "31359",
+        "limit": 10
     },
     "auth": "",
     "id": 0
@@ -82,14 +95,25 @@ async def _get_token(uri, user, passwd):
 
 
 async def get_graph():
-    _get_graph["auth"] = _user_token
-    _get_graph["id"] = _user_id
+    _get_graphitem["auth"] = _user_token
+    _get_graphitem["id"] = _user_id
 
     # _get_graph["params"]["graphids"] = itemids
 
-    cprint('request body json >>> \n', _get_graph)
+    cprint('request body json >>> \n', _get_graphitem)
 
-    return await post(uri_base, _get_graph, headers=headers_json)
+    return await post(uri_base, _get_graphitem, headers=headers_json)
+
+
+async def get_history():
+    _get_history["auth"] = _user_token
+    _get_history["id"] = _user_id
+
+    # _get_graph["params"]["graphids"] = itemids
+
+    cprint('request body json >>> \n', _get_history)
+
+    return await post(uri_base, _get_history, headers=headers_json)
 
 
 async def get_hosts():
@@ -107,12 +131,17 @@ async def entry_point(user, passwd):
 
     _user_id, _user_token = await _get_token(uri_base, user, passwd)
 
-    await get_graph()
+    await get_history()
 
 
 if __name__ == '__main__':
+    import os
+
     user = 'paulo_dev' # input('user: ')
-    passwd = getpass.getpass(prompt='password: ', stream=None)
+    if not os.getenv('ZABBIX_PASSWORD'):
+        passwd = getpass.getpass(prompt='password: ', stream=None)
+    else:
+        passwd = os.getenv('ZABBIX_PASSWORD')
 
     loop = asyncio.get_event_loop()
     task = loop.create_task(entry_point(user, passwd))

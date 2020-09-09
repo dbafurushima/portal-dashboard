@@ -23,13 +23,14 @@ router.register('message', MessageViewSet, basename='message')
 router.register('comment', CommentViewSet, basename='comment')
 router.register('application', ApplicationViewSet, basename='application')
 router.register('inventory', InventoryViewSet, basename='inventory')
-router.register('host', HostViewSet, basename='host')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('portal/', include('apps.portal.urls')),
     path('accounts/', include('apps.accounts.urls')),
+    path('charts/', include('apps.charts.urls')),
     path('api/', include(router.urls)),
+    path('api/', include('apps.api.urls')),
     path('', include('apps.management.urls')),
     path('', include('apps.public.urls')),
 ]

@@ -1,16 +1,23 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from .serializer import MessageSerializer, CommentSerializer, ApplicationSerializer, HostSerializer, InventorySerializer
 from .models import Message, Comment, Application, Host, Inventory
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from collections import OrderedDict
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
-def status_route(request):
-    return JsonResponse({'code': 200, 'msg': 'up'})
+@api_view(['GET', 'POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAdminUser])
+def status(request, format=None):
+    if format:
+        print(format)
+    return Response({'msg': 'up'})
 
 
 class MessageViewSet(viewsets.ModelViewSet):
