@@ -10,4 +10,5 @@ urlpatterns = [
     path('register-client', views.register_client, name='register-client'),
     path('kanban', views.kanban_view, name='kanban'),
     path('todolist', views.todolist_view, name='todolist'),
+    path('inventory', views.inventory_view, name='inventory'),
 ]

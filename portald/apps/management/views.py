@@ -21,6 +21,12 @@ def permission_check(user: User):
 
 @login_required
 @user_passes_test(permission_check)
+def inventory_view(request):
+    return render(request, 'pages/management/inventory.html')
+
+
+@login_required
+@user_passes_test(permission_check)
 def clients_view(request):
     return render(request, 'pages/management/clients.html',
                   {'clients': Client.objects.all()})

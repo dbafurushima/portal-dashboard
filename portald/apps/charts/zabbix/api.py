@@ -4,24 +4,13 @@ import urllib.request
 from datetime import datetime
 from .data_info_requests import GET_DATA_HISTORY, LOGIN_DATA
 from django.conf import settings
+from .utils import decode_bytes_to_utf8, json_decode
 
-pp = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=True)
+debug = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=True)
 uribase = settings.ZABBIX_URL
 
 _user_token = ""
 _user_id = 0
-
-
-def json_decode(text: str):
-    if isinstance(text, str):
-        return json.loads(text)
-    return text
-
-
-def _decode_bytes_to_utf8(text: bytes):
-    if isinstance(text, bytes):
-        return text.decode('utf-8', errors='ignore')
-    return text
 
 
 def _set_auth_token_api(payload):
@@ -37,7 +26,7 @@ def _post_request(uri, payload):
     req = urllib.request.Request(uri, data=payload, headers={'content-type': 'application/json-rpc'})
     with urllib.request.urlopen(req) as response:
         body = response.read()
-    return _decode_bytes_to_utf8(body)
+    return decode_bytes_to_utf8(body)
 
 
 def get_token_api():
@@ -54,8 +43,7 @@ def get_token_api():
 
 
 def _logged_in_zabbix():
-    if _user_token == '':
-        get_token_api()
+    get_token_api() if _user_token == '' else None
 
 
 def get_history_from_itemids(itemids):
