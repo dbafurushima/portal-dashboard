@@ -39,13 +39,40 @@
 						<li class="nav-item">
 							<a href="{% url 'register-client' %}" class="nav-link ">Cadastrar Cliente</a>
 						</li>
-                        <li class="nav-item">
-							<a href="{% url 'kanban' %}" class="nav-link ">Kanban</a>
-						</li>
 					</ul>
 				</div>
 			</li>
             {% endif %}
+            <li class="nav-item">
+				<li class="nav-item ">
+				<a class="nav-link" data-toggle="collapse" href="#tools" role="button" aria-expanded="" aria-controls="tools">
+					<i class="link-icon" data-feather="terminal"></i>
+					<span class="link-title">Tools</span>
+					<i class="link-arrow" data-feather="chevron-down"></i>
+				</a>
+				<div class="collapse" id="tools">
+					<ul class="nav sub-menu">
+                        <li class="nav-item">
+							<a href="{% url 'kanban' %}" class="nav-link ">Anotações</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+            <li class="nav-item">
+				<li class="nav-item ">
+				<a class="nav-link" data-toggle="collapse" href="#cmdb" role="button" aria-expanded="" aria-controls="cmdb">
+					<i class="link-icon" data-feather="box"></i>
+					<span class="link-title">CMDB</span>
+					<i class="link-arrow" data-feather="chevron-down"></i>
+				</a>
+				<div class="collapse" id="cmdb">
+					<ul class="nav sub-menu">
+                        <li class="nav-item">
+							<a href="{% url 'inventory' %}" class="nav-link ">Inventário</a>
+						</li>
+					</ul>
+				</div>
+			</li>
 			<li class="nav-item nav-category">Docs</li>
 			<li class="nav-item">
 				<a href="https://github.com/dbafurushima/portal-dashboard/wiki" target="_blank" class="nav-link">
