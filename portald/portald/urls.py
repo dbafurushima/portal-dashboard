@@ -23,7 +23,6 @@ router.register('note', NotesViewSet, basename='Note')
 router.register('comment', CommentViewSet, basename='comment')
 router.register('inventory', InventoryViewSet, basename='inventory')
 router.register('host', HostViewSet, basename='host')
-router.register('application', ApplicationViewSet, basename='application')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

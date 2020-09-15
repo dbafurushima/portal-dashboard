@@ -3,8 +3,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, ApplicationSerializer
-from .models import Note, Comment, Host, Application
+from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, ApplicationSerializer, \
+    InstanceSerializer, EnvironmentSerializer, ServiceSerializer
+from .models import Note, Comment, Host, Application, Instance, Service, Environment, Inventory
 from apps.management.models import Client
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
@@ -56,11 +57,51 @@ class CommentViewSet(viewsets.ModelViewSet):
                           'comment': _.get('comment')} for _ in serializer.data])
 
 
+def instances_from_host(host) -> list:
+        response = []
+
+        for instance in Instance.objects.filter(host_id=host):
+            raw_instance = dict(InstanceSerializer(instance).data)
+            service = None if raw_instance.get('service') is None else ServiceSerializer(Service.objects.get(
+                id=raw_instance.get('service'))).data
+
+            response.append({
+                'id': raw_instance.get('id'),
+                'service': service,
+                'hostname': raw_instance.get('hostname'),
+                'private_ip': raw_instance.get('private_ip')
+            })
+
+        return response
+
+
+def host_with_instances_and_service(host):
+    new_host = dict(HostSerializer(host).data)
+    new_host['instances'] = instances_from_host(host.id)
+
+    return new_host
+
+
+def hosts_with_instances_and_service():
+
+    raw_data = []
+    for host in Host.objects.all():
+        raw_data.append(host_with_instances_and_service(host))
+
+    return raw_data
+
+
 class HostViewSet(viewsets.ModelViewSet):
     queryset = Host.objects.all()
     serializer_class = HostSerializer
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAdminUser]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = HostSerializer(queryset, many=True)
+
+        return Response(hosts_with_instances_and_service())
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
@@ -71,6 +112,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
+
     queryset = Host.objects.all()
     serializer_class = InventorySerializer
     authentication_classes = [BasicAuthentication]
@@ -79,10 +121,17 @@ class InventoryViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = InventorySerializer(queryset, many=True)
-        data_response = []
 
-        for client in Client.objects.all():
-            data_response.append({'client': {'id': client.id, 'company_name': client.company_name},
-                                  'hosts': [HostSerializer(host).data for host in Host.objects.filter(enterprise=client)]})
+        def environment_from_inventory(inventory):
+            return [(lambda env: {'id': env.get('id'), 'name': env.get('name'),
+                                  'hosts': [host_with_instances_and_service(h) for h in Host.objects.filter(
+                                      environment_id=env.get('id'))]})(EnvironmentSerializer(env).data)
+                    for env in Environment.objects.filter(inventory=inventory)]
 
-        return Response(data_response)
+        raw_data = []
+        for inventory in Inventory.objects.all():
+            new_inventory = dict(InventorySerializer(inventory).data)
+            new_inventory['environments'] = environment_from_inventory(inventory)
+            raw_data.append(new_inventory)
+
+        return Response(raw_data)

@@ -24,8 +24,25 @@ class Note(models.Model):
         verbose_name_plural = "Anotações"
 
 
+class Inventory(models.Model):
+    enterprise = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return f"<Inventory: {self.enterprise.company_name}>"
+
+    class Meta:
+        verbose_name_plural = "Inventários"
+
+
 class Environment(models.Model):
     name = models.CharField(verbose_name="ambiente", max_length=50)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return f'<Environment: {self.name}>'
+
+    class Meta:
+        verbose_name_plural = "Ambientes"
 
 
 class Host(models.Model):
@@ -54,16 +71,6 @@ class Host(models.Model):
 
     class Meta:
         verbose_name_plural = "Hosts"
-
-
-class Inventory(models.Model):
-    enterprise = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
-
-    def __str__(self):
-        return f"<Inventory: {self.enterprise.display_name}"
-
-    class Meta:
-        verbose_name_plural = "Inventários"
 
 
 class Locator(models.Model):
@@ -99,13 +106,17 @@ class Comment(models.Model):
         verbose_name_plural = "Comentários"
 
 
-class Database(models.Model):
-    name = models.CharField(verbose_name="database", max_length=50)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, blank=True, null=True)
-
-
 class Service(models.Model):
     name = models.CharField(verbose_name="service", max_length=50)
+    ip = models.CharField(max_length=16, null=True, blank=True)
+    port = models.IntegerField(blank=True, null=True)
+    dns = models.CharField(max_length=120, null=True, blank=True)
+
+    def __str__(self):
+        return f'<Service: {self.name}>'
+
+    class Meta:
+        verbose_name_plural = "Serviços"
 
 
 class Instance(models.Model):
@@ -114,3 +125,9 @@ class Instance(models.Model):
     host = models.ForeignKey(Host, on_delete=models.CASCADE, blank=True, null=True)
     hostname = models.CharField(max_length=125, unique=True, blank=True, null=False)
     private_ip = models.CharField(max_length=16, verbose_name="ip privado", blank=True, null=True)
+
+    def __str__(self):
+        return f'<Instance:  {self.name}>'
+
+    class Meta:
+        verbose_name_plural = "Instâncias"

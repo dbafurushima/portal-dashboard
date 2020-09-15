@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Note, Comment, Host, Inventory, Application
+from .models import Note, Comment, Host, Inventory, Application, Service, Instance, Environment
 
 
 @admin.register(Note)
@@ -47,4 +47,28 @@ class ApplicationList(admin.ModelAdmin):
     list_display = ('id', 'name', 'port', 'host')
     search_fields = ('name', 'port')
     list_display_links = ('port',)
+    list_per_page = 20
+
+
+@admin.register(Service)
+class ServiceList(admin.ModelAdmin):
+    list_display = ('id', 'name', 'ip', 'port', 'dns')
+    search_fields = ('name', 'ip')
+    list_display_links = ('name', 'ip')
+    list_per_page = 20
+
+
+@admin.register(Instance)
+class InstanceList(admin.ModelAdmin):
+    list_display = ('id', 'name', 'host', 'hostname', 'service')
+    search_fields = ('name', 'service')
+    list_display_links = ('name', 'hostname')
+    list_per_page = 20
+
+
+@admin.register(Environment)
+class EnvironmentList(admin.ModelAdmin):
+    list_display = ('id', 'name', 'inventory')
+    search_fields = ('name', 'id')
+    list_display_links = ('name',)
     list_per_page = 20
