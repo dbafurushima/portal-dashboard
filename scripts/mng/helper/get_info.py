@@ -20,7 +20,8 @@ def get_machine_infos() -> bool:
         'hostname': socket.gethostname(),
         'ram': str(round(psutil.virtual_memory().total / (1024.0 **3))),
         'cores': psutil.cpu_count(logical=True),
-        'frequency': cpufreq_max
+        'frequency': cpufreq_max,
+        'private_ip': socket.gethostbyname(socket.gethostname())
     }
 
 

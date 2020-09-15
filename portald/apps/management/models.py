@@ -12,7 +12,7 @@ class Client(models.Model):
     state = models.CharField(verbose_name="Estado", max_length=40, blank=True)
     cep = models.CharField(verbose_name="CEP", max_length=15, blank=True)
     district = models.CharField(verbose_name="Bairro", max_length=30, blank=True)
-    address = models.CharField(verbose_name="Endereço", max_length=40, blank=True)
+    address = models.CharField(verbose_name="Endereço", max_length=60, blank=True)
     state_registration = models.CharField(verbose_name="inscrição estadual", max_length=30, blank=True)
     municipal_registration = models.CharField(verbose_name="inscrição municipal", max_length=30, blank=True)
     logo = models.ImageField(verbose_name="logo", upload_to='logos/%d/%m/%Y/', default='default-logo.png',

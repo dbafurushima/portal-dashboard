@@ -22,27 +22,37 @@ function getData() {
                                 "name": "Aplicação",
                                 "type": "Organism",
                                 "description": "Protheus",
-                                "children": []
+                                "children": [
+                                    {
+                                        "id": 6,
+                                        "name": "Serviço",
+                                        "type": "Family",
+                                        "description": "Balanceador de Carga",
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "id": 5,
                                 "name": "Aplicação",
                                 "type": "Organism",
                                 "description": "TomCat",
-                                "children": []
+                                "children": [
+                                    
+                                ]
                             }
                         ]
                     },
                 ]
             },
             {
-                "id": 6,
+                "id": 7,
                 "name": "Host 02",
                 "type": "Type",
                 "description": "Balanceador de Carga",
                 "children": [
                     {
-                        "id": 7,
+                        "id": 8,
                         "name": "Aplicação",
                         "type": "Family",
                         "description": "JBoss Application Server",
@@ -59,6 +69,10 @@ function getData() {
 var data = getData();
 
 var treePlugin = new d3.mitchTree.boxedTree()
+                .setAllowFocus(false)
+				.setAllowZoom(false)
+				.setAllowPan(true)
+				.setAllowNodeCentering(false)
 				.setData(data)
 				.setElement(document.getElementById("visualisation"))
 				.setIdAccessor(function(data) {
@@ -74,3 +88,8 @@ var treePlugin = new d3.mitchTree.boxedTree()
 					return data.name;
 				})
 				.initialize();
+var nodes = treePlugin.getNodes();
+			nodes.forEach(function(node, index, arr) {
+				treePlugin.expand(node);
+			});
+			treePlugin.update(treePlugin.getRoot());

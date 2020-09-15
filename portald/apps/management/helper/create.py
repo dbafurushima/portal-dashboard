@@ -60,15 +60,15 @@ def _district(district):
 
 
 def _address(address):
-    return _len_min(address, 4) and _len_max(address, 40)
+    return _len_min(address, 4) and _len_max(address, 60)
 
 
 def _state_registration(state_registration):
-    return _len_min(state_registration, 6)
+    return _len_min(state_registration, 2)
 
 
 def _municipal_registration(municipal_registration):
-    return _len_min(municipal_registration, 6)
+    return _len_min(municipal_registration, 3)
 
 
 def _email(email):

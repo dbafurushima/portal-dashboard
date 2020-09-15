@@ -1,9 +1,11 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from .serializer import MessageSerializer, CommentSerializer, ApplicationSerializer, HostSerializer, InventorySerializer
-from .models import Message, Comment, Application, Host, Inventory
+from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, ApplicationSerializer
+from .models import Note, Comment, Host, Application
+from apps.management.models import Client
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -11,36 +13,34 @@ from collections import OrderedDict
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
-@api_view(['GET', 'POST'])
-@authentication_classes([BasicAuthentication])
-@permission_classes([IsAdminUser])
-def status(request, format=None):
-    if format:
-        print(format)
-    return Response({'msg': 'up'})
+def timestamp_to_datetime(ts):
+    ts = float(ts) if isinstance(ts, str) else ts
+    return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
 
-class MessageViewSet(viewsets.ModelViewSet):
-    """show all messages
+class NotesViewSet(viewsets.ModelViewSet):
+    """show all notes with comments
     """
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = MessageSerializer(queryset, many=True)
+        serializer = NoteSerializer(queryset, many=True)
 
-        return Response([{'id': _.get('id'), 'subject': _.get('subject'), 'timestamp': _.get('timestamp'),
-                          'msg': _.get('msg'),
-                          'comments': CommentSerializer(Comment.objects.filter(message_id=_.get('id')),
-                                                        many=True).data} for
+        def comments_by_note(note_id):
+            return CommentSerializer(Comment.objects.filter(note_id=note_id), many=True).data
+
+        return Response([{'id': _.get('id'), 'subject': _.get('subject'),
+                          'timestamp': timestamp_to_datetime(_.get('timestamp')), 'msg': _.get('msg'),
+                          'comments': comments_by_note(_.get('id'))} for
                          _ in serializer.data])
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """show all comments
+    """show all comments with text note
     """
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -51,16 +51,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = CommentSerializer(queryset, many=True)
 
-        return Response([{'id': _.get('id'), 'message': MessageSerializer(
-            Message.objects.get(id=_.get('message'))).data.get('msg'), 'message_id': _.get('message'),
-                          'comment': _.get('comment'), 'commented_by': _.get('commented_by')} for _ in serializer.data])
-
-
-class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAdminUser]
+        return Response([{'id': _.get('id'), 'note': NoteSerializer(
+            Note.objects.get(id=_.get('note'))).data.get('msg'), 'note_id': _.get('note'),
+                          'comment': _.get('comment')} for _ in serializer.data])
 
 
 class HostViewSet(viewsets.ModelViewSet):
@@ -70,8 +63,26 @@ class HostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
 
+class ApplicationViewSet(viewsets.ModelViewSet):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAdminUser]
+
+
 class InventoryViewSet(viewsets.ModelViewSet):
-    queryset = Inventory.objects.all()
+    queryset = Host.objects.all()
     serializer_class = InventorySerializer
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAdminUser]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = InventorySerializer(queryset, many=True)
+        data_response = []
+
+        for client in Client.objects.all():
+            data_response.append({'client': {'id': client.id, 'company_name': client.company_name},
+                                  'hosts': [HostSerializer(host).data for host in Host.objects.filter(enterprise=client)]})
+
+        return Response(data_response)

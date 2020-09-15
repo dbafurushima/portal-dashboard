@@ -10,7 +10,30 @@ debug = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=True)
 uribase = settings.ZABBIX_URL
 
 _user_token = ""
-_user_id = 0
+_user_id = 1
+
+
+class Zabbix:
+
+    api_user = ''
+    api_password = ''
+    api_token = ''
+
+    def __init__(self, user=None, password=None):
+        self.api_user = user
+        self.api_password = password
+
+    def set_credentials(self, user, password):
+        self.api_user = user
+        self.api_password = password
+
+    @classmethod
+    def auth_api(cls):
+        pass
+
+    @classmethod
+    def set_token(cls, data, token):
+        pass
 
 
 def _set_auth_token_api(payload):

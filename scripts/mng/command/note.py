@@ -24,7 +24,7 @@ async def note(api, args):
 
     response = None
     try:
-        response = await api.post_json('/api/message/', data_post)
+        response = await api.post_json('/api/note/', data_post)
         pp.pprint(response)
     except aiohttp.client_exceptions.ClientConnectorError:
         print('ops, API offline ou você não tem conexão com a internet...')

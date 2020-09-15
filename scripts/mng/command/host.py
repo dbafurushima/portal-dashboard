@@ -14,7 +14,12 @@ async def host(api, args):
     """
     pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
 
+    if not args.inventory:
+        print('[!] você precisa informar o id do inventário')
+        return False
+
     data_post = get_machine_infos()
+    data_post['enterprise'] = args.inventory
 
     if args.json:
         print(json.dumps(data_post))
@@ -30,4 +35,5 @@ async def host(api, args):
 
 def setup_host(subparsers):
     parser = subparsers.add_parser('host', help="cadastrar um novo host.")
+    parser.add_argument('--inventory-id', dest='inventory', type=int, help="id do inventário do cliente para cadastro.")
     parser.set_defaults(func=host)

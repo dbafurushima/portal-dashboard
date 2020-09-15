@@ -3,10 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
     create_user
-from .models import Client, PasswordSafe, EnterpriseUser
-from apps.api.models import Message
+from .models import Client, EnterpriseUser
 from django.http import JsonResponse
-from apps.api.serializer import MessageSerializer
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -45,7 +43,7 @@ def todolist_view(request):
 @user_passes_test(permission_check)
 def kanban_view(request):
     return render(request, 'pages/management/kanban.html',
-                  {'notes': json.loads(requests.get('http://localhost:8000/api/message/',
+                  {'notes': json.loads(requests.get('http://localhost:8000/api/note/',
                                                     headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)})
 
 

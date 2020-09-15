@@ -15,8 +15,8 @@ async def tlist(api, args):
 
     if args.routes:
         pp.pprint({
-            'message': {
-                'route': '/api/message/', 
+            'note': {
+                'route': '/api/note/', 
                 'method': 
                     ['GET', 'POST', 'PUT']
             },
@@ -25,18 +25,18 @@ async def tlist(api, args):
                 'method': 
                     ['GET', 'POST', 'DELETE']
             },
-            'host': {
-                'route': '/api/host', 
+            'inventory': {
+                'route': '/api/inventory', 
                 'method': 
                     ['GET', 'POST']
             }})
     elif args.table:
-        if 'message' in args.table:
-            response = await api.get_json('/api/message/')
+        if 'note' in args.table:
+            response = await api.get_json('/api/note/')
         elif 'comment' in args.table:
             response = await api.get_json('/api/comment/')
-        elif 'host' in args.table:
-            response = await api.get_json('/api/host/')
+        elif 'inventory' in args.table:
+            response = await api.get_json('/api/inventory/')
         else: 
             return False
 
@@ -49,7 +49,7 @@ async def tlist(api, args):
 
 
 def setup_tlist(subparsers):
-    parser = subparsers.add_parser('list', help="listar dados salvos. (message, comment, host)")
+    parser = subparsers.add_parser('list', help="listar dados salvos. (notes, comments, hosts)")
     parser.add_argument('-t', '--table', help='nome da tabela para listagem')
     parser.add_argument('--routes', action='store_true', help='listar todas as rotas e nome de tabelas')
     parser.set_defaults(func=tlist)

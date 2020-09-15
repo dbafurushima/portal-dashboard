@@ -1,32 +1,33 @@
-from .models import Message, Comment, Host, Locator, Application, Inventory
+from .models import Note, Comment, Host, Inventory, Application
 from rest_framework import serializers
 
 
-class MessageSerializer(serializers.ModelSerializer):
+class NoteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Message
+        model = Note
         fields = ['id', 'subject', 'timestamp', 'msg']
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'message', 'comment', 'commented_by']
+        fields = ['id', 'note', 'comment']
 
 
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
-        fields = ['id', 'os_name', 'arch', 'platform', 'processor', 'hostname', 'ram', 'cores', 'frequency']
-
-
-class ApplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Application
-        fields = ['id', 'name', 'host']
+        fields = ['id', 'os_name', 'arch', 'platform', 'processor', 'hostname', 'ram',
+                  'cores', 'frequency', 'enterprise']
 
 
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
-        fields = ['id', 'host', 'equipment']
+        fields = ['id', 'enterprise']
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['id', 'name', 'port', 'host']

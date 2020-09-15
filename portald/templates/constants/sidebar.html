@@ -34,9 +34,6 @@
                             <a href="{% url 'clients' %}" class="nav-link ">Meus Clientes</a>
 						</li>
 						<li class="nav-item">
-							<a href="{% url 'passwords-safe' %}" class="nav-link ">Cofre de Senhas</a>
-						</li>
-						<li class="nav-item">
 							<a href="{% url 'register-client' %}" class="nav-link ">Cadastrar Cliente</a>
 						</li>
 					</ul>
@@ -68,7 +65,26 @@
 				<div class="collapse" id="cmdb">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
+							<a href="{% url 'passwords-safe' %}" class="nav-link ">Cofre de Senhas</a>
+						</li>
+                        <li class="nav-item">
 							<a href="{% url 'inventory' %}" class="nav-link ">Inventário</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+            <li class="nav-item nav-category">Gráficos</li>
+            <li class="nav-item">
+				<li class="nav-item ">
+				<a class="nav-link" data-toggle="collapse" href="#graphs" role="button" aria-expanded="" aria-controls="graphs">
+					<i class="link-icon" data-feather="pie-chart"></i>
+					<span class="link-title">Zabbix</span>
+					<i class="link-arrow" data-feather="chevron-down"></i>
+				</a>
+				<div class="collapse" id="graphs">
+					<ul class="nav sub-menu">
+                        <li class="nav-item">
+							<a href="{% url 'chart-line-basic' %}" class="nav-link ">basic line</a>
 						</li>
 					</ul>
 				</div>
