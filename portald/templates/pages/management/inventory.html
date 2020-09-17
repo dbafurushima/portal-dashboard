@@ -38,10 +38,12 @@
 
             $('#modal-fill').modal('show');
 
-            $.post("http://localhost:8000/inventory", {inventory_id: card_id,
+            $.post("http://localhost:8000/inventory", {client_id: card_id,
                     csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()}, function(data, status) {
 
                 var data = data.data;
+
+                console.log(data)
 
                 var treePlugin = new d3.mitchTree.boxedTree()
                     .setAllowFocus(false)

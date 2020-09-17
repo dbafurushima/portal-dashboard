@@ -30,69 +30,74 @@ def inventory_view(request):
     # raw_data = json.loads(requests.get('http://localhost:8000/api/inventory/',
     #                        headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)
 
-    index = (n for n in range(1, 100))
+    def inventory_by_client_id(client_id):
+        index = (n for n in range(1, 100))
 
-    raw_inventories = [dict(InventorySerializer(inventory).data) for inventory in Inventory.objects.all()]
-    inventories = [(lambda inv: {'id': next(index), 'name': 'Inventário', 'type': 'Root', 'uid': inv.get('id'),
-                                 'description': Client.objects.get(id=inv.get('id')).company_name})(inventory) for
-                   inventory in raw_inventories]
+        raw_inventories = [dict(InventorySerializer(inventory).data)
+                           for inventory in Inventory.objects.filter(enterprise_id=int(client_id))]
+        inventories = [(lambda inv: {'id': next(index), 'name': 'Inventário', 'type': 'Root', 'uid': inv.get('id'),
+                                     'description': Client.objects.get(id=inv.get('id')).company_name})(inventory) for
+                       inventory in raw_inventories]
 
-    raw_environments = [dict(EnvironmentSerializer(env).data) for env in Environment.objects.all()]
+        raw_environments = [dict(EnvironmentSerializer(env).data) for env in Environment.objects.all()]
 
-    environments = [(lambda e: {'id': next(index), 'name': 'Ambiente', 'description': env.get('name'),
-                                'type': 'Type', 'uid': env.get('inventory')})(env)
-                    for env in raw_environments]
+        environments = [(lambda e: {'id': next(index), 'name': 'Ambiente', 'description': env.get('name'),
+                                    'type': 'Type', 'uid': env.get('inventory')})(env)
+                        for env in raw_environments]
 
-    raw_hosts = [dict(HostSerializer(host).data) for host in Host.objects.all()]
+        raw_hosts = [dict(HostSerializer(host).data) for host in Host.objects.all()]
 
-    hosts = [(lambda h: {'id': next(index), 'name': 'Máquina', 'description': h.get('hostname'),
-                         'type': 'Family', 'uid': h.get('environment'), 'uid2': h.get('id')})(host)
-             for host in raw_hosts]
+        hosts = [(lambda h: {'id': next(index), 'name': 'Máquina', 'description': h.get('hostname'),
+                             'type': 'Family', 'uid': h.get('environment'), 'uid2': h.get('id')})(host)
+                 for host in raw_hosts]
 
-    raw_instances = [dict(InstanceSerializer(instance).data) for instance in Instance.objects.all()]
+        raw_instances = [dict(InstanceSerializer(instance).data) for instance in Instance.objects.all()]
 
-    instances = [(lambda i: {'id': next(index), 'name': 'Instância', 'description': i.get('hostname'), 'type': 'Family',
-                             'uid': i.get('host'), 'uid2': i.get('service')})(instance)
-                 for instance in raw_instances]
+        instances = [
+            (lambda i: {'id': next(index), 'name': 'Instância', 'description': i.get('hostname'), 'type': 'Family',
+                        'uid': i.get('host'), 'uid2': i.get('service')})(instance)
+            for instance in raw_instances]
 
-    raw_services = [dict(ServiceSerializer(service).data) for service in Service.objects.all()]
+        raw_services = [dict(ServiceSerializer(service).data) for service in Service.objects.all()]
 
-    services = [(lambda s: {'id': next(index), 'name': 'Serviço', 'description': s.get('name'),
-                            'type': 'Family', 'uid': s.get('id')})(service)
-                for service in raw_services]
+        services = [(lambda s: {'id': next(index), 'name': 'Serviço', 'description': s.get('name'),
+                                'type': 'Family', 'uid': s.get('id')})(service)
+                    for service in raw_services]
 
-    if instances:
-        for instance in instances:
-            instance['children'] = [service if service.get('uid') == instance.get('uid2')
-                                    else None for service in services]
-            if None in instance['children']:
-                instance['children'].remove(None)
+        if instances:
+            for instance in instances:
+                instance['children'] = [service if service.get('uid') == instance.get('uid2')
+                                        else None for service in services]
+                while None in instance['children']:
+                    instance['children'].remove(None)
 
-    if hosts:
-        for host in hosts:
-            host['children'] = [instance if instance.get('uid') == host.get('uid2') else None for instance in instances]
-            if None in host['children']:
-                host['children'].remove(None)
+        if hosts:
+            for host in hosts:
+                host['children'] = [instance if instance.get('uid') == host.get('uid2') else None for instance in
+                                    instances]
+                while None in host['children']:
+                    host['children'].remove(None)
 
-    if environments:
-        for env in environments:
-            env['children'] = [host if host.get('uid') == env.get('uid') else None for host in hosts]
-            if None in env['children']:
-                env['children'].remove(None)
+        if environments:
+            for env in environments:
+                env['children'] = [host if host.get('uid') == env.get('uid') else None for host in hosts]
+                while None in env['children']:
+                    env['children'].remove(None)
 
-    if inventories:
-        for inventory in inventories:
-            inventory['children'] = [env if env.get('uid') == inventory.get('uid') else None for env in environments]
-            if None in inventory['children']:
-                inventory['children'].remove(None)
+        if inventories:
+            for inventory in inventories:
+                inventory['children'] = [env if env.get('uid') == inventory.get('uid') else None for env in
+                                         environments]
+                while None in inventory['children']:
+                    inventory['children'].remove(None)
 
-    inventory_id = request.POST['inventory_id'] or 0
+        inventories = inventories[0] if len(inventories) > 0 else inventories
+        print(inventories)
+        return {'data': inventories}
 
-    for i in inventories:
-        if i.get('uid') == int(inventory_id):
-            return JsonResponse({'data': i})
+    client_id = request.POST['client_id'] or 0
 
-    return JsonResponse({'data': inventories})
+    return JsonResponse(inventory_by_client_id(client_id))
 
 
 @login_required
