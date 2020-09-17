@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
     create_user
 from .models import Client, EnterpriseUser
+from apps.api.models import Environment, Inventory, Host, Instance, Service
+from apps.api.serializer import InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer, \
+    ServiceSerializer
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -20,7 +23,76 @@ def permission_check(user: User):
 @login_required
 @user_passes_test(permission_check)
 def inventory_view(request):
-    return render(request, 'pages/management/inventory.html')
+    if request.method == 'GET':
+        clients = Client.objects.all()
+        return render(request, 'pages/management/inventory.html', {'clients': clients})
+
+    # raw_data = json.loads(requests.get('http://localhost:8000/api/inventory/',
+    #                        headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)
+
+    index = (n for n in range(1, 100))
+
+    raw_inventories = [dict(InventorySerializer(inventory).data) for inventory in Inventory.objects.all()]
+    inventories = [(lambda inv: {'id': next(index), 'name': 'Inventário', 'type': 'Root', 'uid': inv.get('id'),
+                                 'description': Client.objects.get(id=inv.get('id')).company_name})(inventory) for
+                   inventory in raw_inventories]
+
+    raw_environments = [dict(EnvironmentSerializer(env).data) for env in Environment.objects.all()]
+
+    environments = [(lambda e: {'id': next(index), 'name': 'Ambiente', 'description': env.get('name'),
+                                'type': 'Type', 'uid': env.get('inventory')})(env)
+                    for env in raw_environments]
+
+    raw_hosts = [dict(HostSerializer(host).data) for host in Host.objects.all()]
+
+    hosts = [(lambda h: {'id': next(index), 'name': 'Máquina', 'description': h.get('hostname'),
+                         'type': 'Family', 'uid': h.get('environment'), 'uid2': h.get('id')})(host)
+             for host in raw_hosts]
+
+    raw_instances = [dict(InstanceSerializer(instance).data) for instance in Instance.objects.all()]
+
+    instances = [(lambda i: {'id': next(index), 'name': 'Instância', 'description': i.get('hostname'), 'type': 'Family',
+                             'uid': i.get('host'), 'uid2': i.get('service')})(instance)
+                 for instance in raw_instances]
+
+    raw_services = [dict(ServiceSerializer(service).data) for service in Service.objects.all()]
+
+    services = [(lambda s: {'id': next(index), 'name': 'Serviço', 'description': s.get('name'),
+                            'type': 'Family', 'uid': s.get('id')})(service)
+                for service in raw_services]
+
+    if instances:
+        for instance in instances:
+            instance['children'] = [service if service.get('uid') == instance.get('uid2')
+                                    else None for service in services]
+            if None in instance['children']:
+                instance['children'].remove(None)
+
+    if hosts:
+        for host in hosts:
+            host['children'] = [instance if instance.get('uid') == host.get('uid2') else None for instance in instances]
+            if None in host['children']:
+                host['children'].remove(None)
+
+    if environments:
+        for env in environments:
+            env['children'] = [host if host.get('uid') == env.get('uid') else None for host in hosts]
+            if None in env['children']:
+                env['children'].remove(None)
+
+    if inventories:
+        for inventory in inventories:
+            inventory['children'] = [env if env.get('uid') == inventory.get('uid') else None for env in environments]
+            if None in inventory['children']:
+                inventory['children'].remove(None)
+
+    inventory_id = request.POST['inventory_id'] or 0
+
+    for i in inventories:
+        if i.get('uid') == int(inventory_id):
+            return JsonResponse({'data': i})
+
+    return JsonResponse({'data': inventories})
 
 
 @login_required
@@ -44,7 +116,8 @@ def todolist_view(request):
 def kanban_view(request):
     return render(request, 'pages/management/kanban.html',
                   {'notes': json.loads(requests.get('http://localhost:8000/api/note/',
-                                                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)})
+                                                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)}
+                  )
 
 
 @login_required
@@ -56,6 +129,7 @@ def passwords_safe_view(request):
             username = request.POST['username']
             email = username + '@' + client.user.email.split('@')[-1]
             create_user(username, email, request.POST['passwd'], client)
+
             return JsonResponse({'code': 200, 'msg': 'user created!'})
 
         if 'username' not in request.POST.keys():
@@ -70,7 +144,8 @@ def passwords_safe_view(request):
                                        'username2': eu.user.username.replace('.', '-')} for eu in
                                       EnterpriseUser.objects.all()],
                             'clients': [{'id': client.id, 'display_name': client.display_name} for client in
-                                        Client.objects.all()]}})
+                                        Client.objects.all()]}}
+                  )
 
 
 @login_required
@@ -103,6 +178,7 @@ def register_client(request):
             create_users(request.POST, client)
             password, user = create_default_user(request.POST['email'], client)  # create user for enterprise
             save_password_safe(password, user)  # save password in password safe (table)
+
             return JsonResponse({'code': 200,
                                  'msg': 'cadastro da empresa %s realizado com sucesso!' % client.display_name})
         except Exception as err:

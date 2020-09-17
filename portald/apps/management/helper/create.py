@@ -14,6 +14,9 @@ LENGTH_PASSWORD = 15
 
 def _correct_post(keys) -> bool:
     """checks if the dictionary contains all the keys required for a customer's registration
+
+    >>> _correct_post(['city', 'cep', 'district'])
+    False
     """
     sec_list = list(filter(lambda i: i in FIELDS, keys))
     return len(sec_list) == len(FIELDS)

@@ -83,12 +83,7 @@ def host_with_instances_and_service(host):
 
 
 def hosts_with_instances_and_service():
-
-    raw_data = []
-    for host in Host.objects.all():
-        raw_data.append(host_with_instances_and_service(host))
-
-    return raw_data
+    return [host_with_instances_and_service(host) for host in Host.objects.all()]
 
 
 class HostViewSet(viewsets.ModelViewSet):
@@ -104,18 +99,30 @@ class HostViewSet(viewsets.ModelViewSet):
         return Response(hosts_with_instances_and_service())
 
 
-class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
+class EnvironmentViewSet(viewsets.ModelViewSet):
+    queryset = Host.objects.all()
+    serializer_class = EnvironmentSerializer
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAdminUser]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = InventorySerializer(queryset, many=True)
+
+        raw_data = []
+        for env in Environment.objects.all():
+            new_env = dict(EnvironmentSerializer(env).data)
+            new_env['hosts'] = [host_with_instances_and_service(host) for host in Host.objects.filter(environment=env)]
+            raw_data.append(new_env)
+
+        return Response(raw_data)
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
 
     queryset = Host.objects.all()
     serializer_class = InventorySerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
@@ -130,7 +137,10 @@ class InventoryViewSet(viewsets.ModelViewSet):
 
         raw_data = []
         for inventory in Inventory.objects.all():
-            new_inventory = dict(InventorySerializer(inventory).data)
+            new_inventory = (lambda inv: {'id': inv.get('id'), 'client_id': inv.get('enterprise'), 'client':
+                                          Client.objects.get(id=inv.get('enterprise')).company_name if
+                                          inv.get('enterprise') is not None else None})\
+                (dict(InventorySerializer(inventory).data))
             new_inventory['environments'] = environment_from_inventory(inventory)
             raw_data.append(new_inventory)
 

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, ApplicationViewSet
+from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -23,6 +23,7 @@ router.register('note', NotesViewSet, basename='Note')
 router.register('comment', CommentViewSet, basename='comment')
 router.register('inventory', InventoryViewSet, basename='inventory')
 router.register('host', HostViewSet, basename='host')
+router.register('env', EnvironmentViewSet, basename='env')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
