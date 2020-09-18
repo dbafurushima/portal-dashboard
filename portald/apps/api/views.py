@@ -22,6 +22,7 @@ def timestamp_to_datetime(ts):
 class NotesViewSet(viewsets.ModelViewSet):
     """show all notes with comments
     """
+
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
@@ -43,6 +44,7 @@ class NotesViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """show all comments with text note
     """
+
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
@@ -58,21 +60,21 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 def instances_from_host(host) -> list:
-        response = []
+    response = []
 
-        for instance in Instance.objects.filter(host_id=host):
-            raw_instance = dict(InstanceSerializer(instance).data)
-            service = None if raw_instance.get('service') is None else ServiceSerializer(Service.objects.get(
-                id=raw_instance.get('service'))).data
+    for instance in Instance.objects.filter(host_id=host):
+        raw_instance = dict(InstanceSerializer(instance).data)
+        service = None if raw_instance.get('service') is None else ServiceSerializer(Service.objects.get(
+            id=raw_instance.get('service'))).data
 
-            response.append({
-                'id': raw_instance.get('id'),
-                'service': service,
-                'hostname': raw_instance.get('hostname'),
-                'private_ip': raw_instance.get('private_ip')
-            })
+        response.append({
+            'id': raw_instance.get('id'),
+            'service': service,
+            'hostname': raw_instance.get('hostname'),
+            'private_ip': raw_instance.get('private_ip')
+        })
 
-        return response
+    return response
 
 
 def host_with_instances_and_service(host):
@@ -87,6 +89,7 @@ def hosts_with_instances_and_service():
 
 
 class HostViewSet(viewsets.ModelViewSet):
+
     queryset = Host.objects.all()
     serializer_class = HostSerializer
     authentication_classes = [BasicAuthentication]
@@ -100,6 +103,7 @@ class HostViewSet(viewsets.ModelViewSet):
 
 
 class EnvironmentViewSet(viewsets.ModelViewSet):
+
     queryset = Host.objects.all()
     serializer_class = EnvironmentSerializer
     authentication_classes = [BasicAuthentication]
@@ -110,6 +114,7 @@ class EnvironmentViewSet(viewsets.ModelViewSet):
         serializer = InventorySerializer(queryset, many=True)
 
         raw_data = []
+
         for env in Environment.objects.all():
             new_env = dict(EnvironmentSerializer(env).data)
             new_env['hosts'] = [host_with_instances_and_service(host) for host in Host.objects.filter(environment=env)]
@@ -119,7 +124,6 @@ class EnvironmentViewSet(viewsets.ModelViewSet):
 
 
 class InventoryViewSet(viewsets.ModelViewSet):
-
     queryset = Host.objects.all()
     serializer_class = InventorySerializer
     authentication_classes = [BasicAuthentication, TokenAuthentication]
@@ -129,17 +133,17 @@ class InventoryViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = InventorySerializer(queryset, many=True)
 
-        def environment_from_inventory(inventory):
+        def environment_from_inventory(inv):
             return [(lambda env: {'id': env.get('id'), 'name': env.get('name'),
                                   'hosts': [host_with_instances_and_service(h) for h in Host.objects.filter(
                                       environment_id=env.get('id'))]})(EnvironmentSerializer(env).data)
-                    for env in Environment.objects.filter(inventory=inventory)]
+                    for env in Environment.objects.filter(inventory=inv)]
 
         raw_data = []
         for inventory in Inventory.objects.all():
-            new_inventory = (lambda inv: {'id': inv.get('id'), 'client_id': inv.get('enterprise'), 'client':
-                                          Client.objects.get(id=inv.get('enterprise')).company_name if
-                                          inv.get('enterprise') is not None else None})\
+            new_inventory = (lambda inv: {'id': inv.get('id'), 'client_id': inv.get('enterprise'),
+                                          'client': Client.objects.get(id=inv.get('enterprise')).company_name if
+                                          inv.get('enterprise') is not None else None}) \
                 (dict(InventorySerializer(inventory).data))
             new_inventory['environments'] = environment_from_inventory(inventory)
             raw_data.append(new_inventory)

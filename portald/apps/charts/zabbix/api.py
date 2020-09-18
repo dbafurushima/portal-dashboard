@@ -14,26 +14,49 @@ _user_id = 1
 
 
 class Zabbix:
+    """
+    Zabbix class for API consumption
+    """
 
-    api_user = ''
-    api_password = ''
     api_token = ''
 
-    def __init__(self, user=None, password=None):
+    def __init__(self, user, password):
         self.api_user = user
         self.api_password = password
+        self._auth_zabbix(user, password)
 
-    def set_credentials(self, user, password):
-        self.api_user = user
-        self.api_password = password
+    def _auth_zabbix(self, user: str, passwd: str) -> None:
+        """
+        Authenticates to the zabbix API and sets the TOKEN in the class variable
 
-    @classmethod
-    def auth_api(cls):
-        pass
+        >>> zb = Zabbix(settings.USER_API_KEY, settings.ZABBIX_PASSWORD)
+        >>> zb._auth_zabbix(zb.api_user, zb.api_password)
+        >>> type(zb.api_token)
+        <class 'str'>
+        >>> len(zb.api_token) > 1
+        True
 
-    @classmethod
-    def set_token(cls, data, token):
-        pass
+        :param user:
+        :param passwd:
+        :return:
+        """
+        payload = LOGIN_DATA
+
+        payload['params']['user'] = user
+        payload['params']['password'] = passwd
+
+        payload = json.dumps(payload)
+
+        req = urllib.request.Request(uribase, data=payload.encode('utf-8'),
+                                     headers={'content-type': 'application/json-rpc'})
+
+        with urllib.request.urlopen(req) as response:
+            body = response.read()
+        raw_data = json_decode(decode_bytes_to_utf8(body))
+        print(raw_data)
+        print(type(raw_data))
+
+        self.api_token = raw_data['result']
 
 
 def _set_auth_token_api(payload):

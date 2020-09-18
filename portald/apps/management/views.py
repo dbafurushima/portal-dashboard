@@ -92,7 +92,7 @@ def inventory_view(request):
                     inventory['children'].remove(None)
 
         inventories = inventories[0] if len(inventories) > 0 else inventories
-        print(inventories)
+
         return {'data': inventories}
 
     client_id = request.POST['client_id'] or 0

@@ -1,0 +1,26 @@
+[
+  {
+    "model": "apps.api.Note",
+    "pk": 1,
+    "fields": {
+      "subject": "assunto 01",
+      "msg": "mensagem 01, texto, texto..."
+    }
+  },
+  {
+    "model": "apps.api.Note",
+    "pk": 2,
+    "fields": {
+      "subject": "assunto 02",
+      "msg": "mensagem 02, texto, texto..."
+    }
+  },
+  {
+    "model": "apps.api.Note",
+    "pk": 3,
+    "fields": {
+      "subject": "assunto 03",
+      "msg": "mensagem 03, texto, texto..."
+    }
+  }
+]

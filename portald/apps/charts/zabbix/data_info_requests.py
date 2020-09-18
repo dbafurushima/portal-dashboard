@@ -17,7 +17,7 @@ GET_DATA_GRAPH = {
         "hostids": [10326]
     },
     "auth": "",
-    "id": 0
+    "id": 1
 }
 
 GET_DATA_HISTORY = {
@@ -30,5 +30,5 @@ GET_DATA_HISTORY = {
         "limit": 100
     },
     "auth": "",
-    "id": 0
+    "id": 1
 }
