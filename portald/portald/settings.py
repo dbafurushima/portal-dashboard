@@ -32,10 +32,10 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default='undefined')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG_MODE')
+DEBUG = env('DEBUG_MODE', default='undefined')
 
 ALLOWED_HOSTS = ['*']
 
@@ -93,15 +93,23 @@ WSGI_APPLICATION = 'portald.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, 'config/my.cnf'),
-            'init_command': 'SET default_storage_engine=INNODB'
+if not os.path.exists(os.path.join(BASE_DIR, 'config/my.cnf')):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {
+                'read_default_file': os.path.join(BASE_DIR, 'config/my.cnf'),
+                'init_command': 'SET default_storage_engine=INNODB'
+            }
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -156,7 +164,7 @@ MESSAGE_TAGS = {
     messages.DEBUG: 'info', messages.ERROR: 'danger'
 }
 
-password_provided = env('PASSWORD_PROVIDED')  # This is input in the form of a string
+password_provided = env('PASSWORD_PROVIDED', default='undefined')  # This is input in the form of a string
 password = password_provided.encode()  # Convert to type bytes
 salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
 kdf = PBKDF2HMAC(
@@ -168,8 +176,8 @@ kdf = PBKDF2HMAC(
 )
 KEY = base64.urlsafe_b64encode(kdf.derive(password))
 
-USER_API_KEY = env('USER_API_TOKEN')
+USER_API_KEY = env('USER_API_TOKEN', default='undefined')
 
-ZABBIX_USER = env('ZABBIX_USER')
-ZABBIX_PASSWORD = env('ZABBIX_PASSWORD')
-ZABBIX_URL = env('ZABBIX_URL')
+ZABBIX_USER = env('ZABBIX_USER', default='undefined')
+ZABBIX_PASSWORD = env('ZABBIX_PASSWORD', default='undefined')
+ZABBIX_URL = env('ZABBIX_URL', default='undefined')

@@ -27,9 +27,6 @@ def inventory_view(request):
         clients = Client.objects.all()
         return render(request, 'pages/management/inventory.html', {'clients': clients})
 
-    # raw_data = json.loads(requests.get('http://localhost:8000/api/inventory/',
-    #                        headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)
-
     def inventory_by_client_id(client_id):
         index = (n for n in range(1, 100))
 
