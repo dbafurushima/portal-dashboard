@@ -117,7 +117,7 @@ def todolist_view(request):
 @user_passes_test(permission_check)
 def kanban_view(request):
     return render(request, 'pages/management/kanban.html',
-                  {'notes': json.loads(requests.get('http://localhost:8000/api/note/',
+                  {'notes': json.loads(requests.get(f'http://{request.headers.get("host")}/api/note/',
                                                     headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)}
                   )
 

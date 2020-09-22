@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -y -qq && \
     apt-get install -y -qq --no-install-recommends \
+        vim \
         curl \
         build-essential \
         libssl-dev \
