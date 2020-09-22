@@ -6,7 +6,7 @@ from .data_info_requests import GET_DATA_HISTORY, LOGIN_DATA
 from django.conf import settings
 from .utils import decode_bytes_to_utf8, json_decode
 
-debug = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=True)
+debug = pprint.PrettyPrinter(indent=2, width=41, compact=False)
 uribase = settings.ZABBIX_URL
 
 _user_token = ""
