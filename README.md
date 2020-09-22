@@ -1,8 +1,8 @@
 # Portal Dashboard
 
-DESCRIPTION...
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Docker%20Image%20CI?label=docker%20build&style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Django%20CI?label=django%20build&style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/dbafurushima/portal-dashboard?style=flat-square) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dbafurushima/portal-dashboard?style=flat-square)
 
-### INSTALAÇÃO
+## INSTALAÇÃO
 
 ### MNG cli
 
