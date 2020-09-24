@@ -1,4 +1,9 @@
-from django.shortcuts import render, redirect
+import requests
+import logging
+import json
+import pprint
+
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
@@ -11,9 +16,6 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-import requests
-import logging
-import json
 
 
 def permission_check(user: User):
@@ -23,15 +25,17 @@ def permission_check(user: User):
 @login_required
 @user_passes_test(permission_check)
 def inventory_view(request):
+    pp = pprint.PrettyPrinter(indent=2, compact=False, width=41, sort_dicts=False)
+
     if request.method == 'GET':
         clients = Client.objects.all()
         return render(request, 'pages/management/inventory.html', {'clients': clients})
 
-    def inventory_by_client_id(client_id):
+    def inventory_by_client_id(cid):
         index = (n for n in range(1, 100))
 
         raw_inventories = [dict(InventorySerializer(inventory).data)
-                           for inventory in Inventory.objects.filter(enterprise_id=int(client_id))]
+                           for inventory in Inventory.objects.filter(enterprise_id=int(cid))]
         inventories = [(lambda inv: {'id': next(index), 'name': 'Inventário', 'type': 'Root', 'uid': inv.get('id'),
                                      'description': Client.objects.get(id=inv.get('id')).company_name})(inventory) for
                        inventory in raw_inventories]
@@ -50,8 +54,16 @@ def inventory_view(request):
 
         raw_instances = [dict(InstanceSerializer(instance).data) for instance in Instance.objects.all()]
 
+        def service_name_by_id(sid: int) -> str:
+            try:
+                name = '/'+Service.objects.get(id=sid).name
+            except Exception as err:
+                name = ''
+            return name
+
         instances = [
-            (lambda i: {'id': next(index), 'name': 'Instância', 'description': i.get('hostname'), 'type': 'Family',
+            (lambda i: {'id': next(index), 'name': 'Instância',
+                        'description': i.get('database')+service_name_by_id(int(i.get('service'))), 'type': 'Family',
                         'uid': i.get('host'), 'uid2': i.get('service')})(instance)
             for instance in raw_instances]
 
@@ -63,10 +75,13 @@ def inventory_view(request):
 
         if instances:
             for instance in instances:
+                pass
+                """
                 instance['children'] = [service if service.get('uid') == instance.get('uid2')
                                         else None for service in services]
                 while None in instance['children']:
                     instance['children'].remove(None)
+                """
 
         if hosts:
             for host in hosts:
@@ -89,6 +104,8 @@ def inventory_view(request):
                     inventory['children'].remove(None)
 
         inventories = inventories[0] if len(inventories) > 0 else inventories
+
+        pp.pprint(inventories)
 
         return {'data': inventories}
 
@@ -161,11 +178,8 @@ def register_client(request):
         # incorrect request, doesn't have all fields
         return JsonResponse({'code': 400, 'msg': rt_create[1]})
     else:
-        # rt_create return False
         if not rt_create[0]:
             return JsonResponse({'code': 400, 'msg': 'o campo "%s" não atende aos requisitos.' % rt_create[1]})
-
-        # object Client
         client = rt_create[1]
 
         if request.FILES:
@@ -180,6 +194,11 @@ def register_client(request):
             create_users(request.POST, client)
             password, user = create_default_user(request.POST['email'], client)  # create user for enterprise
             save_password_safe(password, user)  # save password in password safe (table)
+
+            try:
+                Inventory(enterprise=client).save()
+            except:
+                pass
 
             return JsonResponse({'code': 200,
                                  'msg': 'cadastro da empresa %s realizado com sucesso!' % client.display_name})

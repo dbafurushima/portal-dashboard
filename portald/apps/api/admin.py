@@ -60,9 +60,9 @@ class ServiceList(admin.ModelAdmin):
 
 @admin.register(Instance)
 class InstanceList(admin.ModelAdmin):
-    list_display = ('id', 'name', 'host', 'hostname', 'service')
+    list_display = ('id', 'name', 'host', 'database', 'service')
     search_fields = ('name', 'service')
-    list_display_links = ('name', 'hostname')
+    list_display_links = ('name', 'database')
     list_per_page = 20
 
 

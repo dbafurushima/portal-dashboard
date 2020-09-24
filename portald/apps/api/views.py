@@ -1,17 +1,12 @@
 from datetime import datetime
-from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework import viewsets
-from rest_framework.views import APIView
-from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, ApplicationSerializer, \
+from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, \
     InstanceSerializer, EnvironmentSerializer, ServiceSerializer
-from .models import Note, Comment, Host, Application, Instance, Service, Environment, Inventory
+from .models import Note, Comment, Host, Instance, Service, Environment, Inventory
 from apps.management.models import Client
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from collections import OrderedDict
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
 def timestamp_to_datetime(ts):
@@ -70,7 +65,7 @@ def instances_from_host(host) -> list:
         response.append({
             'id': raw_instance.get('id'),
             'service': service,
-            'hostname': raw_instance.get('hostname'),
+            'database': raw_instance.get('database'),
             'private_ip': raw_instance.get('private_ip')
         })
 
