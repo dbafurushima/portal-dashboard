@@ -1,0 +1,32 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} Tempalte {% endblock %}
+
+{% block css_plugins %}
+
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js_plugins %}
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div id="chart-1">{{ output|safe }}</div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

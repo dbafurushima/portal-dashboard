@@ -12,5 +12,5 @@ async def configure(api, _):
     return result['configured']
 
 def setup_configure(subparsers):
-    parser = subparsers.add_parser('configure', help="configurar arquivo de configuração da ferramenta.")
+    parser = subparsers.add_parser('configure', help="reconfigurar ferramenta.")
     parser.set_defaults(func=configure)

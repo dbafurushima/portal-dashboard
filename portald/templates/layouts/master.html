@@ -31,6 +31,12 @@
     {% block css %}
     <!-- TODO // -->
     {% endblock %}
+
+    <!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
+	{% block js_plugins %}
+	<!-- TODO // -->
+	{% endblock %}
+	<!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
 </head>
 <body data-base-url="javascript:void(0);">
 
@@ -54,12 +60,6 @@
     <script src="{% static 'assets/plugins/feather-icons/feather.min.js' %}"></script>
     <script src="{% static 'assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <!-- end base js -->
-
-    <!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
-	{% block js_plugins %}
-	<!-- TODO // -->
-	{% endblock %}
-	<!-- BEGIN PAGE LEVEL PLUGINS SCRIPTS -->
 
     <!-- common js -->
     <script src="{% static 'assets/js/template.js' %}"></script>

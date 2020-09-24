@@ -11,25 +11,11 @@ from mng.helper.formatting import format_dict2str
 async def tlist(api, args):
     """Request for list tables
     """
-    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=False, width=41, sort_dicts=False)
 
     if args.routes:
         pp.pprint({
-            'note': {
-                'route': '/api/note/', 
-                'method': 
-                    ['GET', 'POST', 'PUT']
-            },
-            'comment': {
-                'route': '/api/comment/', 
-                'method': 
-                    ['GET', 'POST', 'DELETE']
-            },
-            'inventory': {
-                'route': '/api/inventory', 
-                'method': 
-                    ['GET', 'POST']
-            }})
+            'routes': ['/note/', '/inventory/', '/comment/']})
     elif args.item:
         if 'note' in args.item:
             response = await api.get_json('/api/note/')
