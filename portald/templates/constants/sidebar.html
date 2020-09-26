@@ -100,15 +100,31 @@
 	</div>
 </nav>
 
-<!--
 <nav class="settings-sidebar">
 	<div class="sidebar-body">
 		<a href="#" class="settings-sidebar-toggler">
 			<i data-feather="settings"></i>
 		</a>
 		<div class="theme-wrapper">
-			<h6 class="text-muted mb-2">Em desenvolvimento...</h6>
+			<h6 class="text-muted mb-2">Configurações</h6>
+            <div class="form-group form-inline">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                    <input type="radio" class="form-check-input set-theme-light" name="theme" id="set-light" value="light">
+                        light
+                        <i class="input-frame"></i></label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                    <input type="radio" class="form-check-input set-theme-dark" name="theme" id="set-dark" value="dark">
+                        dark
+                        <i class="input-frame"></i></label>
+                </div>
+            </div>
+            {% if 'charts' in request.path_info %}
+            {% endif %}
 		</div>
 	</div>
 </nav>
--->
+
+{% csrf_token %}

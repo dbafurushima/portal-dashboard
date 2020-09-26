@@ -24,7 +24,11 @@
     {% endblock %}
 
     <!-- common css -->
-    <link href="{% static 'css/app.light.css' %}" rel="stylesheet" />
+    {% if request.session.theme == 'light'  %}
+        <link href="{% static 'css/app.light.css' %}" rel="stylesheet" />
+    {% else %}
+        <link href="{% static 'css/app.dark.css' %}" rel="stylesheet" />
+    {% endif %}
     <!-- end common css -->
 
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
@@ -63,6 +67,7 @@
 
     <!-- common js -->
     <script src="{% static 'assets/js/template.js' %}"></script>
+    <script src="{% static 'js/default.js' %}"></script>
     <!-- end common js -->
 
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
