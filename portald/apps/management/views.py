@@ -3,11 +3,12 @@ import logging
 import json
 import pprint
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .helper import create_client, create_users, create_default_user, save_password_safe, passwd_from_username, \
     create_user
+from apps.accounts.views import totp_check
 from .models import Client, EnterpriseUser
 from apps.api.models import Environment, Inventory, Host, Instance, Service
 from apps.api.serializer import InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer, \
@@ -142,6 +143,12 @@ def kanban_view(request):
 @login_required
 @user_passes_test(permission_check)
 def passwords_safe_view(request):
+
+    if (not request.session.get('totp')) or (not totp_check(request.user, request.session.get('token'))):
+        return redirect('totp-sign-in')
+
+    request.session['totp'] = False
+
     if request.method == 'POST':
         if 'add' and 'username' and 'enterprise' and 'passwd' in request.POST.keys():
             client: Client = Client.objects.get(id=int(request.POST['enterprise']))
