@@ -1,0 +1,96 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} Create Charts {% endblock %}
+
+{% block css_plugins %}
+    <link href="{% static 'assets/plugins/jquery-steps/jquery.steps.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block css %}
+<style>
+.card .card-body {
+    padding: 1.0rem 1.0rem;
+}
+</style>
+{% endblock %}
+
+{% block js_plugins %}
+    <script src="{% static 'assets/plugins/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/select2/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js' %}"></script>
+    <script>
+    $(function() {
+        $("#wizard-create-chart").steps({
+            headerTag: "h2",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            stepsOrientation: 'vertical'
+        });
+    });
+    </script>
+    <script src="{% static 'js/apexcharts-examples.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Criar Gráfico</h4>
+                <div id="wizard-create-chart">
+                    <h2>Modelo</h2>
+                    <section>
+                        <h4>Escolha o tipo do gráfico</h4>
+                        <div class="row">
+                            <div class="col-xl-6 stretch-card mt-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Line chart</h6>
+                                        <div id="apexLine"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label>Selecione o tipo de gráfico</label>
+                            <select class="js-example-basic-single w-100">
+                                <option value="line">Line Chart</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <h2>Sobre o Gráfico</h2>
+                    <section>
+                        <h4>Heading</h4>
+                        <p>...</p>
+                    </section>
+
+                    <h2>Third Step</h2>
+                    <section>
+                    <h4>Heading</h4>
+                    <p>Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
+                    pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
+                    Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
+                    venenatis.</p>
+                    </section>
+
+                    <h2>Forth Step</h2>
+                    <section>
+                    <h4>Heading</h4>
+                    <p>Quisque at sem turpis, id sagittis diam. Suspendisse malesuada eros posuere mauris vehicula vulputate. Aliquam sed sem tortor.
+                    Quisque sed felis ut mauris feugiat iaculis nec ac lectus. Sed consequat vestibulum purus, imperdiet varius est pellentesque vitae.
+                    Suspendisse consequat cursus eros, vitae tempus enim euismod non. Nullam ut commodo tortor.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

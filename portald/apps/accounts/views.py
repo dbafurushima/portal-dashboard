@@ -11,8 +11,6 @@ from rest_framework import status
 from django_otp import devices_for_user
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-import datetime
-
 
 def login_view(request):
     """returns login view if GET or authenticates if POST
@@ -73,9 +71,6 @@ class TOTPCreateView(views.APIView):
 
 def totp_check(user: User, token: str) -> bool:
     device = get_user_totp_device(user)
-
-    print(f'device: {device}')
-    print(f'verify_token: {device.verify_token(token)}')
 
     if (device is not None) and (not device.verify_token(token)):
 

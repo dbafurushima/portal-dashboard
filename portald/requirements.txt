@@ -24,3 +24,4 @@ ujson
 ruamel.yaml
 pick
 aiohttp
+django-otp

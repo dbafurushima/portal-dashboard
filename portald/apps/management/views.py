@@ -147,8 +147,6 @@ def passwords_safe_view(request):
     if (not request.session.get('totp')) or (not totp_check(request.user, request.session.get('token'))):
         return redirect('totp-sign-in')
 
-    request.session['totp'] = False
-
     if request.method == 'POST':
         if 'add' and 'username' and 'enterprise' and 'passwd' in request.POST.keys():
             client: Client = Client.objects.get(id=int(request.POST['enterprise']))
