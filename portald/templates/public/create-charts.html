@@ -18,11 +18,15 @@
 
 {% block js_plugins %}
     <script src="{% static 'assets/plugins/apexcharts/apexcharts.min.js' %}"></script>
+{% endblock %}
+
+{% block js_extra %}
     <script src="{% static 'assets/plugins/select2/select2.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js' %}"></script>
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js' %}"></script>
     <script>
     $(function() {
         $("#wizard-create-chart").steps({
@@ -31,6 +35,7 @@
             transitionEffect: "slideLeft",
             stepsOrientation: 'vertical'
         });
+        $(":input").inputmask();
     });
     </script>
     <script src="{% static 'js/apexcharts-examples.js' %}"></script>
@@ -47,6 +52,12 @@
                     <h2>Modelo</h2>
                     <section>
                         <h4>Escolha o tipo do gráfico</h4>
+                        <div class="form-group mt-2">
+                            <label>Selecione o tipo de gráfico</label>
+                            <select class="js-example-basic-single w-100">
+                                <option value="line">Line Chart</option>
+                            </select>
+                        </div>
                         <div class="row">
                             <div class="col-xl-6 stretch-card mt-2">
                                 <div class="card">
@@ -57,35 +68,46 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group mt-2">
-                            <label>Selecione o tipo de gráfico</label>
-                            <select class="js-example-basic-single w-100">
-                                <option value="line">Line Chart</option>
-                            </select>
+                    </section>
+
+                    <h2>Configurações</h2>
+                    <section>
+                        <h4>Sobre o Gráfico</h4>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label>Data de início:</label>
+                                <input class="form-control mb-4 mb-md-0" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM:ss" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>Nome para o Gráfico:</label>
+                                <input class="form-control mb-4 mb-md-0"  />
+                            </div>
+                            <div class="col-md-8 mt-2">
+                                <label>Cliente</label>
+                                <select class="js-example-basic-single w-100">
+                                    <option value="1">Company 01</option>
+                                    <option value="2">Company 02</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <label>Raw Data:</label>
+                                <textarea class="form-control" maxlength="100" rows="3" placeholder="Dados separados por virgula."></textarea>
+                            </div>
                         </div>
                     </section>
 
-                    <h2>Sobre o Gráfico</h2>
+                    <h2>Pré Visualização</h2>
                     <section>
-                        <h4>Heading</h4>
-                        <p>...</p>
-                    </section>
-
-                    <h2>Third Step</h2>
-                    <section>
-                    <h4>Heading</h4>
-                    <p>Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
-                    pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
-                    Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
-                    venenatis.</p>
-                    </section>
-
-                    <h2>Forth Step</h2>
-                    <section>
-                    <h4>Heading</h4>
-                    <p>Quisque at sem turpis, id sagittis diam. Suspendisse malesuada eros posuere mauris vehicula vulputate. Aliquam sed sem tortor.
-                    Quisque sed felis ut mauris feugiat iaculis nec ac lectus. Sed consequat vestibulum purus, imperdiet varius est pellentesque vitae.
-                    Suspendisse consequat cursus eros, vitae tempus enim euismod non. Nullam ut commodo tortor.</p>
+                        <h4>Overview</h4>
+                        <ul class="mt-2 ml-2">
+                            <li><b>ID</b>: 2d90_oracle_sizing</li>
+                            <li><b>Cliente</b>: Company 01</li>
+                            <li><b>Modelo do Gráfico</b>: Line</li>
+                            <li><b>Data inicial</b>: 09/08/2020 18:21:01</li>
+                            <li><b>Raw info</b>:</li>
+                        </ul>
                     </section>
                 </div>
             </div>
