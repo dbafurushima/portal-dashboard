@@ -1,15 +1,24 @@
 import requests
 
+from rest_framework import viewsets
+
 from django.shortcuts import render
-from .zabbix.api import Zabbix
 from django.conf import settings
+
+from .zabbix.api import Zabbix
 from .fusioncharts import FusionCharts
 from .fusioncharts import FusionTable
 from .fusioncharts import TimeSeries
-from .models import Chart
+
+from .models import Chart, Data
+from .serializer import ChartSerializer, DataSerializer
+
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAdminUser
 
 
 def view_chart_line_basic(request):
+
     zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
     data = zb.get_history_from_itemids('31359')
 
@@ -28,29 +37,21 @@ def show_charts_view(request):
     schema = requests.get(
         'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/schema/area-chart-with-time-axis-schema.json').text
 
-    for chart_obj in Chart.objects.all():
+    for chart in Chart.objects.all():
+
         fusion_table = FusionTable(schema, data)
         time_series = TimeSeries(fusion_table)
 
-        time_series.AddAttribute("caption", "{text: '%s'}" % chart_obj.caption_text)
+        time_series.AddAttribute("caption", "{text: '%s'}" % chart.caption_text)
         time_series.AddAttribute("subcaption", "{text: 'Grocery'}")
-        time_series.AddAttribute("yAxis", ("[{"
-                                           "plot: {"
-                                           "value: '%s',"
-                                           "type: '%s'"
-                                           "},"
-                                           "format: {"
-                                           "prefix: '%s'"
-                                           "},"
-                                           "title: '%s'"
-                                           "}]" % (chart_obj.yAxis_plot_value, chart_obj.yAxis_plot_type,
-                                                   chart_obj.yAxis_format_prefix, chart_obj.yAxis_title)))
+        time_series.AddAttribute("yAxis", chart.yAxis)
 
-        tmp_chart = FusionCharts("timeseries", f'ex{chart_obj.id}', 700, 450, f"chart-{chart_obj.id}", "json",
-                                 time_series)
+        fusion_chart = FusionCharts("timeseries", f"ex{chart.id}", chart.max_width, chart.max_height, 
+                                    f"chart-{chart.id}", "json",
+                                    time_series)
 
-        render_charts.append({'chart': tmp_chart.render(),
-                              'chart_raw': chart_obj})
+        render_charts.append({'chart': fusion_chart.render(),
+                              'obj_chart': chart})
 
     return render(request, 'public/show-charts.html',
                   {'output': render_charts})
@@ -85,3 +86,21 @@ def fusioncharts_view(request):
     fcChart = FusionCharts("timeseries", "ex1", 700, 450, "chart-1", "json", timeSeries)
 
     return render(request, 'pages/charts/fusioncharts.html', {'output': fcChart.render()})
+
+
+class ChartsViewSet(viewsets.ModelViewSet):
+    """show all charts
+    """
+
+    queryset = Chart.objects.all()
+    serializer_class = ChartSerializer
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
+
+class DataViewSet(viewsets.ModelViewSet):
+
+    queryset = Data.objects.all()
+    serializer_class = DataSerializer
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAdminUser]

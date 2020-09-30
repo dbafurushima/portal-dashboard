@@ -130,6 +130,7 @@ dmypy.json
 
 # projeto - custom
 .idea
+.vscode
 config/my.cnf
 my.cnf
 archives/*

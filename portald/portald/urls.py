@@ -17,9 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet
+from apps.charts.views import ChartsViewSet, DataViewSet
 from rest_framework import routers
 
+charts_router = routers.DefaultRouter()
+
+charts_router.register('charts', ChartsViewSet, basename='charts')
+charts_router.register('data', DataViewSet, basename='data')
+
 router = routers.DefaultRouter()
+
 router.register('note', NotesViewSet, basename='Note')
 router.register('comment', CommentViewSet, basename='comment')
 router.register('inventory', InventoryViewSet, basename='inventory')
@@ -31,7 +38,10 @@ urlpatterns = [
     path('portal/', include('apps.portal.urls')),
     path('accounts/', include('apps.accounts.urls')),
     path('charts/', include('apps.charts.urls')),
+
     path('api/', include(router.urls)),
+    path('api/', include(charts_router.urls)),
+
     path('', include('apps.management.urls')),
     path('', include('apps.public.urls')),
 ]
