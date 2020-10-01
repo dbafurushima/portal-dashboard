@@ -24,6 +24,7 @@
     <script src="{% static 'assets/plugins/select2/select2.min.js' %}"></script>
     <script src="{% static 'assets/plugins/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
     <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
 {% endblock %}
 
 {% block js %}
@@ -39,6 +40,24 @@
     });
     </script>
     <script src="{% static 'js/apexcharts-examples.js' %}"></script>
+    <script>
+    $(function() {
+        'use strict';
+
+        $('#name-graph').maxlength({
+            alwaysShow: true,
+            threshold: 20,
+            warningClass: "badge mt-1 badge-success",
+            limitReachedClass: "badge mt-1 badge-danger"
+        });
+
+        $('#raw-init-data').maxlength({
+            alwaysShow: true,
+            warningClass: "badge mt-1 badge-success",
+            limitReachedClass: "badge mt-1 badge-danger"
+        });
+    });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -48,8 +67,10 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Criar Gráfico</h4>
+
                 <div id="wizard-create-chart">
                     <h2>Modelo</h2>
+
                     <section>
                         <h4>Escolha o tipo do gráfico</h4>
                         <div class="form-group mt-2">
@@ -58,6 +79,7 @@
                                 <option value="line">Line Chart</option>
                             </select>
                         </div>
+
                         <div class="row">
                             <div class="col-xl-6 stretch-card mt-2">
                                 <div class="card">
@@ -71,6 +93,7 @@
                     </section>
 
                     <h2>Configurações</h2>
+
                     <section>
                         <h4>Sobre o Gráfico</h4>
                         <div class="form-group row">
@@ -80,7 +103,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label>Nome para o Gráfico:</label>
-                                <input class="form-control mb-4 mb-md-0"  />
+                                <input id="name-graph" maxlength="15" class="form-control mb-4 mb-md-0"  />
                             </div>
                             <div class="col-md-8 mt-2">
                                 <label>Cliente</label>
@@ -90,10 +113,12 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <label>Raw Data:</label>
-                                <textarea class="form-control" maxlength="100" rows="3" placeholder="Dados separados por virgula."></textarea>
+                                <textarea class="form-control" id="raw-init-data" maxlength="100" rows="3"
+                                          placeholder="Dados separados por virgula."></textarea>
                             </div>
                         </div>
                     </section>

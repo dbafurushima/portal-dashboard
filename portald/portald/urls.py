@@ -37,10 +37,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('portal/', include('apps.portal.urls')),
     path('accounts/', include('apps.accounts.urls')),
-    path('charts/', include('apps.charts.urls')),
+    path('view_charts/', include('apps.charts.urls')),
 
     path('api/', include(router.urls)),
-    path('api/', include(charts_router.urls)),
+    path('api_charts/', include(charts_router.urls)),
 
     path('', include('apps.management.urls')),
     path('', include('apps.public.urls')),

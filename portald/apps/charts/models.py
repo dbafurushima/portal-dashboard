@@ -1,7 +1,10 @@
 from django.db import models
+from apps.management.models import Client
 
 
 class Chart(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
+
     uid = models.CharField(max_length=14)
     caption_text = models.CharField(max_length=50, null=True, blank=True)
 

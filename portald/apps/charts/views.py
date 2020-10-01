@@ -57,39 +57,8 @@ def show_charts_view(request):
                   {'output': render_charts})
 
 
-def fusioncharts_view(request):
-    data = requests.get(
-        'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/data/area-chart-with-time-axis-data.json').text
-    schema = requests.get(
-        'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/schema/area-chart-with-time-axis-schema.json').text
-
-    fusionTable = FusionTable(schema, data)
-    timeSeries = TimeSeries(fusionTable)
-
-    timeSeries.AddAttribute("chart", """{
-                                showLegend: 0
-                            }""")
-
-    timeSeries.AddAttribute("caption", """{
-                                            text: 'Daily Visitors Count of a Website'
-                                        }""")
-
-    timeSeries.AddAttribute("yAxis", """[{
-                                            plot: {
-                                            value: 'Daily Visitors',
-                                            type: 'area'
-                                            },
-                                        title: 'Daily Visitors (in thousand)'
-                                    }]""")
-
-    # Create an object for the chart using the FusionCharts class constructor
-    fcChart = FusionCharts("timeseries", "ex1", 700, 450, "chart-1", "json", timeSeries)
-
-    return render(request, 'pages/charts/fusioncharts.html', {'output': fcChart.render()})
-
-
 class ChartsViewSet(viewsets.ModelViewSet):
-    """show all charts
+    """create, update, list and delete all charts view
     """
 
     queryset = Chart.objects.all()

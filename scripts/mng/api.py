@@ -17,7 +17,7 @@ class MNGApi:
         """
         self._api_conf.conf.validate()
 
-    def init(self)-> dict:
+    def init(self) -> dict:
         """initializes tool settings such as access credentials and basic information if one does not exist
         Returns:
             dict: [result and config file]
