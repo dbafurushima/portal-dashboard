@@ -42,6 +42,7 @@ def parse_args():
     setup_tlist(subparsers)
 
     setup_create_chart(subparsers)
+    setup_upd_chart(subparsers)
 
     # -- parse args and pre-process if needed
     return parser.parse_args()

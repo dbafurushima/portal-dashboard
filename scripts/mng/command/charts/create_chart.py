@@ -42,7 +42,6 @@ async def create_chart(api, args):
 
     return True if isinstance(response, dict) else False
 
-    
 
 def setup_create_chart(subparsers):
     parser = subparsers.add_parser('create_chart', help="Criação de gráficos dinâmicos.")

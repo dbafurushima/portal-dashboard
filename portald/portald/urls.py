@@ -15,9 +15,9 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet
-from apps.charts.views import ChartsViewSet, DataViewSet
+from apps.charts.views import ChartsViewSet, DataViewSet, ListData
 from rest_framework import routers
 
 charts_router = routers.DefaultRouter()
@@ -38,6 +38,8 @@ urlpatterns = [
     path('portal/', include('apps.portal.urls')),
     path('accounts/', include('apps.accounts.urls')),
     path('view_charts/', include('apps.charts.urls')),
+
+    re_path(r'api_charts/data/filter/', ListData.as_view()),
 
     path('api/', include(router.urls)),
     path('api_charts/', include(charts_router.urls)),

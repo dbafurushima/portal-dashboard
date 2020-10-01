@@ -1,6 +1,6 @@
 import requests
 
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 
 from django.shortcuts import render
 from django.conf import settings
@@ -73,3 +73,19 @@ class DataViewSet(viewsets.ModelViewSet):
     serializer_class = DataSerializer
     authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
+
+
+class ListData(generics.ListAPIView):
+    serializer_class = DataSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases
+        for the currently authenticated user.
+        """
+        queryset = Data.objects.all()
+        chartid = self.request.query_params.get('chartid', None)
+        print(chartid)
+        if chartid is not None:
+            queryset = queryset.filter(chart_id=chartid)
+        return queryset

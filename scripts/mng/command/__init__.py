@@ -5,4 +5,4 @@ from .comment import setup_comment
 from .tlist import setup_tlist
 from .host import setup_host
 
-from .charts import setup_create_chart
+from .charts import setup_create_chart, setup_upd_chart
