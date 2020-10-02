@@ -63,10 +63,16 @@ class MNGApi:
         app_log.debug(f'post in {url}')
         app_log.debug(f'headers requests {headers}')
 
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            response = await session.post(url, json=data_json, headers=headers)
-        
-        return await response.json()
+        try:
+            async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+                response = await session.post(url, json=data_json, headers=headers)
+            
+            return await response.json()
+        except (ConnectionRefusedError, aiohttp.client_exceptions.ClientConnectorError):
+            print('[!] não foi possível se conectar com o servidor.')
+        except asyncio.exceptions.TimeoutError:
+            print('[!] timeout response.')
+        return {}
     
     async def get_json(self, suffix_url: str, params=None)-> dict:
         """get post request with json response
@@ -81,7 +87,13 @@ class MNGApi:
 
         app_log.debug(f'get in {url}')
 
-        async with aiohttp.ClientSession() as session:
-            response = await session.get(url, params=params, headers=headers)
-        
-        return await response.json()
+        try:
+            async with aiohttp.ClientSession() as session:
+                response = await session.get(url, params=params, headers=headers)
+            
+            return await response.json()
+        except (ConnectionRefusedError, aiohttp.client_exceptions.ClientConnectorError):
+            print('[!] não foi possível se conectar com o servidor')
+        except asyncio.exceptions.TimeoutError:
+            print('[!] timeout response.')
+        return {}

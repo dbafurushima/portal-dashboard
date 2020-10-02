@@ -75,7 +75,7 @@
                         <h4>Escolha o tipo do gráfico</h4>
                         <div class="form-group mt-2">
                             <label>Selecione o tipo de gráfico</label>
-                            <select class="js-example-basic-single w-100">
+                            <select class="js-example-basic-single w-100" id="yAxis_plot_type">
                                 <option value="line">Line Chart</option>
                             </select>
                         </div>
@@ -97,17 +97,21 @@
                     <section>
                         <h4>Sobre o Gráfico</h4>
                         <div class="form-group row">
-                            <div class="col-md-6">
-                                <label>Data de início:</label>
-                                <input class="form-control mb-4 mb-md-0" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy HH:MM:ss" />
+                            <div class="col-md-3">
+                                <label for="max_width">Max Width</label>
+                                <input id="max_width" value="700" class="form-control mb-4 mb-md-0" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="max_height">Max Height</label>
+                                <input id="max_height" value="450" class="form-control mb-4 mb-md-0" />
                             </div>
                             <div class="col-md-6">
                                 <label>Nome para o Gráfico:</label>
                                 <input id="name-graph" maxlength="15" class="form-control mb-4 mb-md-0"  />
                             </div>
                             <div class="col-md-8 mt-2">
-                                <label>Cliente</label>
-                                <select class="js-example-basic-single w-100">
+                                <label for="client">Cliente</label>
+                                <select id="client" class="js-example-basic-single w-100">
                                     <option value="1">Company 01</option>
                                     <option value="2">Company 02</option>
                                 </select>
@@ -116,7 +120,7 @@
 
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <label>Raw Data:</label>
+                                <label for="raw-init-data">Raw Data:</label>
                                 <textarea class="form-control" id="raw-init-data" maxlength="100" rows="3"
                                           placeholder="Dados separados por virgula."></textarea>
                             </div>
@@ -127,11 +131,10 @@
                     <section>
                         <h4>Overview</h4>
                         <ul class="mt-2 ml-2">
-                            <li><b>ID</b>: 2d90_oracle_sizing</li>
-                            <li><b>Cliente</b>: Company 01</li>
-                            <li><b>Modelo do Gráfico</b>: Line</li>
-                            <li><b>Data inicial</b>: 09/08/2020 18:21:01</li>
-                            <li><b>Raw info</b>:</li>
+                            <li><b>ID</b>: <span id="uid">2d90_oracle_sizing</span></li>
+                            <li><b>Cliente</b>: <span id="client">Company 01</span></li>
+                            <li><b>Modelo do Gráfico</b>: <span id="preView_yAxis_plot_type">Line</span></li>
+                            <li><b>Raw info</b>: <span id="preView_raw-init-data"></span></li>
                         </ul>
                     </section>
                 </div>

@@ -40,9 +40,9 @@ class Chart(models.Model):
 class Data(models.Model):
     index = models.IntegerField()
 
-    value = models.CharField(max_length=30)     # first_value,second_value
+    value = models.TextField()     # first_value,second_value
     chart = models.ForeignKey(Chart, on_delete=models.CASCADE, null=True, blank=True)
 
     @property
     def data(self) -> list:
-        return self.value.split(',')
+        return [self.value.split(',')[0], int(self.value.split(',')[1])]

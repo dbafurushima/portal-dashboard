@@ -1,4 +1,5 @@
 import requests
+import json
 
 from rest_framework import viewsets, generics
 
@@ -32,14 +33,14 @@ def create_charts_view(request):
 def show_charts_view(request):
     render_charts = []
 
-    data = requests.get(
-        'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/data/area-chart-with-time-axis-data.json').text
-    schema = requests.get(
-        'https://s3.eu-central-1.amazonaws.com/fusion.store/ft/schema/area-chart-with-time-axis-schema.json').text
-
     for chart in Chart.objects.all():
 
-        fusion_table = FusionTable(schema, data)
+        obj_data = Data.objects.filter(chart_id=chart.id)
+
+        data_chart = [d.data for d in obj_data]
+
+        print(chart.schema)
+        fusion_table = FusionTable(chart.schema, data_chart)
         time_series = TimeSeries(fusion_table)
 
         time_series.AddAttribute("caption", "{text: '%s'}" % chart.caption_text)

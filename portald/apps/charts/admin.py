@@ -12,7 +12,7 @@ class ChartList(admin.ModelAdmin):
 
 @admin.register(Data)
 class DataList(admin.ModelAdmin):
-    list_display = ('id', 'value', 'chart')
+    list_display = ('index', 'value', 'chart')
     search_fields = ('value',)
     list_filter = ('chart',)
     list_display_links = ('value',)
