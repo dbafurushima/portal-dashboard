@@ -15,7 +15,7 @@ async def tlist(api, args):
 
     if args.routes:
         pp.pprint({
-            'routes': ['/note/', '/inventory/', '/comment/']})
+            'routes': ['/note/', '/inventory/', '/comment/', '/env/']})
     elif args.item:
         if 'note' in args.item:
             response = await api.get_json('/api/note/')
@@ -23,6 +23,8 @@ async def tlist(api, args):
             response = await api.get_json('/api/comment/')
         elif 'inventory' in args.item:
             response = await api.get_json('/api/inventory/')
+        elif 'env' in args.item:
+            response = await api.get_json('/api/env/')
         else: 
             return False
 

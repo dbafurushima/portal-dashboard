@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import auth
@@ -99,9 +101,11 @@ def totp_post_view(request):
         return redirect('totp-sign-in')
 
     if totp_check(user, token):
+        dt_now = datetime.datetime.now() + datetime.timedelta(minutes=15)
 
         request.session['totp'] = True
         request.session['totp_token'] = token
+        request.session['totp_expire'] = dt_now.strftime('%H-%M-%S')
 
         return redirect('passwords-safe')
 

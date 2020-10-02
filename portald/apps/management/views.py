@@ -2,6 +2,7 @@ import requests
 import logging
 import json
 import pprint
+import datetime
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -144,7 +145,24 @@ def kanban_view(request):
 @user_passes_test(permission_check)
 def passwords_safe_view(request):
 
+    def verify_expire(dt_expire: str) -> bool:
+        dt_now = datetime.datetime.now()
+        dt_stftime = dt_now.strftime('%H-%M-%S')
+
+        nh, nm, ns = dt_stftime.split('-')
+        eh, em, es = dt_expire.split('-')
+
+        if int(nh) > int(eh):
+            return False
+        if int(nm) > int(em):
+            return False
+
+        return True
+
     if (not request.session.get('totp')) or (not totp_check(request.user, request.session.get('token'))):
+        return redirect('totp-sign-in')
+
+    if not verify_expire(request.session.get('totp_expire')):
         return redirect('totp-sign-in')
 
     if request.method == 'POST':
