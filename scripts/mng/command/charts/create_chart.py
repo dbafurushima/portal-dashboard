@@ -14,6 +14,11 @@ async def create_chart(api, args):
     step_uid = str(uuid.uuid4()).split('-')[1]
     step_name = args.name[:10].replace(' ', '_')
 
+    strf = '-'.join(f'%{i}' for i in args.format.split('-'))
+    if ' ' in strf:
+        day, hour = strf.split(' ')
+        nhour = ':'.join(f'%{i}' for i in hour.split(':'))
+        strf = ' '.join([day, nhour])
 
     chart_json_data = {
         "client": args.clientid,
@@ -26,7 +31,7 @@ async def create_chart(api, args):
         "max_height": args.max_height,
         "max_width": args.max_width,
         "schema": '[{"name":"Time","type":"date","format":"%s"},{"name":"%s","type":"%s"}]' % \
-            ('-'.join(f'%{i}' for i in args.format.split('-')), args.about, args.type_data),
+            (strf, args.about, args.type_data),
         "columns": args.columns
     }
 
@@ -44,7 +49,7 @@ async def create_chart(api, args):
 
 
 def setup_create_chart(subparsers):
-    parser = subparsers.add_parser('create_chart', help="Criação de gráficos dinâmicos.")
+    parser = subparsers.add_parser('create-chart', help="Criação de gráficos dinâmicos.")
     parser.add_argument('clientid', type=int, help='ID do cliente para que o gráfico será gerado.')
     parser.add_argument('name', help=('Um nome que irá compor o uid do gráfico.'
                                       'Não utilizar acentos, substituir espaços em branco por'

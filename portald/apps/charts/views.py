@@ -39,12 +39,11 @@ def show_charts_view(request):
 
         data_chart = [d.data for d in obj_data]
 
-        print(chart.schema)
         fusion_table = FusionTable(chart.schema, data_chart)
         time_series = TimeSeries(fusion_table)
 
         time_series.AddAttribute("caption", "{text: '%s'}" % chart.caption_text)
-        time_series.AddAttribute("subcaption", "{text: 'Grocery'}")
+        time_series.AddAttribute("subcaption", "{text: 'Chart'}")
         time_series.AddAttribute("yAxis", chart.yAxis)
 
         fusion_chart = FusionCharts("timeseries", f"ex{chart.id}", chart.max_width, chart.max_height, 
