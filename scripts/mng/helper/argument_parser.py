@@ -12,7 +12,7 @@ class MNGArgumentParser(ArgumentParser):
         super().__init__(*args, **kwargs)
         self.add_argument('-j', '--show-json', dest='json', action='store_true', help="exibir json do data_post da requisição para API.")
         # self.add_argument('-q', '--quiet', action='store_true', help="disable logging")
-        self.add_argument('-d', '--debug', action='store_true', help="enable debug messages")
+        self.add_argument('-d', '--debug', action='store_true', help="enable debug messages.")
 
     def parse_args(self):
         """Print the banner, parse arguments and configure some helpers using generic arguments

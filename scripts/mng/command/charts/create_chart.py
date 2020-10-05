@@ -20,6 +20,10 @@ async def create_chart(api, args):
         nhour = ':'.join(f'%{i}' for i in hour.split(':'))
         strf = ' '.join([day, nhour])
 
+    re_data = re.compile(r'^%m')
+    if re_data.match(strf):
+        strf = '%Y-'+strf
+
     chart_json_data = {
         "client": args.clientid,
         "uid": f'{step_uid}_{step_name}',

@@ -35,8 +35,13 @@ async def upd_chart(api, args):
 	pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
 	again = '[!] falha ao enviar valor %s, deseja tentar novamente ou continuar? (T)ry / (C)ontinue '
 
+	try:
+		chart_filter = {'value': int(args.chart), 'key': 'chartid'}
+	except ValueError:
+		chart_filter = {'key': 'chartuid', 'value': args.chart}
+
 	if args.index == 0:
-		response = await api.get_json('/api_charts/data/filter/', [('chartid', int(args.chart))])
+		response = await api.get_json('/api_charts/data/filter/', [(chart_filter.get('key'), chart_filter.get('value'))])
 		
 		if response:
 			index = response[-1].get('index') + 1
@@ -93,6 +98,6 @@ def setup_upd_chart(subparsers):
 
 	parser.add_argument('--file', type=str, default='', help='Caminho do arquivo com os valores.')
 
-	parser.add_argument('--index', type=int, default=0, help="Escolher o index do valor manualmete")
+	parser.add_argument('--index', type=int, default=0, help="Escolher o index do valor manualmete.")
 
 	parser.set_defaults(func=upd_chart)
