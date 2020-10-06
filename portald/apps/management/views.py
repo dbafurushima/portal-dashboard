@@ -38,6 +38,7 @@ def inventory_view(request):
 
         raw_inventories = [dict(InventorySerializer(inventory).data)
                            for inventory in Inventory.objects.filter(enterprise_id=int(cid))]
+
         inventories = [(lambda inv: {'id': next(index), 'name': 'Inventário', 'type': 'Root', 'uid': inv.get('id'),
                                      'description': Client.objects.get(id=inv.get('id')).company_name})(inventory) for
                        inventory in raw_inventories]
@@ -45,7 +46,7 @@ def inventory_view(request):
         raw_environments = [dict(EnvironmentSerializer(env).data) for env in Environment.objects.all()]
 
         environments = [(lambda e: {'id': next(index), 'name': 'Ambiente', 'description': env.get('name'),
-                                    'type': 'Type', 'uid': env.get('inventory')})(env)
+                                    'type': 'Type', 'uid': env.get('inventory'), 'uid2': env.get('id')})(env)
                         for env in raw_environments]
 
         raw_hosts = [dict(HostSerializer(host).data) for host in Host.objects.all()]
@@ -57,6 +58,8 @@ def inventory_view(request):
         raw_instances = [dict(InstanceSerializer(instance).data) for instance in Instance.objects.all()]
 
         def service_name_by_id(sid: int) -> str:
+            if sid is None:
+                return 'None'
             try:
                 name = '/'+Service.objects.get(id=sid).name
             except Exception as err:
@@ -65,15 +68,17 @@ def inventory_view(request):
 
         instances = [
             (lambda i: {'id': next(index), 'name': 'Instância',
-                        'description': i.get('database')+service_name_by_id(int(i.get('service'))), 'type': 'Family',
+                        'description': i.get('database')+service_name_by_id(i.get('service')), 'type': 'Family',
                         'uid': i.get('host'), 'uid2': i.get('service')})(instance)
             for instance in raw_instances]
 
         raw_services = [dict(ServiceSerializer(service).data) for service in Service.objects.all()]
 
+        """
         services = [(lambda s: {'id': next(index), 'name': 'Serviço', 'description': s.get('name'),
                                 'type': 'Family', 'uid': s.get('id')})(service)
                     for service in raw_services]
+        """
 
         if instances:
             for instance in instances:
@@ -94,7 +99,7 @@ def inventory_view(request):
 
         if environments:
             for env in environments:
-                env['children'] = [host if host.get('uid') == env.get('uid') else None for host in hosts]
+                env['children'] = [host if host.get('uid') == env.get('uid2') else None for host in hosts]
                 while None in env['children']:
                     env['children'].remove(None)
 
