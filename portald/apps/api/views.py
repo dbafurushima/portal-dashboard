@@ -97,6 +97,38 @@ class HostViewSet(viewsets.ModelViewSet):
         return Response(hosts_with_instances_and_service())
 
 
+class ServiceViewSet(viewsets.ModelViewSet):
+
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAdminUser]
+
+
+class InstanceViewSet(viewsets.ModelViewSet):
+
+    queryset = Instance.objects.all()
+    serializer_class = InstanceSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = InstanceSerializer(queryset, many=True)
+
+        raw_data = []
+
+        for instance in Instance.objects.all():
+            new_instance = dict(InstanceSerializer(instance).data)
+
+            new_instance['host'] = HostSerializer(instance.host).data if instance.host else None
+            new_instance['service'] = ServiceSerializer(instance.service).data if instance.service else None
+
+            raw_data.append(new_instance)
+
+        return Response(raw_data)
+
+
 class EnvironmentViewSet(viewsets.ModelViewSet):
 
     queryset = Host.objects.all()

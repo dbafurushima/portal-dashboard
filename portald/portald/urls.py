@@ -16,7 +16,8 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include, re_path
-from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet
+from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet,\
+     ServiceViewSet, InstanceViewSet
 from apps.charts.views import ChartsViewSet, DataViewSet, ListData
 from rest_framework import routers
 
@@ -25,13 +26,18 @@ charts_router = routers.DefaultRouter()
 charts_router.register('charts', ChartsViewSet, basename='charts')
 charts_router.register('data', DataViewSet, basename='data')
 
+cmdb_router = routers.DefaultRouter()
+
+cmdb_router.register('environment', EnvironmentViewSet, basename='env')
+cmdb_router.register('inventory', InventoryViewSet, basename='inventory')
+cmdb_router.register('host', HostViewSet, basename='host')
+cmdb_router.register('service', ServiceViewSet, basename='service')
+cmdb_router.register('instance', InstanceViewSet, basename='instance')
+
 router = routers.DefaultRouter()
 
 router.register('note', NotesViewSet, basename='Note')
 router.register('comment', CommentViewSet, basename='comment')
-router.register('inventory', InventoryViewSet, basename='inventory')
-router.register('host', HostViewSet, basename='host')
-router.register('env', EnvironmentViewSet, basename='env')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,7 +48,8 @@ urlpatterns = [
     re_path(r'api_charts/data/filter/', ListData.as_view()),
 
     path('api/', include(router.urls)),
-    path('api_charts/', include(charts_router.urls)),
+    path('api/charts/', include(charts_router.urls)),
+    path('api/cmdb/', include(cmdb_router.urls)),
 
     path('', include('apps.management.urls')),
     path('', include('apps.public.urls')),

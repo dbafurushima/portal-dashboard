@@ -88,7 +88,7 @@ async def upd_chart(api, args):
 def setup_upd_chart(subparsers):
 	parser = subparsers.add_parser("upd-chart", help="Adicionar dados a um gráfico.")
 
-	parser.add_argument("chart", help="ID do gráfico onde o valor será adicionado.")
+	parser.add_argument("chart", help="ID ou UID do gráfico onde o valor será adicionado.")
 	parser.add_argument("--value", type=str, help=("Valor a ser adicionado, deverá seguir a "
 									   			 "estrutura definida em *schema* na criação do gráfico."
 									   			 "Se você for enviar apenas um valor deverá ser separado "

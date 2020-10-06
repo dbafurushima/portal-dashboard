@@ -24,7 +24,7 @@ class HostSerializer(serializers.ModelSerializer):
 class InstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instance
-        fields = ['id', 'service', 'host', 'database', 'private_ip']
+        fields = ['id', 'name', 'service', 'host', 'database', 'private_ip']
 
 
 class InventorySerializer(serializers.ModelSerializer):

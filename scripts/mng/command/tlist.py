@@ -14,27 +14,36 @@ async def tlist(api, args):
     pp = pprint.PrettyPrinter(indent=2, compact=False, width=41, sort_dicts=False)
 
     if args.routes:
-        pp.pprint({
-            'routes': {'CMDB': ['/api/note/', '/api/inventory/', '/api/comment/', '/api/env/'],
-            'Charts': ['/api_charts/charts/', '/api_charts/data/']}})
+        pp.pprint({'routes': [('api', {'note': '/api/note', 'comment': '/api/comment'}),
+                  ('cmdb', {'inventory': '/api/cmdb/inventory/', 'env': '/api/cmdb/environment/',
+                           'service': '/api/cmdb/service/', 'instance': '/api/cmdb/instance/',
+                           'host': '/api/cmdb/host/'}),
+                  ('charts', {'chart': '/api/charts/charts/', 'data': '/api/charts/data/'})]})
+
     elif args.item:
         # Anotações e comentários
         if 'note' in args.item:
             response = await api.get_json('/api/note/')
         elif 'comment' in args.item:
+            response = await api.get_json('/api/comment/')
 
         # Inventário e clientes
-            response = await api.get_json('/api/comment/')
         elif 'inventory' in args.item:
-            response = await api.get_json('/api/inventory/')
+            response = await api.get_json('/api/cmdb/inventory/')
         elif 'env' in args.item:
-            response = await api.get_json('/api/env/')
+            response = await api.get_json('/api/cmdb/environment/')
+        elif 'service' in args.item:
+            response = await api.get_json('/api/cmdb/service/')
+        elif 'host' in args.item:
+            response = await api.get_json('/api/cmdb/host/')
+        elif 'instance' in args.item:
+            response = await api.get_json('/api/cmdb/instance/')
 
         # Gráficos
         elif 'chart' in args.item:
-            response = await api.get_json('/api_charts/charts/')
+            response = await api.get_json('/api/charts/charts/')
         elif 'data' in args.item:
-            response = await api.get_json('/api_charts/data/')
+            response = await api.get_json('/api/charts/data/')
 
         else: 
             return False

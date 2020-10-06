@@ -34,6 +34,7 @@ def parse_args():
     # -- add subparsers
     subparsers = parser.add_subparsers(dest='command', metavar='COMMAND')
     subparsers.required = True
+
     setup_init(subparsers)
     setup_configure(subparsers)
     setup_host(subparsers)
@@ -43,6 +44,10 @@ def parse_args():
 
     setup_create_chart(subparsers)
     setup_upd_chart(subparsers)
+    
+    setup_environment(subparsers)
+    setup_service(subparsers)
+    setup_instance(subparsers)
 
     # -- parse args and pre-process if needed
     return parser.parse_args()

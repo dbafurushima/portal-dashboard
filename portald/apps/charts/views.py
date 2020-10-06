@@ -46,7 +46,7 @@ def show_charts_view(request):
         time_series.AddAttribute("subcaption", "{text: 'Chart'}")
         time_series.AddAttribute("yAxis", chart.yAxis)
 
-        fusion_chart = FusionCharts("timeseries", f"ex{chart.id}", chart.max_width, chart.max_height, 
+        fusion_chart = FusionCharts("timeseries", f"ex{chart.id}", "100%", 450,
                                     f"chart-{chart.id}", "json",
                                     time_series)
 
@@ -84,8 +84,12 @@ class ListData(generics.ListAPIView):
         for the currently authenticated user.
         """
         queryset = Data.objects.all()
+
         chartid = self.request.query_params.get('chartid', None)
-        print(chartid)
+        chartuid = self.request.query_params.get('chartuid', None)
+
         if chartid is not None:
             queryset = queryset.filter(chart_id=chartid)
+        elif chartuid is not None:
+            queryset = queryset.filter(chart__uid=chartuid)
         return queryset
