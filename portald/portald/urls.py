@@ -45,7 +45,7 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('view_charts/', include('apps.charts.urls')),
 
-    re_path(r'api_charts/data/filter/', ListData.as_view()),
+    re_path(r'api/charts/data/filter/', ListData.as_view()),
 
     path('api/', include(router.urls)),
     path('api/charts/', include(charts_router.urls)),

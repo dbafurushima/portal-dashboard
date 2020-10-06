@@ -17,6 +17,8 @@ from .serializer import ChartSerializer, DataSerializer
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 
+from django.http import JsonResponse
+
 
 def view_chart_line_basic(request):
 
@@ -27,6 +29,38 @@ def view_chart_line_basic(request):
 
 
 def create_charts_view(request):
+    import uuid
+
+    if request.method == 'POST':
+        if ('yAxis_plot_type' in request.POST) and ('yAxis_format_prefix' in request.POST)\
+                and ('yAxis_title' in request.POST) and ('client' in request.POST)\
+                and ('columns' in request.POST) and ('max_height' in request.POST)\
+                and ('caption-text' in request.POST) and ('strftime' in request.POST):
+
+            step_uid = str(uuid.uuid4()).split('-')[1]
+            step_name = request.POST['yAxis_title'][:9].replace(' ', '_')
+
+            data_post = {
+                "client": int(request.POST['client']),
+                "uid": f'{step_uid}_{step_name}',
+                "caption_text": request.POST['caption-text'],
+                "yAxis_plot_value": "default",
+                "yAxis_plot_type": request.POST['yAxis_plot_type'],
+                "yAxis_title": request.POST['yAxis_title'],
+                "yAxis_format_prefix": request.POST['yAxis_format_prefix'],
+                "max_height": request.POST['max_height'],
+                "max_width": 700,
+                "schema": '[{"name":"Time","type":"date","format":"%s"},{"name":"%s","type":"%s"}]' % \
+                    (request.POST['strftime'], request.POST['yAxis_title'], "number"),
+                "columns": request.POST['columns']
+            }
+
+            return JsonResponse(
+                json.loads(
+                    requests.post(f'http://{request.headers.get("host")}/api/charts/charts/', data=data_post,
+                                                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text))
+        else:
+            return JsonResponse({'code': 400, 'msg': 'incorrect request, check if the parameters are correct.'})
     return render(request, 'public/create-charts.html')
 
 

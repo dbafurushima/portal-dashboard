@@ -44,6 +44,7 @@ $(function() {
             let files = $('#logo')[0].files[0];
 
             let fd = new FormData();
+
             fd.append('file', files);
             fd.append('csrfmiddlewaretoken',token);
             fd.append('company-name', company_name);

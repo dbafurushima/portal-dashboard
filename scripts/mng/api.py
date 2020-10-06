@@ -1,3 +1,4 @@
+import asyncio
 import aiohttp
 import ujson
 from .helper.log import app_log

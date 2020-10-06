@@ -6,6 +6,7 @@
 {% block css_plugins %}
     <link href="{% static 'assets/plugins/jquery-steps/jquery.steps.css' %}" rel="stylesheet" />
     <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block css %}
@@ -17,6 +18,7 @@
 {% endblock %}
 
 {% block js_plugins %}
+    <script src="{% static 'assets/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
     <script src="{% static 'assets/plugins/apexcharts/apexcharts.min.js' %}"></script>
 {% endblock %}
 
@@ -30,11 +32,69 @@
 {% block js %}
     <script>
     $(function() {
+        var wizard = $('#wizard-create-chart');
+
         $("#wizard-create-chart").steps({
             headerTag: "h2",
             bodyTag: "section",
             transitionEffect: "slideLeft",
-            stepsOrientation: 'vertical'
+            stepsOrientation: 'vertical',
+            onStepChanging: function (event, currentIndex, newIndex)
+            {
+                return true;
+            },
+            onFinished: function (event, currentIndex)
+            {
+                var yAxis_plot_type = $('#yAxis_plot_type').val();
+
+                var max_height = $('#max-height').val();
+                var name_graph = $('#name-graph').val();
+                var client = $('#client').val();
+
+                var caption_text = $('#caption-text').val();
+                var yAxis_format_prefix = $('#yAxis_format_prefix').val();
+                var columns = $('#columns').val();
+                var strftime = $('#strftime').val();
+
+                let fd = new FormData();
+
+                fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+                fd.append('yAxis_plot_type', yAxis_plot_type);
+                fd.append('yAxis_format_prefix', yAxis_format_prefix);
+                fd.append('yAxis_title', name_graph);
+                fd.append('client', client);
+                fd.append('columns', columns);
+                fd.append('caption-text', caption_text);
+                fd.append('strftime', strftime);
+                fd.append('max_height', max_height);
+
+                $.ajax({
+                    url: '/view_charts/create-charts',
+                    method: 'post',
+                    data: fd,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1113000
+                        }).fire({
+                            icon: 'success',
+                            title: 'Gráfico criado com sucesso!'
+                        });
+                    },
+                    error: function (data) {
+                        alert('internal error!')
+                    }
+                });
+
+            }
         });
         $(":input").inputmask();
     });
@@ -98,12 +158,12 @@
                         <h4>Sobre o Gráfico</h4>
                         <div class="form-group row">
                             <div class="col-md-3">
-                                <label for="max_width">Max Width</label>
-                                <input id="max_width" value="700" class="form-control mb-4 mb-md-0" />
+                                <label for="max-width">Max Width</label>
+                                <input id="max-width" value="700" class="form-control mb-4 mb-md-0" />
                             </div>
                             <div class="col-md-3">
-                                <label for="max_height">Max Height</label>
-                                <input id="max_height" value="450" class="form-control mb-4 mb-md-0" />
+                                <label for="max-height">Max Height</label>
+                                <input id="max-height" value="450" class="form-control mb-4 mb-md-0" />
                             </div>
                             <div class="col-md-6">
                                 <label>Nome para o Gráfico:</label>
@@ -127,20 +187,35 @@
                         </div>
                     </section>
 
-                    <h2>Pré Visualização</h2>
+                    <h2>Detalhes</h2>
+
                     <section>
-                        <h4>Overview</h4>
-                        <ul class="mt-2 ml-2">
-                            <li><b>ID</b>: <span id="uid">2d90_oracle_sizing</span></li>
-                            <li><b>Cliente</b>: <span id="client">Company 01</span></li>
-                            <li><b>Modelo do Gráfico</b>: <span id="preView_yAxis_plot_type">Line</span></li>
-                            <li><b>Raw info</b>: <span id="preView_raw-init-data"></span></li>
-                        </ul>
+                        <h4>Detalhes do Gráfico</h4>
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                                <label for="caption-text">Titulo para o gráfico</label>
+                                <input id="caption-text" class="form-control mb-4 mb-md-0" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="yAxis_format_prefix">Prefixo para valores</label>
+                                <input id="yAxis_format_prefix" value="" class="form-control mb-4 mb-md-0" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="columns">columns</label>
+                                <input id="columns" value="12" class="form-control mb-4 mb-md-0"  />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="strftime">strftime</label>
+                                <input id="strftime" value="%Y-%m-%d %H:%M" class="form-control mb-4 mb-md-0"  />
+                            </div>   
+                        </div>
+
                     </section>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% csrf_token %}
 
 {% endblock %}

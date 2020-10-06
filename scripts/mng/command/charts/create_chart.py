@@ -44,7 +44,7 @@ async def create_chart(api, args):
     response = None
     if continue_post == 'Y':
         try:
-            response = await api.post_json('/api_charts/charts/', chart_json_data)
+            response = await api.post_json('/api/charts/charts/', chart_json_data)
             pp.pprint(response)
         except aiohttp.client_exceptions.ClientConnectorError:
             print('ops, API offline ou você não tem conexão com a internet...')

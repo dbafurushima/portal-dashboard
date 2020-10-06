@@ -41,7 +41,7 @@ async def upd_chart(api, args):
 		chart_filter = {'key': 'chartuid', 'value': args.chart}
 
 	if args.index == 0:
-		response = await api.get_json('/api_charts/data/filter/', [(chart_filter.get('key'), chart_filter.get('value'))])
+		response = await api.get_json('/api/charts/data/filter/', [(chart_filter.get('key'), chart_filter.get('value'))])
 		
 		if response:
 			index = response[-1].get('index') + 1
@@ -62,7 +62,7 @@ async def upd_chart(api, args):
 		if choice.lower() == 'c':
 			failed.add(json.dumps(data_json))
 			return
-		response = await send_data('/api_charts/data/', data_json)
+		response = await send_data('/api/charts/data/', data_json)
 		return await try_again(response)
 
 	for data in raw_data:
@@ -77,7 +77,7 @@ async def upd_chart(api, args):
 	    	"chart": int(args.chart)
 		}
 
-		response = await send_data('/api_charts/data/', data_json)
+		response = await send_data('/api/charts/data/', data_json)
 
 		await try_again(response)
 
