@@ -56,6 +56,7 @@ async def host(api, args):
         except aiohttp.client_exceptions.ClientConnectorError:
             print('ops, API offline ou você não tem conexão com a internet...')
         return True if isinstance(response, dict) else False
+
     elif args.action == 'list':
         response = await api.get_json('/api/cmdb/host/')
         [pp.pprint(_) for _ in response] if isinstance(response, list) else pp.pprint(response)
@@ -63,7 +64,9 @@ async def host(api, args):
     return True
 
 def setup_host(subparsers):
-    parser = subparsers.add_parser('host', help="operações relacionadas aos hosts. [create, update, list]")
+    parser = subparsers.add_parser(
+        'host',
+        help="operações relacionadas aos hosts. [create, update, list]")
 
     parser.add_argument(
         'action',
