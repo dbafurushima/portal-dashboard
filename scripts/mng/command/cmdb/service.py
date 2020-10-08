@@ -18,7 +18,7 @@ async def service(api, args):
 
     if args.json:
         print(json.dumps(data_post))
-    
+
     response = None
     try:
         response = await api.post_json('/api/cmdb/service/', data_post)
@@ -31,7 +31,9 @@ async def service(api, args):
 
 def setup_service(subparsers):
     parser = subparsers.add_parser('service', help="Criar um serviço final.")
+
     parser.add_argument('service_name', help="Nome para o novo serviço.")
     parser.add_argument('port', type=int, help="Porta que o serviço irá utilizar.")
     parser.add_argument('--dns', metavar='NAME', default='', help="DNS/IP do serviço, pode ser externo ou interno.")
+
     parser.set_defaults(func=service)

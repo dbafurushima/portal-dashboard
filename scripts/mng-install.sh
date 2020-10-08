@@ -215,7 +215,7 @@ pip3 install -r scripts/mng-requirements.txt
 progress "create alias and set script permissions"
 SCRIPT_ENTRY_POINT="$HOME_PATH_INSTALL/scripts/mngcli.py"
 chmod 0744 $SCRIPT_ENTRY_POINT
-alias mngcli=$SCRIPT_ENTRY_POINT
+alias mng=$SCRIPT_ENTRY_POINT
 # optional alias to put in the user's bashrc
-echo "echo \"alias mngcli=$SCRIPT_ENTRY_POINT\" >> ~/.bashrc"
+echo "echo \"alias mng=$SCRIPT_ENTRY_POINT\" >> ~/.bashrc"
 echo "exec \"$SHELL\""
