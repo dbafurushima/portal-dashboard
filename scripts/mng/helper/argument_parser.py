@@ -65,7 +65,8 @@ def check_args(args: Dict[str, Any], expected: List[str]) -> Tuple[bool, List[st
     lack_of_arguments = list(map(lambda exp: exp['arg'],
         list(filter(lambda exp: args.get(exp['value'], None) is None, expected))))
 
-    print('⚠  os seguintes comandos são necessários: \n\t%s' % ('\n\t'.join(lack_of_arguments)))
+    if lack_of_arguments:
+        print('os seguintes comandos são necessários: \n\t%s' % ('\n\t'.join(lack_of_arguments)))
     return (False, lack_of_arguments) if lack_of_arguments else (True, [])
 
 

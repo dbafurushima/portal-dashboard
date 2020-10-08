@@ -1,10 +1,3 @@
-# =============================================================================
-#  IMPORTS
-# =============================================================================
-# from os import getenv
-# =============================================================================
-#  FUNCTIONS
-# =============================================================================
 async def init(api, _):
     """Initialize tool for use
     """
@@ -12,5 +5,8 @@ async def init(api, _):
     return result['initialized']
 
 def setup_init(subparsers):
-    parser = subparsers.add_parser('init', help="inicializar ferramenta.")
+    parser = subparsers.add_parser(
+        'init',
+        help=("inicializar ferramenta, criar arquivo de configuração "
+              "e atualizado com as informações necessárias."))
     parser.set_defaults(func=init)

@@ -5,7 +5,7 @@ from apps.management.models import Client
 class Chart(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
 
-    uid = models.CharField(max_length=14)
+    uid = models.CharField(max_length=20)
     caption_text = models.CharField(max_length=50, null=True, blank=True)
 
     yAxis_plot_value = models.CharField(max_length=30, null=True, blank=True)

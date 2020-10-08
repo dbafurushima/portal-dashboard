@@ -43,7 +43,6 @@ async def host(api, args):
         return
     
     if args.action == 'create':
-
         data_post = get_machine_infos()
         data_post['enterprise'] = args.inventory
 
@@ -60,10 +59,11 @@ async def host(api, args):
     elif args.action == 'list':
         response = await api.get_json('/api/cmdb/host/')
         [pp.pprint(_) for _ in response] if isinstance(response, list) else pp.pprint(response)
+
     return True
 
 def setup_host(subparsers):
-    parser = subparsers.add_parser('host', help="cadastrar um novo host.")
+    parser = subparsers.add_parser('host', help="operações relacionadas aos hosts. [create, update, list]")
 
     parser.add_argument(
         'action',
