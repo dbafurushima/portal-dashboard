@@ -38,7 +38,7 @@ def parse_args():
 
     setup_environment(subparsers)
     setup_host(subparsers)
-    # setup_instance(subparsers)
+    setup_instance(subparsers)
     # setup_service(subparsers)
 
     setup_charts(subparsers)

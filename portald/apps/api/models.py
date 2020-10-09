@@ -123,7 +123,7 @@ class Instance(models.Model):
     name = models.CharField(verbose_name="instance name", max_length=50)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, blank=True, null=True)
     host = models.ForeignKey(Host, on_delete=models.CASCADE, blank=True, null=True)
-    database = models.CharField(max_length=125, unique=True, blank=True, null=False)
+    database = models.CharField(max_length=125, blank=True, null=False)
     private_ip = models.CharField(max_length=16, verbose_name="ip privado", blank=True, null=True)
 
     def __str__(self):

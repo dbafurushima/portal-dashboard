@@ -198,7 +198,7 @@ def setup_charts(subparsers):
         'action',
         metavar="{%s}" % (', '.join([act[0] for act in ACTIONS.items()])),
         help="escolha um entre os subcommando válidos.")
-    
+
     parser.add_argument(
         '--clientid-to-chart',
         metavar='ID',

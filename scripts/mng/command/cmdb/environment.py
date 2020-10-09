@@ -35,6 +35,7 @@ async def environment(api, args):
         return
 
     if args.action == 'create':
+
         data_post = {
             "name": args.env_name,
             "inventory": args.inventoryid
