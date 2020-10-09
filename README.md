@@ -2,9 +2,9 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Docker%20Image%20CI?label=docker%20build&style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Django%20CI?label=django%20build&style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/dbafurushima/portal-dashboard?style=flat-square) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dbafurushima/portal-dashboard?style=flat-square)
 
-## INSTALAÇÃO
+### MNG CLI
 
-### MNG cli
+![MNG logo](https://i.pinimg.com/originals/58/23/ac/5823ac07f4b58d4d51d336b215625426.png)
 
 Ao instalar a ferramenta CLI na sua máquina ela ficará no *home* do seu usuário em uma pasta oculta ``~/.portal-dashboard`` os arquivos de configuração com as credenciais de acesso a API ficará no caminho `~/.config/mng/mng.yml` para inicializar basta chamar o script com o parametro `init`
 

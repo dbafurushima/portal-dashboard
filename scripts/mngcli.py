@@ -31,6 +31,8 @@ def parse_args():
 
     setup_init(subparsers)
     setup_configure(subparsers)
+
+    setup_charts(subparsers)
     
     # setup_note(subparsers)
     # setup_comment(subparsers)
@@ -39,9 +41,7 @@ def parse_args():
     setup_environment(subparsers)
     setup_host(subparsers)
     setup_instance(subparsers)
-    # setup_service(subparsers)
-
-    setup_charts(subparsers)
+    setup_service(subparsers)
 
     # -- parse args and pre-process if needed
     return parser.parse_args()

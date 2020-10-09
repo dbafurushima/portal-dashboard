@@ -1,39 +1,92 @@
-# =============================================================================
-#  IMPORTS
-# =============================================================================
 import time
 import json
 import pprint
-# =============================================================================
-#  FUNCTIONS
-# =============================================================================
+import aiohttp
+
+from mng.helper.argument_parser import check_subcommand, check_args
+
+ACTIONS = {
+    'create': [
+        {'arg': '--service-name',
+            'value': 'service_name'},
+        {'arg': '--port',
+            'value': 'port'},
+    ],
+    'list': [],
+    'help':[]}
+
+HELP = {
+    'create': {'text': 'Cria um serviço final. Que pode ser composto '
+                       'Por várias Instâncias',
+               'args': [act['arg'] for act in ACTIONS['create']]},
+    'list': {'text': 'Lista todos os serviços de todos os clientes.',
+             'args': []},
+}
+
+
 async def service(api, args):
-    pp = pprint.PrettyPrinter(indent=2, compact=True, width=40, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=True, width=60, sort_dicts=False)
 
-    data_post = {
-        "name": args.service_name,
-        "port": args.port,
-        "dns": "" if not args.dns else args.dns
-    }
+    if not check_subcommand(args.action, ACTIONS): return
 
-    if args.json:
-        print(json.dumps(data_post))
+    available, _ = check_args(vars(args), ACTIONS[args.action])
+    if not available: return
 
-    response = None
-    try:
-        response = await api.post_json('/api/cmdb/service/', data_post)
-        pp.pprint(response)
-    except aiohttp.client_exceptions.ClientConnectorError:
-        print('ops, API offline ou você não tem conexão com a internet...')
+    if args.action == 'help':
+        pp.pprint(HELP)
+        return
 
-    return True if isinstance(response, dict) else False
+    if args.action == 'create':
+
+        data_post = {
+            "name": args.service_name,
+            "port": args.port,
+            "dns": "" if not args.dns else args.dns
+        }
+
+        if args.json:
+            print(json.dumps(data_post))
+
+        response = None
+        try:
+            response = await api.post_json('/api/cmdb/service/', data_post)
+            pp.pprint(response)
+        except aiohttp.client_exceptions.ClientConnectorError:
+            print('ops, API offline ou você não tem conexão com a internet...')
+
+        return True if isinstance(response, dict) else False
+
+    elif args.action == 'list':
+        response = await api.get_json('/api/cmdb/service/')
+        [pp.pprint(_) for _ in response] if isinstance(response, list) else pp.pprint(response)
+
+    return True
 
 
 def setup_service(subparsers):
-    parser = subparsers.add_parser('service', help="Criar um serviço final.")
+    parser = subparsers.add_parser(
+        'service',
+        help="operações relacionadas aos Serviços. [create, list]")
 
-    parser.add_argument('service_name', help="Nome para o novo serviço.")
-    parser.add_argument('port', type=int, help="Porta que o serviço irá utilizar.")
-    parser.add_argument('--dns', metavar='NAME', default='', help="DNS/IP do serviço, pode ser externo ou interno.")
+    parser.add_argument(
+        'action',
+        metavar="{%s}" % (', '.join([act[0] for act in ACTIONS.items()])),
+        help="escolha um entre os subcommando válidos.")
+
+    parser.add_argument(
+        '--service-name',
+        metavar='NAME',
+        dest='service_name',
+        help="Nome para o novo serviço.")
+    parser.add_argument(
+        '--port',
+        type=int,
+        metavar='NUM',
+        help="Porta que o serviço irá utilizar.")
+    parser.add_argument(
+        '--dns',
+        metavar='NAME',
+        default='',
+        help="DNS/IP do serviço, pode ser externo ou interno.")
 
     parser.set_defaults(func=service)
