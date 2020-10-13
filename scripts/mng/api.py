@@ -49,7 +49,7 @@ class MNGApi:
             app_log.error("falha na configuração.")
         return {'configured': configured}
     
-    async def post_json(self, suffix_url: str, data_json: dict)-> dict:
+    async def post_json(self, suffix_url: str, data_json: dict) -> dict:
         """asynchronous post request with content type and json response
         Args:
             suffix_url (str): [path url for request]
@@ -67,15 +67,43 @@ class MNGApi:
         try:
             async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
                 response = await session.post(url, json=data_json, headers=headers)
-            
             return await response.json()
         except (ConnectionRefusedError, aiohttp.client_exceptions.ClientConnectorError):
             print('[!] não foi possível se conectar com o servidor.')
         except asyncio.exceptions.TimeoutError:
             print('[!] timeout response.')
+        except aiohttp.client_exceptions.ContentTypeError:
+            print('[!] o corpo da requisição não está em JSON, algo pode está errado.')
         return {}
-    
-    async def get_json(self, suffix_url: str, params=None)-> dict:
+
+    async def put_json(self, suffix_url: str, data_json: dict) -> dict:
+        """asynchronous put request with content type and json response
+        Args:
+            suffix_url (str): [path url for request]
+            data_json (dict): [data json]
+        Returns:
+            dict: [data response]
+        """
+        url = f'http://{self._api_conf.conf.ip}:{self._api_conf.conf.port}{suffix_url}'
+        headers = {'Authorization': f'Basic {self._api_conf.conf.base64auth}',
+        'Content-Type': 'application/json'}
+
+        app_log.debug(f'put in {url}')
+        app_log.debug(f'headers requests {headers}')
+
+        try:
+            async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+                response = await session.put(url, json=data_json, headers=headers)
+            return await response.json()
+        except (ConnectionRefusedError, aiohttp.client_exceptions.ClientConnectorError):
+            print('[!] não foi possível se conectar com o servidor.')
+        except asyncio.exceptions.TimeoutError:
+            print('[!] timeout response.')
+        except aiohttp.client_exceptions.ContentTypeError:
+            print('[!] o corpo da requisição não está em JSON, algo pode está errado.')
+        return {}
+
+    async def get_json(self, suffix_url: str, params=None) -> dict:
         """get post request with json response
         Args:
             suffix_url (str): [path url]
@@ -91,10 +119,11 @@ class MNGApi:
         try:
             async with aiohttp.ClientSession() as session:
                 response = await session.get(url, params=params, headers=headers)
-            
             return await response.json()
         except (ConnectionRefusedError, aiohttp.client_exceptions.ClientConnectorError):
             print('[!] não foi possível se conectar com o servidor')
         except asyncio.exceptions.TimeoutError:
             print('[!] timeout response.')
+        except aiohttp.client_exceptions.ContentTypeError:
+            print('[!] o corpo da requisição não está em JSON, algo pode está errado.')
         return {}

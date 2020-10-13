@@ -1,5 +1,5 @@
 from datetime import datetime
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from .serializer import NoteSerializer, CommentSerializer, HostSerializer, InventorySerializer, \
     InstanceSerializer, EnvironmentSerializer, ServiceSerializer
 from .models import Note, Comment, Host, Instance, Service, Environment, Inventory
@@ -83,11 +83,11 @@ def hosts_with_instances_and_service():
     return [host_with_instances_and_service(host) for host in Host.objects.all()]
 
 
-class HostViewSet(viewsets.ModelViewSet):
+class HostViewSet(viewsets.ModelViewSet, mixins.UpdateModelMixin):
 
     queryset = Host.objects.all()
     serializer_class = HostSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
@@ -95,6 +95,13 @@ class HostViewSet(viewsets.ModelViewSet):
         serializer = HostSerializer(queryset, many=True)
 
         return Response(hosts_with_instances_and_service())
+
+    """
+    def update(self, request, pk=None, *args, **kwargs):
+        print('pk', pk)
+        print('args', args)
+        print('kwargs', kwargs)
+    """
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
