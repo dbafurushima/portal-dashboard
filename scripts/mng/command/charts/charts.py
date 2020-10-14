@@ -13,6 +13,7 @@ python mngcli.py charts put --chartid 0 \
     --value "2020-10-08 20:10:04,14 2020-10-08 20:10:05,11 2020-10-08 20:10:06,12"
 """
 import aiohttp
+import asyncio
 import re
 import time
 import json
@@ -20,6 +21,7 @@ import pprint
 import uuid
 
 from pathlib import Path
+from functools import partial
 
 from mng.helper.argument_parser import check_subcommand, check_args
 from mng.helper.regexp import reDATATIME1, reDATATIME2, reDATATIME3, reDATATIME4
@@ -148,11 +150,16 @@ async def charts(api, args):
         else:
             index = args.fix_index
 
-        async def send_data(uri, data):
-            return await api.post_json(uri, data)
-
         failed = set()
 
+        async def send_data(data):
+            response = await api.post_json('/api/charts/data/', data)
+            if response:
+                return True
+            else:
+                failed.add(json.dumps(data))
+
+        """
         async def try_again(response):
             if response:
                 return
@@ -162,6 +169,8 @@ async def charts(api, args):
                 return
             response = await send_data('/api/charts/data/', data_json)
             return await try_again(response)
+        """
+        funcs = []
 
         for data in raw_data:
             if not re_data.match(data):
@@ -172,13 +181,42 @@ async def charts(api, args):
                 "value": data,
                 "chart": int(args.chartid_to_put)
             }
-            response = await send_data('/api/charts/data/', data_json)
+            # response = await send_data('/api/charts/data/', data_json)
+            # funcs.append(partial(send_data, data=data_json))
+            funcs.append(data_json)
 
-            await try_again(response)
+            # await try_again(response)
             index += 1
 
+        # print(tuple(funcs))
+        # await asyncio.gather(
+        #     *tuple(funcs)
+        # )
+        # completed, pending = await asyncio.wait(funcs)
+        # loop = asyncio.get_event_loop()
+
+        # for data in funcs:
+        #     loop.create_task(send_data(data))
+
+        # pending = asyncio.all_tasks()
+        # group = asyncio.gather(*pending, return_exceptions=True)
+        # results = loop.run_until_complete(group)
+        MAX_CONN = 10
+
+        def chunks(lista, n):
+            for i in range(0, len(lista), n):
+                yield lista[i:i + n]
+
+        for raw_data in list(chunks(funcs, MAX_CONN)):
+            coroutines = [send_data(data) for data in raw_data]
+            completed, pending = await asyncio.wait(coroutines)
+
+            for item in completed:
+                pass
+
         if failed:
-            print('[-] dados que falharam:', failed)
+            coroutines = [send_data(json.loads(data)) for data in failed]
+            completed, pending = await asyncio.wait(coroutines)
         else:
             print('[+] dados enviado com sucesso!')
 

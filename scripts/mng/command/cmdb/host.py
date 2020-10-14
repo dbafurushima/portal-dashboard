@@ -98,17 +98,20 @@ def setup_host(subparsers):
         type=int,
         help="ID do inventário do cliente para cadastro.")
     parser.add_argument(
+        '-i',
         '--host-id',
         dest='hostid',
         type=int,
         help="ID do Host para edição do campo.")
     parser.add_argument(
+        '-k',
         '--key',
         metavar='KEY',
         dest='key',
         type=str,
         help="nome do campo que terá o valor alterado.")
     parser.add_argument(
+        '-v',
         '--value',
         metavar='VALUE',
         dest='value',
