@@ -25,3 +25,4 @@ ruamel.yaml
 pick
 aiohttp
 django-otp
+django-two-factor-auth
