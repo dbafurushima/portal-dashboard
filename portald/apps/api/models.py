@@ -45,6 +45,19 @@ class Environment(models.Model):
         verbose_name_plural = "Ambientes"
 
 
+class Service(models.Model):
+    name = models.CharField(verbose_name="service", max_length=50)
+    ip = models.CharField(max_length=16, null=True, blank=True)
+    port = models.IntegerField(blank=True, null=True)
+    dns = models.CharField(max_length=120, null=True, blank=True)
+
+    def __str__(self):
+        return f'<Service: {self.name}>'
+
+    class Meta:
+        verbose_name_plural = "Serviços"
+
+
 class Host(models.Model):
     EQUIPMENT = [
         ('virtual', 'Virtual Machine'),
@@ -65,6 +78,7 @@ class Host(models.Model):
     cores = models.IntegerField(verbose_name='physical cores')
     frequency = models.FloatField(verbose_name='current frequency', null=True, blank=True)
     equipment = models.CharField(choices=EQUIPMENT, max_length=30, verbose_name='equipamento', blank=True, null=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'<Host: {self.hostname}>'
@@ -104,19 +118,6 @@ class Comment(models.Model):
 
     class Meta:
         verbose_name_plural = "Comentários"
-
-
-class Service(models.Model):
-    name = models.CharField(verbose_name="service", max_length=50)
-    ip = models.CharField(max_length=16, null=True, blank=True)
-    port = models.IntegerField(blank=True, null=True)
-    dns = models.CharField(max_length=120, null=True, blank=True)
-
-    def __str__(self):
-        return f'<Service: {self.name}>'
-
-    class Meta:
-        verbose_name_plural = "Serviços"
 
 
 class Instance(models.Model):

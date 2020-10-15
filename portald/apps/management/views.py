@@ -31,7 +31,14 @@ def inventory_view(request):
 
     if request.method == 'GET':
         clients = Client.objects.all()
-        return render(request, 'pages/management/inventory.html', {'clients': clients})
+        return render(request, 'pages/management/inventory.html',
+                      {'data': {'clients': clients,
+                                'inventories': Inventory.objects.all(),
+                                'envs': Environment.objects.all(),
+                                'services': Service.objects.all(),
+                                'hosts': Host.objects.all()
+                                }
+                     })
 
     def inventory_by_client_id(cid):
         index = (n for n in range(1, 100))

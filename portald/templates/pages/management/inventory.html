@@ -33,6 +33,18 @@
 
 {% block js %}
     <script>
+        $('#btn-create-env').click(function (e) {
+           $('#modal-create-env').modal('show');
+        });
+        $('#btn-create-service').click(function (e) {
+           $('#modal-create-service').modal('show');
+        });
+        $('#btn-create-instance').click(function (e) {
+           $('#modal-create-instance').modal('show');
+        });
+        $('#btn-create-host').click(function (e) {
+           $('#modal-create-host').modal('show');
+        });
         $('.box').click(function (e) {
             let card_id = e.currentTarget.id;
 
@@ -79,7 +91,7 @@
 {% block content %}
 
 <div class="row">
-    {% for client in clients %}
+    {% for client in data.clients %}
     <div class="col-12 col-lg-4">
         <div class="box" id="{{ client.id }}" style="border: 2px solid white; border-radius: 10px;">
             <div class="box-body">
@@ -88,8 +100,8 @@
                         <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="server"></i></a>
                         <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="database"></i></a>
                     </div>
-                    <h6 class="user-info mt-0 mb-10 text-fade">{{ client.display_name }}</h6>
-                    <p class="text-fade w-p85 mb-1 mx-auto">{{ client.company_name }}</p>
+                    <h6 class="user-info mt-0 mb-10 text-fade text-white">{{ client.display_name }}</h6>
+                    <p class="text-fade w-p85 mb-1 mx-auto text-white">{{ client.company_name }}</p>
                 </div>
             </div>
         </div>
@@ -117,5 +129,253 @@
         </div>
     </div>
 </div>
+
+<div id="modal-create-env" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar um novo ambiente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" action="" method="POST">
+                    <div class="form-group">
+                        <label for="env-name">Nome</label>
+                        <input type="text" name="name" class="form-control" id="env-name" autocomplete="off" placeholder="Ambiente">
+                    </div>
+                    <div class="form-group">
+                        <label for="env-invent">Inventário</label>
+                        <select class="form-control" name="inventory" id="env-invent" required>
+                            <option selected disabled>Selecione um inventário</option>
+                            {% for inventory in data.inventories %}
+                            <option value="{{ inventory.id }}">{{ inventory }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-create-host" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar um novo Host</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" action="" method="POST">
+                    <div class="form-group row">
+                        <label for="host-env" class="col-sm-3 col-form-label">Ambiente</label>
+                        <div class="col-sm-9">
+                        <select class="form-control" name="environment" id="host-env" required>
+                            <option selected disabled>Selecione um ambiente</option>
+                            {% for env in data.envs %}
+                            <option value="{{ env.id }}">{{ env }}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-ip-interno" class="col-sm-3 col-form-label">IP Interno</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="private_ip" class="form-control" id="host-ip-interno"
+                                   placeholder="Endereço IPv4">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-ip-externo" class="col-sm-3 col-form-label">IP externo</label>
+                        <div class="col-sm-9">
+                        <input type="email" class="form-control" name="public_ip" id="host-ip-externo"
+                               autocomplete="off" placeholder="Endereço IPv4">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-os-name" class="col-sm-3 col-form-label">OS Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="os_name" id="host-os-name"
+                                   placeholder="posix para Linux e nt para Windows">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-arch" class="col-sm-3 col-form-label">Arquitetura</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="arch" id="host-arch"
+                                   autocomplete="off" placeholder="Arch">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-platform" class="col-sm-3 col-form-label">Plataforma</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="platform" id="host-platform"
+                                   autocomplete="off" placeholder="Platform">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-processor" class="col-sm-3 col-form-label">Processador</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="processor" id="host-processor"
+                                   autocomplete="off" placeholder="Processor">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-hostname" class="col-sm-3 col-form-label">Hostname</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="hostname" id="host-hostname"
+                                   autocomplete="off" placeholder="Hostname da máquina">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-ram" class="col-sm-3 col-form-label">RAM</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" name="ram" id="host-ram"
+                                   autocomplete="off" placeholder="RAM em GB/s">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-physical-cores" class="col-sm-3 col-form-label">Physical Cores</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" name="physical_cores" id="host-physical-cores"
+                                   autocomplete="off" placeholder="Physical Cores">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-frequency" class="col-sm-3 col-form-label">Frequência</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" name="frequency" id="host-frequency"
+                                   autocomplete="off" placeholder="Current frequency">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-equipment" class="col-sm-3 col-form-label">Equipamento</label>
+                        <div class="col-sm-9">
+                        <select class="form-control" name="equipment" id="host-equipment" required>
+                            <option selected disabled>Tipo de equipamento</option>
+                            <option value="virtual">Virtual Machine</option>
+                            <option value="real">Physical Machine</option>
+                            <option value="docker">Container Dockere</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="host-service" class="col-sm-3 col-form-label">Serviço</label>
+                        <div class="col-sm-9">
+                        <select class="form-control" name="service" id="host-service">
+                            <option selected disabled>Selecione um ambiente</option>
+                            {% for service in data.services %}
+                            <option value="{{ service.id }}">{{ service.name }}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-create-instance" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar uma nova instância</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" action="" method="POST">
+                    <div class="form-group">
+                        <label for="instance-name">Nome</label>
+                        <input type="text" name="name" class="form-control" id="instance-name" autocomplete="off" placeholder="Instância">
+                    </div>
+                    <div class="form-group">
+                        <label for="instance-service">Serviço</label>
+                        <select class="form-control" name="service" id="instance-service">
+                            <option selected disabled>Selecione um serviço</option>
+                            {% for service in data.services %}
+                            <option value="{{ service.id }}">{{ service.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="instance-host">Host</label>
+                        <select class="form-control" name="host" id="instance-host" required>
+                            <option selected disabled>Selecione um host</option>
+                            {% for host in data.hosts %}
+                            <option value="{{ host.id }}">{{ host }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="instance-database">Database</label>
+                        <input type="text" name="database" class="form-control" id="instance-database"
+                               autocomplete="off" placeholder="Database">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-create-service" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar um novo serviço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" action="" method="POST">
+                    <div class="form-group">
+                        <label for="service-name">Nome</label>
+                        <input type="text" name="name" class="form-control" id="service-name" autocomplete="off"
+                               placeholder="Service Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="service-ip">IP</label>
+                        <input type="text" name="ip" class="form-control" id="service-ip"
+                               autocomplete="off" placeholder="IPv4">
+                    </div>
+                    <div class="form-group">
+                        <label for="service-dns">DNS</label>
+                        <input type="text" name="dns" class="form-control" id="service-dns"
+                               autocomplete="off" placeholder="DNS">
+                    </div>
+                    <div class="form-group">
+                        <label for="service-port">Port</label>
+                        <input type="number" name="port" class="form-control" id="service-port"
+                               autocomplete="off" placeholder="Port">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% csrf_token %}
 {% endblock %}

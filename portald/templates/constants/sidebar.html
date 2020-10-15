@@ -127,7 +127,14 @@
                         <i class="input-frame"></i></label>
                 </div>
             </div>
-            {% if 'charts' in request.path_info %}
+            {% if 'inventory' in request.path_info %}
+            <h6 class="text-muted mb-2">Inventário</h6>
+                <div class="form-group form-inline">
+                    <button type="button" id="btn-create-env" class="btn btn-primary btn-block">Criar Ambiente</button>
+                    <button type="button" id="btn-create-host" class="btn btn-primary btn-block">Criar Host</button>
+                    <button type="button" id="btn-create-instance" class="btn btn-primary btn-block">Criar Instância</button>
+                    <button type="button" id="btn-create-service" class="btn btn-primary btn-block">Criar Serviço</button>
+                </div>
             {% endif %}
 		</div>
 	</div>
