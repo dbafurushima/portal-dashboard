@@ -108,7 +108,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
 
@@ -116,7 +116,7 @@ class InstanceViewSet(viewsets.ModelViewSet):
 
     queryset = Instance.objects.all()
     serializer_class = InstanceSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):
@@ -140,7 +140,7 @@ class EnvironmentViewSet(viewsets.ModelViewSet):
 
     queryset = Host.objects.all()
     serializer_class = EnvironmentSerializer
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     def list(self, request, *args, **kwargs):

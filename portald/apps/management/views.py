@@ -18,10 +18,42 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
 
 
 def permission_check(user: User):
     return user.is_superuser
+
+
+@login_required
+@user_passes_test(permission_check)
+def proxy_api_view(request):
+    if request.method == 'GET':
+        return JsonResponse({'proxy': 'running'})
+
+    payload_for_api = dict(request.POST)
+    for item in payload_for_api:
+        payload_for_api[item] = payload_for_api[item][0]
+
+    route = payload_for_api.get('route')
+    payload_for_api.pop('route')
+    payload_for_api.pop('csrfmiddlewaretoken')
+
+    print(payload_for_api)
+
+    response_api = json.loads(requests.post(
+        f'http://{request.headers.get("Host")}{route}', payload_for_api,
+        headers={'Authorization': f'Token {settings.USER_API_KEY}'}).text)
+
+    print(response_api)
+
+    if response_api.get('id'):
+        messages.success(request,
+                         f'Item com id "{response_api.get("id")}" criado com sucesso!')
+    else:
+        messages.error(request, response_api)
+
+    return redirect('inventory')
 
 
 @login_required

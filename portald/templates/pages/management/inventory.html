@@ -45,6 +45,18 @@
         $('#btn-create-host').click(function (e) {
            $('#modal-create-host').modal('show');
         });
+        $('#submit-btn-create-env').click(function (e) {
+            $('#form-create-env').submit();
+        });
+        $('#submit-btn-create-host').click(function (e) {
+            $('#form-create-host').submit();
+        })
+        $('#submit-btn-create-instance').click(function (e) {
+            $('#form-create-instance').submit();
+        })
+        $('#submit-btn-create-service').click(function (e) {
+            $('#form-create-service').submit();
+        })
         $('.box').click(function (e) {
             let card_id = e.currentTarget.id;
 
@@ -89,6 +101,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% include 'constants/alerts/register-client.html' %}
 
 <div class="row">
     {% for client in data.clients %}
@@ -140,7 +154,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample" action="" method="POST">
+                <form class="forms-sample" id="form-create-env" action="/proxy_api" method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="env-name">Nome</label>
                         <input type="text" name="name" class="form-control" id="env-name" autocomplete="off" placeholder="Ambiente">
@@ -154,11 +169,12 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <input name="route" value="/api/cmdb/environment/" type="hidden">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="submit" class="btn btn-primary">Criar item</button>
+                <button type="submit" id="submit-btn-create-env" class="btn btn-primary">Criar item</button>
             </div>
         </div>
     </div>
@@ -174,7 +190,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample" action="" method="POST">
+                <form class="forms-sample" id="form-create-host" action="/proxy_api" method="POST">
+                    {% csrf_token %}
                     <div class="form-group row">
                         <label for="host-env" class="col-sm-3 col-form-label">Ambiente</label>
                         <div class="col-sm-9">
@@ -204,14 +221,14 @@
                         <label for="host-os-name" class="col-sm-3 col-form-label">OS Name</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="os_name" id="host-os-name"
-                                   placeholder="posix para Linux e nt para Windows">
+                                   placeholder="posix para Linux e nt para Windows" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="host-arch" class="col-sm-3 col-form-label">Arquitetura</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="arch" id="host-arch"
-                                   autocomplete="off" placeholder="Arch">
+                                   autocomplete="off" placeholder="Arch" required>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -245,7 +262,7 @@
                     <div class="form-group row">
                         <label for="host-physical-cores" class="col-sm-3 col-form-label">Physical Cores</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" name="physical_cores" id="host-physical-cores"
+                            <input type="number" class="form-control" name="cores" id="host-physical-cores"
                                    autocomplete="off" placeholder="Physical Cores">
                         </div>
                     </div>
@@ -278,11 +295,12 @@
                         </select>
                         </div>
                     </div>
+                    <input name="route" value="/api/cmdb/host/" type="hidden">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="submit" class="btn btn-primary">Criar item</button>
+                <button type="submit" id="submit-btn-create-host" class="btn btn-primary">Criar item</button>
             </div>
         </div>
     </div>
@@ -298,7 +316,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample" action="" method="POST">
+                <form class="forms-sample" id="form-create-instance" action="/proxy_api" method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="instance-name">Nome</label>
                         <input type="text" name="name" class="form-control" id="instance-name" autocomplete="off" placeholder="Instância">
@@ -326,11 +345,12 @@
                         <input type="text" name="database" class="form-control" id="instance-database"
                                autocomplete="off" placeholder="Database">
                     </div>
+                    <input name="route" value="/api/cmdb/instance/" type="hidden">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="submit" class="btn btn-primary">Criar item</button>
+                <button type="submit" id="submit-btn-create-instance" class="btn btn-primary">Criar item</button>
             </div>
         </div>
     </div>
@@ -346,7 +366,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample" action="" method="POST">
+                <form class="forms-sample" id="form-create-service" action="/proxy_api" method="POST">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="service-name">Nome</label>
                         <input type="text" name="name" class="form-control" id="service-name" autocomplete="off"
@@ -367,11 +388,12 @@
                         <input type="number" name="port" class="form-control" id="service-port"
                                autocomplete="off" placeholder="Port">
                     </div>
+                    <input name="route" value="/api/cmdb/service/" type="hidden">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="submit" class="btn btn-primary">Criar item</button>
+                <button type="submit" id="submit-btn-create-service" class="btn btn-primary">Criar item</button>
             </div>
         </div>
     </div>

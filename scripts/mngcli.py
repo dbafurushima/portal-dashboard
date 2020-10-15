@@ -34,9 +34,8 @@ def parse_args():
 
     setup_charts(subparsers)
     
-    # setup_note(subparsers)
-    # setup_comment(subparsers)
-    # setup_tlist(subparsers)
+    setup_note(subparsers)
+    setup_comment(subparsers)
 
     setup_environment(subparsers)
     setup_host(subparsers)

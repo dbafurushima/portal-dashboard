@@ -230,7 +230,7 @@ async def charts(api, args):
 def setup_charts(subparsers):
     parser = subparsers.add_parser(
         'charts',
-        help="operações relacionadas aos gráficos e dados do mesmo. [create, put, list]")
+        help="operações relacionadas aos gráficos e dados do mesmo. [create, put, list]\n\n")
 
     parser.add_argument(
         'action',

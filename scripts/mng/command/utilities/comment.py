@@ -30,7 +30,7 @@ async def comment(api, args):
     return True if isinstance(response, dict) else False
 
 def setup_comment(subparsers):
-    parser = subparsers.add_parser('comment', help="adicionar comentário a anotação.")
+    parser = subparsers.add_parser('comment', help="adicionar comentário a anotação.\n\n")
     parser.add_argument('message', help='id da mensagem', type=int)
     parser.add_argument('comment', help='comentário na mensagem')
     parser.set_defaults(func=comment)
