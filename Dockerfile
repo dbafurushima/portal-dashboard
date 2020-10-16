@@ -59,7 +59,7 @@ RUN sed -i -e 's/\r$//' /wait-for-mysql.sh
 RUN chmod u+x /wait-for-mysql.sh
 
 ## COPY ./requirements.txt /code/
-RUN pip3 install --quiet --no-cache-dir -r /var/www/portald/requirements.txt
+RUN python3 -m pip install --quiet --no-cache-dir -r /var/www/portald/requirements.txt
 
 EXPOSE 8100
 EXPOSE 9100

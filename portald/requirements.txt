@@ -1,4 +1,6 @@
 Django~=3.1
+django-two-factor-auth~=1.12.1
+django-otp~=0.9.4
 django-environ
 mysqlclient
 cryptography
@@ -24,5 +26,3 @@ ujson
 ruamel.yaml
 pick
 aiohttp
-django-otp~=0.9.4
-django-two-factor-auth~=1.12.1
