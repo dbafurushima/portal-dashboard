@@ -2,7 +2,7 @@
 # wait-for-mysql.sh
 
 set -e
-  
+
 host="$1"
 shift
 mysql_root_password="$1"
@@ -17,8 +17,8 @@ done
 >&2 echo "mysql is up - executing command"
 >&2 echo "exec migrations"
 
-python /var/www/portald/manage.py makemigrations
-python /var/www/portald/manage.py migrate
-python /var/www/portald/manage.py collectstatic --no-input
+python3 /var/www/portald/manage.py makemigrations
+python3 /var/www/portald/manage.py migrate
+python3 /var/www/portald/manage.py collectstatic --no-input
 
 $cmd

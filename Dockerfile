@@ -18,15 +18,20 @@ RUN apt-get update -y -qq && \
         locales \
         sudo \
         software-properties-common \
-        make gcc 
+        make gcc \
+                zlib1g zlib1g-dev
 
 RUN curl -O https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
 RUN tar -xvf Python-3.8.5.tgz
+RUN cd Python-3.8.5
+
 WORKDIR /Python-3.8.5
+
 RUN ./configure --enable-optimizations
 RUN make altinstall
 
 RUN apt-get install -y -qq --no-install-recommends \
+        python3-pip \
     libsasl2-dev \
     libldap2-dev \
     python3-dev \
