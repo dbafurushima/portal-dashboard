@@ -13,7 +13,7 @@ class MetaConfiguration(type):
             return ncls
         for member in MetaConfiguration.EXPECTED_MEMBERS:
             if not dct.get(member):
-                raise AttributeError(f"missing '{member}' in MetaConfiguration subclass!")
+                raise AttributeError("missing '%s' in MetaConfiguration subclass!" % member)
         return ncls
 
 # pylint: disable=E1101
@@ -32,11 +32,11 @@ class Configuration(dict, metaclass=MetaConfiguration):
         conf = cls()
         if path.is_file():
             try:
-                app_log.debug(f"loading {cls.TYPE} configuration from {path}")
+                app_log.debug("loading %s configuration from %s" % (cls.TYPE, path))
                 conf = YAML(typ='safe').load(path)
                 conf = cls(conf)
             except:
-                app_log.critical(f"failed to load {cls.TYPE} configuration from {path}")
+                app_log.critical("failed to load %s configuration from %s" % (cls.TYPE, path))
                 raise MNGException("configuration load failed.")
         return conf
 
@@ -52,16 +52,16 @@ class Configuration(dict, metaclass=MetaConfiguration):
                 v = obj.get(ek)
                 chain += f'.{ek}'
                 if v is None:
-                    app_log.warning(f"invalid {self.TYPE} configuration - missing key: {chain}")
+                    app_log.warning("invalid %s configuration - missing key: %s" % (self.TYPE, chain))
                     return False
                 if not self.__dict_check(v, ev, chain):
                     return False
         elif isinstance(expected_obj, tuple):
             if not isinstance(obj, expected_obj):
-                app_log.warning(f"invalid {self.TYPE} configuration - {chain} has invalid type: {obj} ({type(obj)})")
+                app_log.warning("invalid %s configuration - %s has invalid type: {obj} ({type(obj)})" % (self.TYPE, chain))
                 return False
         else:
-            app_log.warning(f"invalid {self.TYPE} configuration - {chain} should be a dict: {obj}")
+            app_log.warning("invalid %s configuration - %s should be a dict: {obj}" % (self.TYPE, chain))
             return False
         return True
 
@@ -70,7 +70,7 @@ class Configuration(dict, metaclass=MetaConfiguration):
         """
         if not self.__dict_check(self, self.DEFINITION):
             if throw:
-                raise MNGException(f"{self.TYPE} configuration is missing or invalid.")
+                raise MNGException("%s configuration is missing or invalid." % self.TYPE)
             else:
                 return False
         return True

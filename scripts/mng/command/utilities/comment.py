@@ -10,7 +10,7 @@ import aiohttp
 async def comment(api, args):
     """Request for add comment
     """
-    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=False)
 
     data_post = {
         "message": args.message,

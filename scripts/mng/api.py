@@ -57,12 +57,13 @@ class MNGApi:
         Returns:
             dict: [data response]
         """
-        url = f'http://{self._api_conf.conf.ip}:{self._api_conf.conf.port}{suffix_url}'
-        headers = {'Authorization': f'Basic {self._api_conf.conf.base64auth}',
+        url = 'http://%s:%s%s' % (self._api_conf.conf.ip, self._api_conf.conf.port, suffix_url)
+        # url = f'http://{self._api_conf.conf.ip}:{self._api_conf.conf.port}{suffix_url}'
+        headers = {'Authorization': 'Basic %s' % self._api_conf.conf.base64auth,
         'Content-Type': 'application/json'}
 
-        app_log.debug(f'post in {url}')
-        app_log.debug(f'headers requests {headers}')
+        app_log.debug('post in %s' % url)
+        app_log.debug('headers requests %s' % headers)
 
         try:
             async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
@@ -84,12 +85,12 @@ class MNGApi:
         Returns:
             dict: [data response]
         """
-        url = f'http://{self._api_conf.conf.ip}:{self._api_conf.conf.port}{suffix_url}'
-        headers = {'Authorization': f'Basic {self._api_conf.conf.base64auth}',
+        url = 'http://%s:%s%s' % (self._api_conf.conf.ip, self._api_conf.conf.port, suffix_url)
+        headers = {'Authorization': 'Basic %s' % self._api_conf.conf.base64auth,
         'Content-Type': 'application/json'}
 
-        app_log.debug(f'put in {url}')
-        app_log.debug(f'headers requests {headers}')
+        app_log.debug('post in %s' % url)
+        app_log.debug('headers requests %s' % headers)
 
         try:
             async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
@@ -111,10 +112,11 @@ class MNGApi:
         Returns:
             dict: [data response]
         """
-        url = f'http://{self._api_conf.conf.ip}:{self._api_conf.conf.port}{suffix_url}'
-        headers = {'Authorization': f'Basic {self._api_conf.conf.base64auth}'}
+        url = 'http://%s:%s%s' % (self._api_conf.conf.ip, self._api_conf.conf.port, suffix_url)
+        headers = {'Authorization': 'Basic %s' % self._api_conf.conf.base64auth,
+        'Content-Type': 'application/json'}
 
-        app_log.debug(f'get in {url}')
+        app_log.debug('post in %s' % url)
 
         try:
             async with aiohttp.ClientSession() as session:

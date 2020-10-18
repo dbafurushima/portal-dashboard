@@ -5,7 +5,7 @@ from datetime import datetime
 from jdata import GET_DATA_HISTORY, LOGIN_DATA
 
 
-pp = pprint.PrettyPrinter(indent=2, width=41, compact=False, sort_dicts=True)
+pp = pprint.PrettyPrinter(indent=2, width=41, compact=False)
 uribase = 'http://zabbix.dbafurushima.com.br/api_jsonrpc.php'
 headers_json = {'Content-Type': 'application/json-rpc'}
 
