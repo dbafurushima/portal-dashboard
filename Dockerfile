@@ -22,7 +22,7 @@ RUN apt-get update -y -qq && \
 
 RUN curl -O https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
 RUN tar -xvf Python-3.8.5.tgz
-RUN cd Python-3.8.5
+WORKDIR /Python-3.8.5
 RUN ./configure --enable-optimizations
 RUN make altinstall
 
