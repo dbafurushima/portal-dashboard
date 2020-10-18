@@ -16,8 +16,6 @@ bash <(curl -Ss \
 https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
 ```
 
-> **ATENÇÃO** erro ao instalar biblioteca ``psutil``, basta fazer download do arquivo ``.whl`` da sua versão do python no site https://www.wheelodex.org/projects/psutil/ e instalar utilizando o comando ``pip3 install psutil-*.whl``, se você estiver utilizando linux, baseados em redhat basta instalar o pacote ``yum install python*psutil``
-
 > para facilitar a instalação e atualização é clonado o repositório todo, não apenas a pasta de scripts
 
 > a instalação de depêndencias (pacotes) será feita também pelo script
