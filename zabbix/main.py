@@ -5,7 +5,7 @@ import pprint
 import getpass
 
 
-pp = pprint.PrettyPrinter(indent=2, compact=False, width=51, sort_dicts=False)
+pp = pprint.PrettyPrinter(indent=2, compact=False, width=51)
 cprint = lambda h, b: (print(h), pp.pprint(b))
 
 uri_base = 'http://zabbix.dbafurushima.com.br/api_jsonrpc.php'

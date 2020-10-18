@@ -34,7 +34,7 @@ HELP = {
 
 
 async def host(api, args):
-    pp = pprint.PrettyPrinter(indent=2, compact=True, width=71, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=True, width=71)
 
     if not check_subcommand(args.action, ACTIONS): return
 

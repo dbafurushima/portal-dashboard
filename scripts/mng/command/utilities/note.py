@@ -11,7 +11,7 @@ import aiohttp
 async def note(api, args):
     """Request for add note
     """
-    pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=False)
 
     data_post = {
         "subject": args.subject,

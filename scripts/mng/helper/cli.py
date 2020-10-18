@@ -33,8 +33,8 @@ class Answer(enum.Enum):
 def build_prompt(prompt, default=None):
     prompt = prompt.strip()
     if default is not None:
-        prompt = f"{prompt} [{default}]"
-    return f'{prompt}: '
+        prompt = f"%s [%s]" % (prompt, default)
+    return '%s: ' % prompt
 
 
 def readline(prompt, empty=False, digit=False, default=None):
@@ -88,7 +88,7 @@ def choose(choices, title, multi=False, min_count=1, custom=False):
     You can also allow tht user to enter a custom value
     """
     sep = '=' * ((78 - len(title)) // 2)
-    title = f'{sep} {title} {sep}'
+    title = f'%s %s %s' % (sep, title, sep)
     text = [title]
     if multi:
         plural = 's' if min_count > 1 else ''

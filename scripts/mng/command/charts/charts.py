@@ -60,7 +60,7 @@ HELP = {
 
 
 async def charts(api, args):
-    pp = pprint.PrettyPrinter(indent=2, compact=True, width=71, sort_dicts=False)
+    pp = pprint.PrettyPrinter(indent=2, compact=True, width=71)
 
     if not check_subcommand(args.action, ACTIONS): return
 
@@ -76,10 +76,10 @@ async def charts(api, args):
         step_uid = str(uuid.uuid4()).split('-')[1]
         step_name = args.chart_name[:10].replace(' ', '_')
 
-        strf = '-'.join(f'%{i}' for i in args.format.split('-'))
+        strf = '-'.join('%'+i for i in args.format.split('-'))
         if ' ' in strf:
             day, hour = strf.split(' ')
-            nhour = ':'.join(f'%{i}' for i in hour.split(':'))
+            nhour = ':'.join('%'+i for i in hour.split(':'))
             strf = ' '.join([day, nhour])
 
         re_data = re.compile(r'^%m')
@@ -88,7 +88,7 @@ async def charts(api, args):
 
         chart_json_data = {
             "client": args.clientid,
-            "uid": f'{step_uid}_{step_name}',
+            "uid": '%s_%s' % (step_uid, step_name),
             "caption_text": args.title,
             "yAxis_plot_value": args.plot_value,
             "yAxis_plot_type": args.yAxis_plot_type,
@@ -131,7 +131,7 @@ async def charts(api, args):
                 raw_data = re.findall(rexp, open(path).read())
                 if raw_data: break
 
-        pp = pprint.PrettyPrinter(indent=2, compact=False, sort_dicts=False)
+        pp = pprint.PrettyPrinter(indent=2, compact=False)
         again = '[!] falha ao enviar valor %s, deseja tentar novamente ou continuar? (T)ry / (C)ontinue '
 
         try:
