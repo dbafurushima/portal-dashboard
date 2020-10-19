@@ -6,3 +6,4 @@ pick
 aiohttp
 termcolor
 psutil
+rich

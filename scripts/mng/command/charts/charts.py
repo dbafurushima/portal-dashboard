@@ -19,12 +19,16 @@ import time
 import json
 import pprint
 import uuid
+import logging
 
 from pathlib import Path
 from functools import partial
 
 from mng.helper.argument_parser import check_subcommand, check_args
 from mng.helper.regexp import reDATATIME1, reDATATIME2, reDATATIME3, reDATATIME4
+
+from rich.console import Console
+from rich.markdown import Markdown
 
 reXP = [reDATATIME1, reDATATIME2, reDATATIME3, reDATATIME4]
 
@@ -61,6 +65,14 @@ HELP = {
 
 async def charts(api, args):
     pp = pprint.PrettyPrinter(indent=2, compact=True, width=71)
+
+    if args.action == 'help':
+        console = Console()
+        with open(Path(__file__).parent.joinpath('../', '../', 'resources', 'CHARTS_HELP.md'), encoding="utf-8") as readme:
+            markdown = Markdown(readme.read())
+        console.print(markdown)
+        return
+
 
     if not check_subcommand(args.action, ACTIONS): return
 
@@ -185,7 +197,7 @@ async def charts(api, args):
             # funcs.append(partial(send_data, data=data_json))
             funcs.append(data_json)
 
-            # await try_again(response)
+            # await try_again(response)s
             index += 1
 
         # print(tuple(funcs))
@@ -238,12 +250,14 @@ def setup_charts(subparsers):
         help="escolha um entre os subcommando válidos.")
 
     parser.add_argument(
+        '-cid',
         '--clientid-to-chart',
         metavar='ID',
         dest='clientid',
         help='Cliente para qual será o gráfico. Apenas ele terá visualização.')
 
     parser.add_argument(
+        '-chn',
         '--chart-name',
         metavar='NAME',
         dest='chart_name',
@@ -252,6 +266,7 @@ def setup_charts(subparsers):
               ' _ (underline) e tamanho máximo é 10 caracteres.'))
 
     parser.add_argument(
+        '-t',
         '--title',
         metavar='NAME',
         dest='title',
@@ -259,6 +274,7 @@ def setup_charts(subparsers):
         help='Titulo para o gráfico. (capition_text)')
 
     parser.add_argument(
+        '-p',
         '--prefix',
         metavar='PREFIX',
         dest='prefix',
@@ -266,6 +282,7 @@ def setup_charts(subparsers):
         help='Prefixo para os valores. Ex: $ (yAxis_format_prefix)')
 
     parser.add_argument(
+        '-fmt',
         '--data-format',
         metavar='stftime',
         dest='format',
@@ -273,6 +290,7 @@ def setup_charts(subparsers):
         help='Um strftime que todos os dados deveram conter. (default=Y-m-d H-M)')
 
     parser.add_argument(
+        '-tch',
         '--type-chart',
         metavar='TYPE',
         default='line',
