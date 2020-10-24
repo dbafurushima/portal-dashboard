@@ -3,7 +3,7 @@ from pathlib import Path
 NOT_SET = '<not set>'
 PREDEFINED_SECTION_NAMES = ('preview', 'plugins')
 _WHITESPACE = ' \t'
-LOCATION = Path.home().joinpath('.config', 'mng', 'mng.yml')
+LOCATION = Path.home().joinpath('.config', 'mng.ini')
 
 
 class ConfigValue(object):

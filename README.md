@@ -1,106 +1,28 @@
-# Portal Dashboard
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Docker%20Image%20CI?label=docker%20build&style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Django%20CI?label=django%20build&style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/dbafurushima/portal-dashboard?style=flat-square) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dbafurushima/portal-dashboard?style=flat-square)
+---
+<p align="center"><a href="#" target="_blank" rel="noopener noreferrer">
+    <img width="256px" height="126px" src="https://i.pinimg.com/originals/4c/db/81/4cdb813cbbf96b7cffdc04a63f113681.png" alt="PortalD logo"></a>
+</p>
 
-### MNG CLI
+<p align="center">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dbafurushima/portal-dashboard?style=flat-square">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/dbafurushima/portal-dashboard?style=flat-square">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Docker%20Image%20CI?label=build%20docker&style=flat-square"><br>
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/dbafurushima/portal-dashboard/Django%20CI?label=build%20django&style=flat-square">
+</p>
 
-![MNG logo](https://i.pinimg.com/originals/58/23/ac/5823ac07f4b58d4d51d336b215625426.png)
+<p align="center">
+  <b>PortalD</b> é uma aplicação construida em <u>Django</u> para dentre diversas coisas ajudar na gestão de clientes e disponibilizar informações.
+</p>
 
-Ao instalar a ferramenta CLI na sua máquina ela ficará no *home* do seu usuário em uma pasta oculta ``~/.portal-dashboard`` os arquivos de configuração com as credenciais de acesso a API ficará no caminho `~/.config/mng/mng.yml` para inicializar basta chamar o script com o parametro `init`
+---
 
-Ao final da instalação da ferramenta com o script *sh* será gerado um alias com o path do *entry point* que você poderá adicionar ao seu `~/.bashrc` caso não queria terá que chamado no path `~/.portal-dashboard/scripts/mngcli.py`
+<p align="center"><a href="#" target="_blank" rel="noopener noreferrer">
+    <img width="256px" height="126px" src="https://i.pinimg.com/originals/b2/0d/1e/b20d1e60b306063cdcb6106709f786cd.png" alt="MNG"></a>
+</p>
 
-Se você executar o script de instalação `mng-install.sh` e a ferramenta já estiver instalada o script apenas atualizara o repositório caso haja uma nova release. Ao adicionar o *alias* você pode chamar o script de qualquer path com o nome `mngcli`
-```bash
-bash <(curl -Ss \
-https://raw.githubusercontent.com/dbafurushima/portal-dashboard/master/scripts/mng-install.sh)
-```
+<p align="center">
+  <b>MNG CLI</b> é um utilitário <u>command-line</u> multiplataforma escrito em <u>Python</u>, utilizado para auxiliar a aplicação web <b>portald</b> para trazer uma <b>máxima</b> flexibilidade.
+</p>
 
-> para facilitar a instalação e atualização é clonado o repositório todo, não apenas a pasta de scripts
-
-> a instalação de depêndencias (pacotes) será feita também pelo script
-
-#### CONFIGURAÇÃO DA APLICAÇÃO WEB
-
-Iniciamos configurando o arquivo variáveis de ambiente, para isso copie o arquivo 
-``.env.example`` para ``.env``, em seguida preencha com as informações
-necessárias. **tanto no root do projeto quanto na pasta /portald/**
-
-#### INSTALAÇÃO COM ``Docker``
-
-Copie o arquivo ``.env.example`` para ``.env`` (*o que está no root do projeto*), onde contém credenciais de acesso do mysql.
-Após ter o arquivo ``.env`` preenchido com as informações necessárias você já pode fazer o build (*deverá ter feito a etapa anterior que é a de configurar a aplicação*) com o comando ``docker-compose build`` e para subir os contêiners ``docker-compose up [-d]``
-
-#### INFORMAÇÕES SOBRE CONTAINERS
-
-* **ports**
-  * 3306 (``MySQL``)
-  * 8080:80 (``PortalD``)
-  * 8100:8100 (``PortalD``)
-
-* **volumes**
-  * /var/lib/mysql (``MySQL``)
-  * /var/www/portald/ (``PortalD``)
-
-* **network**: us-east-1:bridge
-
-### INSTALAÇÃO DO PROJETO EM LINUX/WINDOWS (*versão de desenvolvimento*)
-
-Você deve ter previamente instalado o **Python3.8.*** (versão utilizada no desenvolvimento) e um banco de dados MySQL (atualmente com SQLite).
-
-> Se sua distribuição Linux for Ubuntu deverar instalar o pacote ``libmysqlclient-dev`` para que não dê erro na instalação do conector MySQL.
-
-Após fazer o clone do projeto, instale as bibliotecas do python com o ``pip`` que o projeto depende:
-
-```
-pip install Django==3.0.8 \
-    django-environ==0.4.5
-```
-
-> **ATENÇÃO** se você estiver usando ``windows`` deve instalar o ``mysqlclient``, faça download [nesse site](https://www.lfd.uci.edu/~gohlke/pythonlibs/#mysqlclient)
-
-```
-[client]
-host = 
-database = 
-user = 
-password = 
-default-character-set = utf8
-```
-
-Realize as migrações com os comandos:
-
-```
-python manage.py makemigrations
-python manage.py migrate
-```
-
-> você deve está na pasta ``portald/``
-
-E agora só subir o servidor com o comando ``python manage.py runserver``
-
-### Informações adicionais
-
-#### `mng-install.sh`
-
-Script em shell para instalação da ferramenta `mng` em abientes Linux.
-
-Para que o script funcione corretamente seu terminal deve ter suporte a codificação `UTF-8` você pode fazer isso executando os seguintes comandos e opicionalmente de preferência adicionando ao seu `.bashrc`
-
-```bash
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-
-exec "bash"
-```
-
-> Testado apenas em `ubunut:20.4` e `centos:7`
-
-### MNG CLI
-
-É um utilitário linha de comando escript em python com suporte a operações assíncronas para permitir máxima eficiência na execução de operações `IO` e paralelas.
-
-Com uma estrutura modular para fornecer facilidade na expansão de novas funcionalidades, correção bugs e manutenção do código. Permitindo também a instalação como bibioteca do python.
-
+---

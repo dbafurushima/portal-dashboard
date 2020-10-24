@@ -48,6 +48,7 @@ class ConfigFileWriter(object):
             return
         with open(config_filename, 'r') as f:
             contents = f.readlines()
+            # print('ConfigFileWriter.update_config().contents: %s' % contents)
         # We can only update a single section at a time so we first need
         # to find the section in question
         try:

@@ -1,4 +1,5 @@
 import sys
+import configparser
 
 from ...commands import BasicCommand
 from . import ConfigValue, NOT_SET, LOCATION
@@ -7,24 +8,23 @@ from . import ConfigValue, NOT_SET, LOCATION
 class ConfigureListCommand(BasicCommand):
     NAME = 'list'
     DESCRIPTION = (
-        'List the MNG CLI configuration data. This command will '
-        'show you the current configuration data. For each configuration '
-        'item, it will show you the value, where the configuration value '
-        'was retrieved, and the configuration variable name. For example, '
-        'if you provide the AWS region in an environment variable.\n'
+        'Liste os dados de configuração MNG CLI. Este comando mostrará '
+        'os dados de configuração atuais. Para cada item de configuração, '
+        'ele mostrará o valor, onde o valor de configuração foi recuperado '
+        'e o nome da variável de configuração.\n'
     )
     SYNOPSIS = 'mng configure list'
     EXAMPLES = (
-        'To show your current configuration values::\n'
+        '\nPara mostrar seus valores de configuração atuais::\n'
         '\n'
         '  $ mng configure list\n'
         '        Name                    Value             Type    Location\n'
         '        ----                    -----             ----    --------\n'
-        '      ip_api               10.0.0.100              str    ~/.mng/config\n'
-        '    port_api                     8080              int    ~/.mng/config\n'
-        '    user_api                      api              str    ~/.mng/config\n'
-        '  passwd_api     ****************ABCD              str    ~/.mng/config\n'
-        '  base64auth     ****************ABCD              str    ~/.mng/config\n'
+        ' address_api               10.0.0.100              str    ~/.config/mng.ini\n'
+        '    port_api                     8080              int    ~/.config/mng.ini\n'
+        'username_api                      api              str    ~/.config/mng.ini\n'
+        'password_api     ****************ABCD              str    ~/.config/mng.ini\n'
+        '  base64auth     ****************ABCD              str    ~/.config/mng.ini\n'
         '\n'
     )
 
@@ -39,16 +39,23 @@ class ConfigureListCommand(BasicCommand):
         self._display_config_value(ConfigValue('-----', '----', '--------'),
                                    '----')
 
-        user_api = self._lookup_config('user_api')
-        self._display_config_value(user_api, 'user_api')
+        address_api = self._lookup_config('address_api')
+        self._display_config_value(address_api, 'address_api')
 
-        passwd_api = self._lookup_credentials()
-        self._display_config_value(passwd_api, 'passwd_api')
+        port_api = self._lookup_config('port_api')
+        self._display_config_value(port_api, 'port_api')
+
+        username_api = self._lookup_config('username_api')
+        self._display_config_value(username_api, 'username_api')
+
+        password_api, base64auth = self._lookup_credentials()
+        self._display_config_value(password_api, 'password_api')
+        self._display_config_value(base64auth, 'base64auth')
 
     
     def _display_config_value(self, config_value, config_name):
         config_value = config_value[0] if isinstance(config_value, tuple) else config_value
-        self._stream.write('%10s %24s %16s    %s\n' % (
+        self._stream.write('%15s %30s %20s    %s\n' % (
             config_name, config_value.value, config_value.config_type,
             config_value.config_variable))
 
@@ -56,10 +63,12 @@ class ConfigureListCommand(BasicCommand):
         # First try it with _lookup_config.  It's possible
         # that we don't find credentials this way (for example,
         # if we're using an IAM role).
-        passwd_api = self._lookup_config('passwd_api')
-        if passwd_api.value is not NOT_SET:
-            passwd_api.mask_value()
-            return passwd_api
+        password_api = self._lookup_config('password_api')
+        if password_api.value is not NOT_SET:
+            password_api.mask_value()
+            base64auth = self._lookup_config('base64auth')
+            base64auth.mask_value()
+            return password_api, base64auth
         else:
             # Otherwise we can try to use get_credentials().
             # This includes a few more lookup locations
@@ -74,14 +83,19 @@ class ConfigureListCommand(BasicCommand):
                 # visible from botocore.credentials.  I think
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
-                passwd_api = ConfigValue(credentials.passwd_api,
+                password_api = ConfigValue(credentials.password_api,
                                          credentials.method, '')
-                passwd_api.mask_value()
-                return passwd_api
+                password_api.mask_value()
+                base64auth = ConfigValue(credentials.base64auth,
+                                         credentials.method, '')
+                base64auth.mask_value()
+                return password_api, base64auth
 
     def _lookup_config(self, name):
         # Then try to look up the variable in the config file.
-        value = None
+        configp = configparser.ConfigParser()
+        configp.read(LOCATION)
+        value = configp['default'][name]
         if value is not None:
             return ConfigValue(value, 'config-file', LOCATION)
         else:

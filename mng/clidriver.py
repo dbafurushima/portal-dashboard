@@ -23,7 +23,7 @@ def main():
 
     args = sys.argv[1:]
     parsed_args, remaining = parser.parse_known_args(args)
-    print('parsed_args: %s\nremaining: %s' % (parsed_args, remaining))
+    # print('parsed_args: %s\nremaining: %s' % (parsed_args, remaining))
     command_table[parsed_args.command](remaining, parsed_args)
 
     return 0

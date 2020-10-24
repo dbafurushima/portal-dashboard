@@ -25,8 +25,8 @@ class ConfigureSetCommand(BasicCommand):
     ]
     # Any variables specified in this list will be written to
     # the ~/.aws/credentials file instead of ~/.aws/config.
-    _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
-                            'aws_session_token']
+    _WRITE_TO_CREDS_FILE = ['address_api', 'username_api',
+                            'port_api', 'password_api']
 
     def __init__(self, config_writer=None):
         super(ConfigureSetCommand, self).__init__()

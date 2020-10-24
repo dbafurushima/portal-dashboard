@@ -1,3 +1,4 @@
+# https://github.com/aws/aws-cli/blob/develop/awscli/customizations/commands.py
 import os
 
 from pathlib import Path
@@ -6,6 +7,7 @@ from collections import OrderedDict
 from mng import root_module
 from .argparser import ArgTableArgParser
 from .arguments import CustomArgument
+from .help import HelpCommand
 
 
 class _FromFile(object):
@@ -15,9 +17,8 @@ class _FromFile(object):
         ``**kwargs`` can contain a ``root_module`` argument
         that contains the root module where the file contents
         should be searched.  This is an optional argument, and if
-        no value is provided, will default to ``awscli``.  This means
-        that by default we look for examples in the ``awscli`` module.
-
+        no value is provided, will default to ``mng``.  This means
+        that by default we look for examples in the ``mng`` module.
         """
         self.filename = None
         if paths:
@@ -29,7 +30,6 @@ class _FromFile(object):
 
 
 class CLICommand(object):
-
     """Interface for a CLI command.
 
     This class represents a top level CLI command
@@ -51,7 +51,15 @@ class CLICommand(object):
         # Represents how to get to a specific command using the CLI.
         # It includes all commands that came before it and itself in
         # a list.
+
+        # Representa como chegar a um comando específico usando a CLI.
+        # Inclui todos os comandos anteriores e ele próprio em
+        # uma lista.
         return [self]
+    
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
 
     @property
     def lineage_names(self):
@@ -87,12 +95,9 @@ class CLICommand(object):
 
 
 class BasicCommand(CLICommand):
-
     """Basic top level command with no subcommands.
-
     If you want to create a new command, subclass this and
     provide the values documented below.
-
     Se você deseja criar um novo comando, subclasse este e
     forneça os valores documentados abaixo.
     """
@@ -170,13 +175,13 @@ class BasicCommand(CLICommand):
     def __init__(self, subcommand_table={}):
         self._arg_table = None
         self._subcommand_table = None
-    
+
     def __call__(self, args, parsed_globals):
         # args são os args restantes não analisados.
         # Podemos ser capazes de analisar esses argumentos, então precisamos criar
         # um analisador de argumentos e analise-os.
-        print('self.arg_table: %s' % self.arg_table)
-        print('self.subcommand_table: %s' % self.subcommand_table)
+        # print('self.arg_table: %s' % self.arg_table)
+        # print('self.subcommand_table: %s' % self.subcommand_table)
 
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
@@ -207,8 +212,32 @@ class BasicCommand(CLICommand):
                                                                     parsed_globals)
 
     def _display_help(self, parsed_args, parsed_globals):
-        print('BasicComand._display_help()')
-    
+        # print('BasicComand._display_help()')
+        help_command = self.create_help_command()
+        help_command(parsed_args, parsed_globals)
+
+    def create_help_command(self):
+        command_help_table = {}
+        if self.SUBCOMMANDS:
+            command_help_table = self.create_help_command_table()
+        return BasicHelp(self, command_table=command_help_table, arg_table=self.arg_table)
+
+    def create_help_command_table(self):
+        """
+        Create the command table into a form that can be handled by the
+        BasicDocHandler.
+        """
+        commands = {}
+        for command in self.SUBCOMMANDS:
+            commands[command['name']] = command['command_class']()
+        self._add_lineage(commands)
+        return commands
+
+    def _add_lineage(self, command_table):
+        for command in command_table:
+            command_obj = command_table[command]
+            command_obj.lineage = self.lineage + [command_obj]
+
     def _run_main(self, parsed_args, parsed_globals):
         # Subclasses should implement this method.
         # parsed_globals are the parsed global args (things like region,
@@ -219,7 +248,7 @@ class BasicCommand(CLICommand):
         # 'name' key.  For example: ARG_TABLE[0] = {"name": "foo-arg", ...}
         # can be accessed by ``parsed_args.foo_arg``.
         raise NotImplementedError("_run_main")
-    
+
     def _build_subcommand_table(self):
         subcommand_table = OrderedDict()
 
@@ -227,9 +256,9 @@ class BasicCommand(CLICommand):
             subcommand_name = subcommand['name']
             subcommand_class = subcommand['command_class']
             subcommand_table[subcommand_name] = subcommand_class()
-        
+
         return subcommand_table
-    
+
     def _build_arg_table(self):
         arg_table = OrderedDict()
 
@@ -238,7 +267,7 @@ class BasicCommand(CLICommand):
             arg_table[arg_data['name']] = custom_argument
 
         return arg_table
-    
+
     @property
     def subcommand_table(self):
         if self._subcommand_table is None:
@@ -250,113 +279,6 @@ class BasicCommand(CLICommand):
         if self._arg_table is None:
             self._arg_table = self._build_arg_table()
         return self._arg_table
-
-
-class HelpCommand(object):
-    """
-    HelpCommand Interface
-    ---------------------
-    A HelpCommand object acts as the interface between objects in the
-    CLI (e.g. Providers, Services, Operations, etc.) and the documentation
-    system (bcdoc).
-
-    A HelpCommand object wraps the object from the CLI space and provides
-    a consistent interface to critical information needed by the
-    documentation pipeline such as the object's name, description, etc.
-
-    The HelpCommand object is passed to the component of the
-    documentation pipeline that fires documentation events.  It is
-    then passed on to each document event handler that has registered
-    for the events.
-
-    All HelpCommand objects contain the following attributes:
-
-        + ``obj`` - The object that is being documented.
-        + ``command_table`` - A dict mapping command names to
-              callable objects.
-        + ``arg_table`` - A dict mapping argument names to callable objects.
-        + ``doc`` - A ``Document`` object that is used to collect the
-              generated documentation.
-
-    In addition, please note the `properties` defined below which are
-    required to allow the object to be used in the document pipeline.
-
-    Implementations of HelpCommand are provided here for Provider,
-    Service and Operation objects.  Other implementations for other
-    types of objects might be needed for customization in plugins.
-    As long as the implementations conform to this basic interface
-    it should be possible to pass them to the documentation system
-    and generate interactive and static help files.
-    """
-
-    EventHandlerClass = None
-    """
-    Each subclass should define this class variable to point to the
-    EventHandler class used by this HelpCommand.
-    """
-
-    def __init__(self, obj, command_table, arg_table):
-        self.obj = obj
-        if command_table is None:
-            command_table = {}
-        self.command_table = command_table
-        if arg_table is None:
-            arg_table = {}
-        self.arg_table = arg_table
-        self._subcommand_table = {}
-        self._related_items = []
-
-    @property
-    def event_class(self):
-        """
-        Return the ``event_class`` for this object.
-
-        The ``event_class`` is used by the documentation pipeline
-        when generating documentation events.  For the event below::
-
-            doc-title.<event_class>.<name>
-
-        The document pipeline would use this property to determine
-        the ``event_class`` value.
-        """
-        pass
-
-    @property
-    def name(self):
-        """
-        Return the name of the wrapped object.
-
-        This would be called by the document pipeline to determine
-        the ``name`` to be inserted into the event, as shown above.
-        """
-        pass
-
-    @property
-    def subcommand_table(self):
-        """These are the commands that may follow after the help command"""
-        return self._subcommand_table
-
-    @property
-    def related_items(self):
-        """This is list of items that are related to the help command"""
-        return self._related_items
-
-    def __call__(self, args, parsed_globals):
-        if args:
-            subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
-            parsed, remaining = subcommand_parser.parse_known_args(args)
-            if getattr(parsed, 'subcommand', None) is not None:
-                return self.subcommand_table[parsed.subcommand](remaining,
-                                                                parsed_globals)
-
-        # Create an event handler for a Provider Document
-        # instance = self.EventHandlerClass(self)
-        # Now generate all of the events for a Provider document.
-        # We pass ourselves along so that we can, in turn, get passed
-        # to all event handlers.
-        # self.renderer.render(self.doc.getvalue())
-        # instance.unregister()
-        # TODO HELP
 
 
 class BasicHelp(HelpCommand):
@@ -404,9 +326,9 @@ class BasicHelp(HelpCommand):
                 trailing_path = os.path.join(self.name, attr_name + '.rst')
             root_module = value.root_module
             doc_path = os.path.join(
-                os.path.abspath(os.path.dirname(root_module.__file__)),
+                os.path.abspath(os.path.dirname(root_module)),
                 'examples', trailing_path)
-            with open(doc_path) as f:
+            with open(doc_path, encoding='utf-8') as f:
                 return f.read()
         else:
             return value
@@ -421,4 +343,16 @@ class BasicHelp(HelpCommand):
         # self.renderer.render(self.doc.getvalue())
         # instance.unregister()
         # TODO HELP
-        pass
+        # print('BasicHelp.__call__()')
+        # print('BasicHelp.__call__().self.command_table: %s' % self.command_table)
+        print('\n%s\n%s\n' % (self.name, '^'*len(self.name)))
+
+        print(self.description)
+
+        print(self.synopsis)
+
+        if self.command_table:
+            print('\nAvailable Commands\n******************\n')
+            [print('  * %s\n' % command) for command in self.command_table]
+ 
+        print(self.examples)
