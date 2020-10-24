@@ -34,8 +34,6 @@ if [ -z $package_manager ]; then
     exit 1
 fi
 
-echo "check system dependencies"
-
 packages_for_install=""
 required_install=1
 if [ -z $(command -v git --version 2> /dev/null) ]; then
@@ -54,18 +52,21 @@ if [ $required_install -eq 2 ]; then
     echo "$packages_for_install -y $hidden_install"
     exit 1
 fi
+echo "[+] system dependencies ok..."
 
-echo "clone repository portal-dashboard"
-git clone $REPOSITORY "$HOME/.portal-dashboard" || echo "error in clone repo"; exit 1
+git clone $REPOSITORY "$HOME/.portal-dashboard"
+echo "[+] clone repository portal-dashboard..."
 
 cd "$HOME/.portal-dashboard"
 git pull origin mng.v2
 
-echo "install pip requirements"
-pip3 install -r mng-requirements.txt
+python3 -m pip install -r mng-requirements.txt || exit 1
+echo "[+] install pip requirements"
 
-ENTRY_POINT_MODULE="$HOME_PATH_INSTALL/mng"
+POINT_MODULE="$HOME_PATH_INSTALL/mng/mngcli.py"
 
 # optional alias to put in the user's bashrc
-echo "echo \"alias mng=python3 -m $ENTRY_POINT_MODULE\" >> ~/.bashrc"
+echo "echo \"alias mng=\"python3 $POINT_MODULE\"\" >> ~/.bashrc
 echo "exec \"$SHELL\""
+
+echo "\ninstall sucessful"
