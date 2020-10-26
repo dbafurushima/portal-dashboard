@@ -356,6 +356,8 @@ class BasicHelp(HelpCommand):
 
         if self.command_table:
             print('\nAvailable Commands\n******************\n')
-            [print('  * %s\n' % command) for command in self.command_table]
- 
-        print(self.examples)
+            for command in self.command_table:
+                print('  * %s\n' % command)
+
+        if self.examples:
+            print(self.examples)
