@@ -345,11 +345,14 @@ class BasicHelp(HelpCommand):
         # TODO HELP
         # print('BasicHelp.__call__()')
         # print('BasicHelp.__call__().self.command_table: %s' % self.command_table)
-        print('\n%s\n%s\n' % (self.name, '^'*len(self.name)))
+        if self.synopsis:
+            print('\n%s\n%s\n' % (self.name, '^'*len(self.name)))
 
-        print(self.description)
+        if self.description:
+            print(self.description)
 
-        print(self.synopsis)
+        if self.synopsis:
+            print(self.synopsis)
 
         if self.command_table:
             print('\nAvailable Commands\n******************\n')

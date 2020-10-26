@@ -2,6 +2,7 @@ import sys
 
 from .argparser import MainArgParser, CommandAction, ArgTableArgParser
 from .topics.configure.configure import ConfigureCommand
+from .topics.man import ManCommand
 from .version import __version__
 
 from collections import OrderedDict
@@ -11,6 +12,8 @@ def main():
     command_table = OrderedDict()
     argument_table = OrderedDict()
     description = None
+
+    command_table['help'] = ManCommand(command_table)
 
     command_table['configure'] = ConfigureCommand()
 
