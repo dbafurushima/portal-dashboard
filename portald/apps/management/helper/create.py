@@ -3,79 +3,83 @@ import re
 import os
 import random
 import string
+
 from django.contrib.auth.models import User
+from typing import Tuple, Any
+
 from ..models import Client, PasswordSafe, EnterpriseUser
 from .encrypt import _encrypt, _decrypt
+from apps.errors import Errors
 
 FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'district', 'address', 'state-registration',
           'municipal-registration', 'email']
 LENGTH_PASSWORD = 15
 
 
-def _correct_post(keys) -> bool:
+def __correct_post(keys) -> bool:
     """checks if the dictionary contains all the keys required for a customer's registration
 
-    >>> _correct_post(['city', 'cep', 'district'])
+    >>> __correct_post(['city', 'cep', 'district'])
     False
     """
     sec_list = list(filter(lambda i: i in FIELDS, keys))
     return len(sec_list) == len(FIELDS)
 
 
-def _len_min(text, length):
+def __len_min(text, length):
     return len(text) >= length
 
 
-def _len_max(text, length):
+def __len_max(text, length):
     return len(text) <= length
 
 
-def _len(text, length):
+def __len(text, length):
     return len(text) == length
 
 
-def _company_name(company_name):
-    return _len_min(company_name, 4) and _len_max(company_name, 50)
+def __company_name(company_name):
+    return __len_min(company_name, 4) and __len_max(company_name, 50)
 
 
-def _display_name(display_name):
-    return _len_min(display_name, 3)
+def __display_name(display_name):
+    return __len_min(display_name, 3)
 
 
-def _cnpj(cnpj):
-    return (_len_min(cnpj, 14) or _len_max(cnpj, 18)) and (re.match(r'^\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}$', cnpj))
+def __cnpj(cnpj):
+    return (__len_min(cnpj, 14) or __len_max(cnpj, 18)) and (re.match(r'^\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}$', cnpj))
 
 
-def _city(city):
-    return _len_min(city, 5)
+def __city(city):
+    return __len_min(city, 5)
 
 
-def _state(state):
-    return _len_min(state, 2)
+def __state(state):
+    return __len_min(state, 2)
 
 
-def _cep(cep):
-    return (_len(cep, 8) or _len(cep, 9)) and (re.match(r'^\d{5}-?\d{3}$', cep))
+def __cep(cep):
+    return (__len(cep, 8) or __len(cep, 9)) and (re.match(r'^\d{5}-?\d{3}$', cep))
 
 
-def _district(district):
-    return _len_min(district, 4) and _len_max(district, 40)
+def __district(district):
+    return __len_min(district, 4) and __len_max(district, 40)
 
 
-def _address(address):
-    return _len_min(address, 4) and _len_max(address, 60)
+def __address(address):
+    return __len_min(address, 4) and __len_max(address, 60)
 
 
-def _state_registration(state_registration):
-    return _len_min(state_registration, 2)
+def __state_registration(state_registration):
+    return __len_min(state_registration, 2)
 
 
-def _municipal_registration(municipal_registration):
-    return _len_min(municipal_registration, 3)
+def __municipal_registration(municipal_registration):
+    return __len_min(municipal_registration, 3)
 
 
-def _email(email):
-    return (_len_min(email, 8) and _len_max(email, 50)) and \
+def __email(email):
+    return (__len_min(email, 8) and __len_max(email, 50)) and \
            re.match(r'^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$', email)
 
 
@@ -85,7 +89,7 @@ def _rand_passwd(length):
     return ''.join(random.choice(chars) for _ in range(length))
 
 
-def create_user(username, email, password, enterprise=None):
+def __create_user(username: str, email: str, password: str, enterprise=None):
     user = User(username=username, email=email)
     passwd = _encrypt(password).decode('utf-8')
     user.set_password(password)
@@ -96,7 +100,7 @@ def create_user(username, email, password, enterprise=None):
     return PasswordSafe(user=user, password=passwd).save()
 
 
-def create_users(post: dict, enterprise):
+def _create_users(post: dict, enterprise: Client) -> None:
     _users = post.get('users-json')
 
     if not len(_users) > 0:
@@ -104,8 +108,12 @@ def create_users(post: dict, enterprise):
 
     users_json = json.loads(_users)
     for _user in users_json:
-        raw_password = _user.get('password') if _user.get('password') else 'mudar123'
-        create_user(_user.get('username'), _user.get('email'), raw_password, enterprise)
+        # raw_password = _user.get('password') if _user.get('password') else 'mudar123'
+        __create_user(
+            _user.get('username'),
+            _user.get('email'),
+            _user.get('password') if _user.get('password') else 'mudar123',
+            enterprise)
 
 
 def passwd_from_username(username: str) -> str or None:
@@ -119,7 +127,7 @@ def passwd_from_username(username: str) -> str or None:
         return None
 
 
-def create_default_user(email: str, client: Client) -> tuple:
+def _create_default_user(email: str, client: Client) -> tuple:
     username = email.split('@')[0]
     password = _rand_passwd(LENGTH_PASSWORD)
 
@@ -136,7 +144,7 @@ def create_default_user(email: str, client: Client) -> tuple:
     return password, user
 
 
-def save_password_safe(password: str, user: User):
+def _save_password_safe(password: str, user: User):
     """save password in the password vault
     """
     passwd = _encrypt(password).decode('utf-8')
@@ -144,12 +152,20 @@ def save_password_safe(password: str, user: User):
     ps.save()
 
 
-def create_client(post: dict) -> tuple:
-    """valid all fields required to create a client, then returns a Client object or a string
-    with the field that does not meet the requirements
+def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
+    """Does the necessary validations and tries to create an object Client.
+
+    Args:
+        post (dict): request.POST
+
+    Returns:
+        Tuple[bool, str, Any]: it worked, message error, Client or None
     """
-    if not _correct_post(post):
-        return False, 'does not contain all required fields', 403
+    if not __correct_post(post):
+        return False, Errors.DOES_NOT_CONTAIN_REQUIRED_FIELDS.value, None
+
+    def __field_not_found_error(field):
+        return 'O campo "%s" não atende aos requisitos.' % field
 
     company_name = post.get('company-name')
     display_name = post.get('display-name')
@@ -163,41 +179,52 @@ def create_client(post: dict) -> tuple:
     municipal_registration = post.get('municipal-registration')
     email = post.get('email')
 
-    if not _company_name(company_name):
-        return False, 'company name'
+    if not __company_name(company_name):
+        return False, __field_not_found_error('company name'), None
 
-    if not _display_name(display_name):
-        return False, 'display name'
+    if not __display_name(display_name):
+        return False, __field_not_found_error('display name'), None
 
-    if not _cnpj(cnpj):
-        return False, 'cnpj'
+    if not __cnpj(cnpj):
+        return False, __field_not_found_error('cnpj'), None
 
-    if not _city(city):
-        return False, 'city'
+    if not __city(city):
+        return False, __field_not_found_error('city'), None
 
-    if not _state(state):
-        return False, 'state'
+    if not __state(state):
+        return False, __field_not_found_error('state'), None
 
-    if not _cep(cep):
-        return False, 'cep'
+    if not __cep(cep):
+        return False, __field_not_found_error('cep'), None
 
-    if not _district(district):
-        return False, 'district'
+    if not __district(district):
+        return False, __field_not_found_error('district'), None
 
-    if not _address(address):
-        return False, 'address'
+    if not __address(address):
+        return False, __field_not_found_error('address'), None
 
-    if not _state_registration(state_registration):
-        return False, 'state registration'
+    if not __state_registration(state_registration):
+        return False, __field_not_found_error('state registration'), None
 
-    if not _municipal_registration(municipal_registration):
-        return False, 'municipal registration'
+    if not __municipal_registration(municipal_registration):
+        return False, __field_not_found_error('municipal registration'), None
 
-    if not _email(email):
-        return False, 'email'
+    if not __email(email):
+        return False, __field_not_found_error('email'), None
 
-    client = Client(company_name=company_name, display_name=display_name, cnpj=cnpj, city=city, state=state, cep=cep,
-                    district=district, address=address, state_registration=state_registration,
-                    municipal_registration=municipal_registration)
-
-    return True, client
+    return (
+        True,
+        '',
+        Client(
+            company_name=company_name,
+            display_name=display_name,
+            cnpj=cnpj,
+            city=city,
+            state=state,
+            cep=cep,
+            district=district,
+            address=address,
+            state_registration=state_registration,
+            municipal_registration=municipal_registration
+        )
+    )
