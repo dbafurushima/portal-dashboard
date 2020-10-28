@@ -1,5 +1,5 @@
 from ...commands import BasicCommand
 
 
-class ChartPutCommand(BasicCommand):
+class GraphPutCommand(BasicCommand):
     pass

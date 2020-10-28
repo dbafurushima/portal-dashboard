@@ -119,71 +119,51 @@ class BasicDocHandler(OperationDocumentEventHandler):
         self.doc = help_command.doc
 
     def doc_description(self, help_command, **kwargs):
-        self.doc.style.h2('Description')
-        self.doc.write(help_command.description)
-        self.doc.style.new_paragraph()
+        # self.doc.style.h2('Description')
+        # self.doc.write(help_command.description)
+        # self.doc.style.new_paragraph()
         # self._add_top_level_args_reference(help_command)
+        pass
 
     def doc_synopsis_start(self, help_command, **kwargs):
-        if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_start(
-                help_command=help_command, **kwargs)
-        else:
-            self.doc.style.h2('Synopsis')
-            self.doc.style.start_codeblock()
-            self.doc.writeln(help_command.synopsis)
+        # if not help_command.synopsis:
+        #     super(BasicDocHandler, self).doc_synopsis_start(
+        #         help_command=help_command, **kwargs)
+        # else:
+        #     self.doc.style.h2('Synopsis')
+        #     self.doc.style.start_codeblock()
+        #     self.doc.writeln(help_command.synopsis)
+        pass
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
-        if not help_command.synopsis:
-            doc = help_command.doc
-            argument = help_command.arg_table[arg_name]
-            if argument.synopsis:
-                option_str = argument.synopsis
-            elif argument.group_name in self._arg_groups:
-                if argument.group_name in self._documented_arg_groups:
-                    # This arg is already documented so we can move on.
-                    return
-                option_str = ' | '.join(
-                    [a.cli_name for a in
-                     self._arg_groups[argument.group_name]])
-                self._documented_arg_groups.append(argument.group_name)
-            elif argument.cli_type_name == 'boolean':
-                option_str = '%s' % argument.cli_name
-            elif argument.nargs == '+':
-                option_str = "%s <value> [<value>...]" % argument.cli_name
-            else:
-                option_str = '%s <value>' % argument.cli_name
-            if not (argument.required or argument.positional_arg):
-                option_str = '[%s]' % option_str
-            doc.writeln('%s' % option_str)
-
-        else:
-            # A synopsis has been provided so we don't need to write
-            # anything here.
-            pass
+        pass
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_end(
-                help_command=help_command, **kwargs)
-        else:
-            self.doc.style.end_codeblock()
+        # if not help_command.synopsis:
+        #     super(BasicDocHandler, self).doc_synopsis_end(
+        #         help_command=help_command, **kwargs)
+        # else:
+        #     self.doc.style.end_codeblock()
+        pass
 
     def doc_examples(self, help_command, **kwargs):
-        if help_command.examples:
-            self.doc.style.h2('Examples')
-            self.doc.write(help_command.examples)
+        # if help_command.examples:
+        #     self.doc.style.h2('Examples')
+        #     self.doc.write(help_command.examples)
+        pass
 
     def doc_subitems_start(self, help_command, **kwargs):
-        if help_command.command_table:
-            doc = help_command.doc
-            doc.style.h2('Available Commands')
-            doc.style.toctree()
+        # if help_command.command_table:
+        #     doc = help_command.doc
+        #     doc.style.h2('Available Commands')
+        #     doc.style.toctree()
+        pass
 
     def doc_subitem(self, command_name, help_command, **kwargs):
-        if help_command.command_table:
-            doc = help_command.doc
-            doc.style.tocitem(command_name)
+        # if help_command.command_table:
+        #     doc = help_command.doc
+        #     doc.style.tocitem(command_name)
+        pass
 
     def doc_subitems_end(self, help_command, **kwargs):
         pass
@@ -192,4 +172,5 @@ class BasicDocHandler(OperationDocumentEventHandler):
         pass
 
     def doc_options_end(self, help_command, **kwargs):
-        self._add_top_level_args_reference(help_command)
+        # self._add_top_level_args_reference(help_command)
+        pass

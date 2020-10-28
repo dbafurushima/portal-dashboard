@@ -1,5 +1,5 @@
 from ...commands import BasicCommand
 
 
-class ChartListCommand(BasicCommand):
+class GraphListCommand(BasicCommand):
     pass

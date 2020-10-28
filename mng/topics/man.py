@@ -17,4 +17,4 @@ class ManCommand(BasicCommand):
         self._display_help(parsed_args, parsed_globals)
         for commmand in self.table_command:
             if str(commmand) != 'help':
-                print(' - %s\n' % commmand)
+                print(' * %s\n' % commmand)

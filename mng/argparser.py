@@ -100,8 +100,8 @@ class CLIArgParser(argparse.ArgumentParser):
             for i in range(len(action.choices))[::self.ChoicesPerLine]:
                 current = []
                 for choice in action.choices[i:i+self.ChoicesPerLine]:
-                    if choice != 'help':
-                        current.append('%-40s' % choice)
+                    # if choice != 'help':
+                    current.append('%-40s' % choice)
                 msg.append(' | '.join(current))
             possible = get_close_matches(value, action.choices, cutoff=0.8)
             if possible:
@@ -206,6 +206,7 @@ class ArgTableArgParser(CLIArgParser):
 
     def _build(self, argument_table, command_table):
         for arg_name in argument_table:
+            # print('ArgTableArgParser._build.argname: %s' % arg_name)
             argument = argument_table[arg_name]
             argument.add_to_parser(self)
         if command_table:

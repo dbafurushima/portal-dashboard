@@ -352,12 +352,14 @@ class BasicHelp(HelpCommand):
             print(self.description)
 
         if self.synopsis:
+            print('\nSynopsis\n********\n')
             print(self.synopsis)
 
         if self.command_table:
-            print('\nAvailable Commands\n******************\n')
+            print('\n\nAvailable Commands\n******************\n')
             for command in self.command_table:
-                print('  * %s\n' % command)
+                print('  - %s' % command)
 
         if self.examples:
+            print('\n\nExamples\n********\n')
             print(self.examples)

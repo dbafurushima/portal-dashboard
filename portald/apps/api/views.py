@@ -28,12 +28,20 @@ class NotesViewSet(viewsets.ModelViewSet):
         serializer = NoteSerializer(queryset, many=True)
 
         def comments_by_note(note_id):
-            return CommentSerializer(Comment.objects.filter(note_id=note_id), many=True).data
+            return CommentSerializer(
+                Comment.objects.filter(note_id=note_id),
+                many=True
+            ).data
 
-        return Response([{'id': _.get('id'), 'subject': _.get('subject'),
-                          'timestamp': timestamp_to_datetime(_.get('timestamp')), 'msg': _.get('msg'),
-                          'comments': comments_by_note(_.get('id'))} for
-                         _ in serializer.data])
+        return Response(
+            [
+                {
+                    'id': _.get('id'),
+                    'subject': _.get('subject'),
+                    'timestamp': timestamp_to_datetime(_.get('timestamp')),
+                    'msg': _.get('msg'),
+                    'comments': comments_by_note(_.get('id'))
+                } for _ in serializer.data])
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -49,9 +57,17 @@ class CommentViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = CommentSerializer(queryset, many=True)
 
-        return Response([{'id': _.get('id'), 'note': NoteSerializer(
-            Note.objects.get(id=_.get('note'))).data.get('msg'), 'note_id': _.get('note'),
-                          'comment': _.get('comment')} for _ in serializer.data])
+        return Response(
+            [
+                {
+                    'id': _.get('id'),
+                    'note': NoteSerializer(
+                        Note.objects.get(id=_.get('note'))
+                    ).data.get('msg'),
+                    'note_id': _.get('note'),
+                    'comment': _.get('comment')
+                } for _ in serializer.data
+            ])
 
 
 def instances_from_host(host) -> list:
@@ -59,15 +75,18 @@ def instances_from_host(host) -> list:
 
     for instance in Instance.objects.filter(host_id=host):
         raw_instance = dict(InstanceSerializer(instance).data)
-        service = None if raw_instance.get('service') is None else ServiceSerializer(Service.objects.get(
-            id=raw_instance.get('service'))).data
+        service = None if raw_instance.get('service') is None else ServiceSerializer(
+            Service.objects.get(
+                id=raw_instance.get('service')
+            )).data
 
-        response.append({
-            'id': raw_instance.get('id'),
-            'service': service,
-            'database': raw_instance.get('database'),
-            'private_ip': raw_instance.get('private_ip')
-        })
+        response.append(
+            {
+                'id': raw_instance.get('id'),
+                'service': service,
+                'database': raw_instance.get('database'),
+                'private_ip': raw_instance.get('private_ip')
+            })
 
     return response
 
@@ -151,7 +170,9 @@ class EnvironmentViewSet(viewsets.ModelViewSet):
 
         for env in Environment.objects.all():
             new_env = dict(EnvironmentSerializer(env).data)
-            new_env['hosts'] = [host_with_instances_and_service(host) for host in Host.objects.filter(environment=env)]
+            new_env['hosts'] = [
+                host_with_instances_and_service(host) for host in Host.objects.filter(environment=env)
+            ]
             raw_data.append(new_env)
 
         return Response(raw_data)
@@ -168,17 +189,29 @@ class InventoryViewSet(viewsets.ModelViewSet):
         serializer = InventorySerializer(queryset, many=True)
 
         def environment_from_inventory(inv):
-            return [(lambda env: {'id': env.get('id'), 'name': env.get('name'),
-                                  'hosts': [host_with_instances_and_service(h) for h in Host.objects.filter(
-                                      environment_id=env.get('id'))]})(EnvironmentSerializer(env).data)
-                    for env in Environment.objects.filter(inventory=inv)]
+            return [
+                (
+                    lambda env: {
+                        'id': env.get('id'),
+                        'name': env.get('name'),
+                        'hosts': [
+                            host_with_instances_and_service(h) for h in Host.objects.filter(
+                                      environment_id=env.get('id')
+                            )
+                        ]
+                    }
+                )(EnvironmentSerializer(env).data) for env in Environment.objects.filter(inventory=inv)]
 
         raw_data = []
         for inventory in Inventory.objects.all():
-            new_inventory = (lambda inv: {'id': inv.get('id'), 'client_id': inv.get('enterprise'),
-                                          'client': Client.objects.get(id=inv.get('enterprise')).company_name if
-                                          inv.get('enterprise') is not None else None}) \
-                (dict(InventorySerializer(inventory).data))
+            new_inventory = (
+                lambda inv: {
+                    'id': inv.get('id'),
+                    'client_id': inv.get('enterprise'),
+                    'client': Client.objects.get(
+                        id=inv.get('enterprise')
+                    ).company_name if inv.get('enterprise') is not None else None}
+            )(dict(InventorySerializer(inventory).data))
             new_inventory['environments'] = environment_from_inventory(inventory)
             raw_data.append(new_inventory)
 
