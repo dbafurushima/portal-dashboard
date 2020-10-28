@@ -41,7 +41,7 @@ class ConfigureCommand(BasicCommand):
         '    Address Api [localhost]: 192.168.1.2\n'
         '    Port Api [8080]: 8080\n'
         '    Username Api [user_api]: api\n'
-        '    Password Api [****]: ********\n'
+        '    Password Api [****]: ********'
     )
     SUBCOMMANDS = [
         {'name': 'list', 'command_class': ConfigureListCommand},

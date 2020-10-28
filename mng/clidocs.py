@@ -16,11 +16,13 @@ class CLIDocumentEventHandler(object):
         self.help_command = help_command
         self._arg_groups = self._build_arg_table_groups(help_command)
         self._documented_arg_groups = []
+        # print('CLIDocumentEventHandler.__init__(help_command).arg_table: %s' % help_command.arg_table)
 
     def _build_arg_table_groups(self, help_command):
         arg_groups = {}
         for name, arg in help_command.arg_table.items():
             if arg.group_name is not None:
+                # print('CLIDocumentEventHandler._build_arg_table_groups().arg.group_name: %s' % arg.group_name)
                 arg_groups.setdefault(arg.group_name, []).append(arg)
         return arg_groups
 
@@ -31,11 +33,23 @@ class CLIDocumentEventHandler(object):
 
     # These are default doc handlers that apply in the general case.
 
+    def _create_help(self, help_command, **kwargs):
+        self.doc_title(help_command)
+
+    def create_help(self, help_command):
+        self._create_help(help_command)
+
     def doc_breadcrumbs(self, help_command, **kwargs):
         pass
 
     def doc_title(self, help_command, **kwargs):
-        pass
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        reference = help_command.event_class.replace('.', ' ')
+        if reference != 'mng':
+            reference = 'mng ' + reference
+        doc.writeln('.. _cli:%s:' % reference)
+        doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
         pass

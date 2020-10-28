@@ -1,0 +1,1 @@
+mng graph create usage_cpu --title "Usage CPU VM01" --prefix "%/s"

@@ -11,11 +11,11 @@ class ConfigureListCommand(BasicCommand):
         'Liste os dados de configuração MNG CLI. Este comando mostrará '
         'os dados de configuração atuais. Para cada item de configuração, '
         'ele mostrará o valor, onde o valor de configuração foi recuperado '
-        'e o nome da variável de configuração.\n'
+        'e o nome da variável de configuração.'
     )
     SYNOPSIS = 'mng configure list'
     EXAMPLES = (
-        '\nPara mostrar seus valores de configuração atuais::\n'
+        '\nPara mostrar seus valores de configuração atuais\n'
         '\n'
         '  $ mng configure list\n'
         '        Name                    Value             Type    Location\n'
@@ -24,8 +24,7 @@ class ConfigureListCommand(BasicCommand):
         '    port_api                     8080              int    ~/.config/mng.ini\n'
         'username_api                      api              str    ~/.config/mng.ini\n'
         'password_api     ****************ABCD              str    ~/.config/mng.ini\n'
-        '  base64auth     ****************ABCD              str    ~/.config/mng.ini\n'
-        '\n'
+        '  base64auth     ****************ABCD              str    ~/.config/mng.ini'
     )
 
     def __init__(self, stream=sys.stdout):

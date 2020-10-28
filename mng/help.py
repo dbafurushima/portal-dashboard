@@ -3,6 +3,7 @@ import os
 
 from .argparser import ArgTableArgParser
 from .clidocs import OperationDocumentEventHandler
+from .restdoc import ReSTDocument
 
 
 class HelpCommand(object):
@@ -58,6 +59,7 @@ class HelpCommand(object):
         self.arg_table = arg_table
         self._subcommand_table = {}
         self._related_items = []
+        self.doc = ReSTDocument(target='man')
 
     @property
     def event_class(self):

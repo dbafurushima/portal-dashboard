@@ -19,12 +19,7 @@ def main():
     command_table['configure'] = ConfigureCommand()
     command_table['graph'] = GraphicCommand()
 
-    parser = MainArgParser(
-        command_table,
-        __version__,
-        description,
-        argument_table,
-        prog="mng")
+    parser = MainArgParser(command_table, __version__, description, argument_table, prog="mng")
 
     args = sys.argv[1:]
     parsed_args, remaining = parser.parse_known_args(args)

@@ -7,7 +7,8 @@ from collections import OrderedDict
 from mng import root_module
 from .argparser import ArgTableArgParser
 from .arguments import CustomArgument
-from .help import HelpCommand
+from .help import HelpCommand, BasicDocHandler
+from .clidocs import CLIDocumentEventHandler
 
 
 class _FromFile(object):
@@ -198,6 +199,7 @@ class BasicCommand(CLICommand):
             if xformed in self.ARG_TABLE:
                 cli_argument = self.ARG_TABLE[xformed]
                 # print('mng.commands.BasicCommand.__call__().cli_argument: %s' % cli_argument)
+        # print('BasicCommand.__call__.parsed_args: %s' % parsed_args)
 
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
@@ -289,13 +291,15 @@ class BasicHelp(HelpCommand):
                                         command_table, arg_table)
         # This is defined in HelpCommand so we're matching the
         # casing here.
-        self.EventHandlerClass = event_handler_class
+        self.docs_handler = CLIDocumentEventHandler(self)
 
         # These are public attributes that are mapped from the command
         # object.  These are used by the BasicDocHandler below.
         self._description = command_object.DESCRIPTION
         self._synopsis = command_object.SYNOPSIS
         self._examples = command_object.EXAMPLES
+        # self.doc.write('testando 1, 2, 3...')
+        # print(self.doc.getvalue())
 
     @property
     def name(self):
@@ -315,7 +319,8 @@ class BasicHelp(HelpCommand):
 
     @property
     def event_class(self):
-        return '.'.join(self.obj.lineage_names)
+        # return '.'.join(self.obj.lineage_names)
+        return self.obj.NAME
 
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)
@@ -345,21 +350,62 @@ class BasicHelp(HelpCommand):
         # TODO HELP
         # print('BasicHelp.__call__()')
         # print('BasicHelp.__call__().self.command_table: %s' % self.command_table)
-        if self.synopsis:
-            print('\n%s\n%s\n' % (self.name, '^'*len(self.name)))
+        #
+        # =========================================================================
+        # RESERVADO APENAS PARA CHAMAR UMA FUNÇÃO QUE IRÁ RENDERIZAR TODA
+        # A DOCUMENTAÇÃO, AS FUNÇÕES FICAM A CARGO DO CLIDocumentEventHandler
+        # E SEUS MÉTODOS.
+        #   * Exibir subcomandos.
+        #   * Exibir documentação de subcomandos a apartir de
+        #       arquivos .rst
+        #   * Exibir exemplos para subcomandos a partir de arquivos .rst                
+        # =========================================================================
+        # print(self.doc.getvalue())
+        # self.docs_handler.create_help(self)
+        doc = self.doc
+        style = doc.style
+
+        if parsed_globals.command == 'help':
+            doc.write(self.description)
+            print(self.doc.getvalue().decode('utf-8'))
+            return
+
+        # Draw title::
+        #   Title
+        #   ^^^^^
+        style.command_title(self.name)
 
         if self.description:
-            print(self.description)
+            # Draw subtitle
+            #   Description
+            #   ***********
+            style.subtitle('Description')
+            doc.write(self.description)
+            style.new_paragraph()
 
         if self.synopsis:
-            print('\nSynopsis\n********\n')
-            print(self.synopsis)
+            style.subtitle('Synopsis')
+            doc.write(self.synopsis)
+            style.new_paragraph()
+
+        if self.arg_table:
+            style.subtitle('Options')
+            arg_groups = {}
+            for _, arg in self.arg_table.items():
+                arg: CustomArgument
+                doc.writeln('"%s" (%s) %s' % 
+                    (arg.cli_name, arg.cli_type_name, '(positional)' if arg.positional_arg else ''))
+                style.p(arg.documentation)
+                if arg.group_name is not None:
+                    arg_groups.setdefault(arg.group_name, []).append(arg)
 
         if self.command_table:
-            print('\n\nAvailable Commands\n******************\n')
             for command in self.command_table:
-                print('  - %s' % command)
+                doc.writeln('  - %s' % command)
+                style.new_line()
 
         if self.examples:
-            print('\n\nExamples\n********\n')
-            print(self.examples)
+            style.subtitle('Examples')
+            style.codeblock(self.examples)
+
+        print(self.doc.getvalue().decode('utf-8'))

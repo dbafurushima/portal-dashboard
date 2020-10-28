@@ -2,11 +2,13 @@
 mng
 ^^^
 
+
 Description
 ***********
 
 A MNG Command Line Interface é uma ferramenta unificada para gerenciar os
 serviços do *PortalD*.
+
 
 Synopsis
 ********
@@ -16,6 +18,7 @@ Synopsis
 Use *mng command help* para obter informações sobre um comando específico.
 A sinopse de cada comando mostra seus parâmetros e seu uso. Parâmetros opcionais
 são mostrados entre colchetes.
+
 
 Options
 *******
@@ -33,6 +36,7 @@ máquina que está executando o CLI.
 "--version" (string)
 
 Mostra a versão desta ferramenta.
+
 
 Available Services
 ******************
