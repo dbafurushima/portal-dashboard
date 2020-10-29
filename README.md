@@ -27,7 +27,7 @@
 </p>
 
 <p align="center">
-  <b>MNG CLI</b> é um utilitário <u>command-line</u> multiplataforma escrito em <u>Python</u>, utilizado para auxiliar a aplicação web <b>portald</b> para trazer uma <b>máxima</b> flexibilidade.
+  <b>MNG</b> <i>Command Line Interface</i> é uma ferramenta unificada para gerenciar os serviços do <b><u>PortalD</u></b>
 </p>
 
 ---

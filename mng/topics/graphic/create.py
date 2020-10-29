@@ -3,9 +3,9 @@ from ...commands import BasicCommand
 
 class GraphCreateCommand(BasicCommand):
 
-    NAME = 'graph'
+    NAME = 'create'
 
-    DESCRIPTION = BasicCommand.FROM_FILE()
+    DESCRIPTION = BasicCommand.FROM_FILE('graph', 'create', '_description.rst')
 
     SYNOPSIS = BasicCommand.FROM_FILE('graph', 'create', '_synopsis.rst') # BasicCommand.FROM_FILE()  # ('mng graph create chn')
 
@@ -54,6 +54,36 @@ class GraphCreateCommand(BasicCommand):
             'name': 'data-format',
             'help_text': 'Um strftime que todos os dados deveram conter. (default=Y-m-d H-M)',
             'default': 'Y-m-d H-M',
+            'action': 'store',
+            'dest': 'format',
+            'required': False,
+            'cli_type_name': 'string',
+            'group_name': 'fusioncharts'
+        },
+        {
+            'name': 'type-chart',
+            'help_text': 'Tipo do gráficos, valores aceitaveis [line] (yAxis_plot_type)',
+            'default': 'line',
+            'action': 'store',
+            'dest': 'format',
+            'required': False,
+            'cli_type_name': 'string',
+            'group_name': 'fusioncharts'
+        },
+        {
+            'name': 'about',
+            'help_text': 'Nome ou pequena frase que dirá sobre o que o gráfico é. Ex: Uso da CPU',
+            'default': 'about',
+            'action': 'store',
+            'dest': 'format',
+            'required': False,
+            'cli_type_name': 'string',
+            'group_name': 'fusioncharts'
+        },
+        {
+            'name': 'plot-value',
+            'help_text': 'yAxis plot value.',
+            'default': 'plot-value',
             'action': 'store',
             'dest': 'format',
             'required': False,

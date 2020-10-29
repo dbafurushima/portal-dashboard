@@ -10,9 +10,9 @@ REPOSITORY="https://github.com/dbafurushima/portal-dashboard.git"
 
 HOME_PATH_INSTALL="$HOME/.portal-dashboard"
 if [ -d $HOME_PATH_INSTALL ]; then
-    echo "[+] atualizando repostório..."
+    echo "\n[+] atualizando repostório...\n"
     cd $HOME_PATH_INSTALL
-    git pull origin mng.v2
+    git pull origin dev
     exit 0
 fi
 
@@ -51,21 +51,22 @@ if [ $required_install -eq 2 ]; then
     echo "$packages_for_install -y $hidden_install"
     exit 1
 fi
-echo "[+] system dependencies ok..."
+echo "\n[+] system dependencies ok...\n"
 
 git clone $REPOSITORY "$HOME/.portal-dashboard"
-echo "[+] clone repository portal-dashboard..."
+echo "\n[+] clone repository portal-dashboard...\n"
 
 cd "$HOME/.portal-dashboard"
-git pull origin mng.v2
+git pull origin dev
 
 python3 -m pip install -r mng-requirements.txt || exit 1
-echo "[+] install pip requirements"
+echo "\n[+] install pip requirements\n"
 
-POINT_MODULE="$HOME_PATH_INSTALL/mng/mngcli.py"
+POINT_MODULE="$HOME_PATH_INSTALL/mngcli.py"
 
 # optional alias to put in the user's bashrc
-echo "echo \"alias mng=\"python3 $POINT_MODULE\"\" >> ~/.bashrc
+# echo "echo \"alias mng=\"python3 $POINT_MODULE\"\" >> ~/.bashrc"
+echo 'echo "alias mng=\"python3 ~/.portal-dashboard/mngcli.py\"" >> ~/.bashrc'
 echo "exec \"$SHELL\""
 
 echo "\ninstall sucessful"
