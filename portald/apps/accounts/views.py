@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
@@ -74,8 +75,11 @@ class TOTPCreateView(views.APIView):
 def totp_check(user: User, token: str) -> bool:
     device = get_user_totp_device(user)
 
+    # print('totp_check().device: %s' % device)
+    # print('totp_check().device.verify_token(token): %s' % device.verify_token(token))
     if (device is not None) and (not device.verify_token(token)):
 
+        # print('totp_check() if (device is not None) and (not device.verify_token(token)): True')
         if not device.confirmed:
             device.confirmed = True
             device.save()
@@ -94,6 +98,7 @@ def totp_post_view(request):
     user = request.user
     try:
         token = request.POST['token']
+        # print('totp_post_view().token: %s' % token)
     except KeyError:
         token = None
 

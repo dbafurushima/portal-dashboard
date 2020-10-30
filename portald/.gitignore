@@ -132,6 +132,7 @@ dmypy.json
 .idea
 .vscode
 config/my.cnf
+config/my.cnf.*
 my.cnf
 archives/*
 static/*

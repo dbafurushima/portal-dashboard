@@ -10,7 +10,7 @@ class ConfigureSetCommand(BasicCommand):
     NAME = 'set'
     DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
                                          '_description.rst')
-    SYNOPSIS = 'aws configure set varname value [--profile profile-name]'
+    SYNOPSIS = 'aws configure set varname value'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'set', '_examples.rst')
     ARG_TABLE = [
         {'name': 'varname',

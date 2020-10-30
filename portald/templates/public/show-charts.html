@@ -23,7 +23,7 @@
 {% block content %}
 {% for item in output %}
 <div class="row">
-    <div class="col-md-{{ item.obj_chart.columns }} grid-margin stretch-card">
+    <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div id="chart-{{ item.obj_chart.id }}">{{ item.chart|safe }}</div>
         </div>

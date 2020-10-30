@@ -282,10 +282,15 @@ def passwords_safe_view(request):
 
         return True
 
+    # print('password_safe_view().request.session.get("totp"): %s' % request.session.get('totp'))
+    # print('password_safe_view().totp_check(...): %s' % totp_check(request.user, request.session.get('token')))
+
     if (not request.session.get('totp')) or (not totp_check(request.user, request.session.get('token'))):
+        # print('redirect() -> first condition')
         return redirect('totp-sign-in')
 
     if not __verify_expire(request.session.get('totp_expire')):
+        # print('redirect() -> __verify_expire()')
         return redirect('totp-sign-in')
 
     if request.method == 'GET':

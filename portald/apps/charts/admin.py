@@ -4,9 +4,9 @@ from .models import Chart, Data
 
 @admin.register(Chart)
 class ChartList(admin.ModelAdmin):
-    list_display = ('id', 'client', 'uid', 'caption_text', 'yAxis_title')
+    list_display = ('id', 'client', 'uid', 'caption', 'yAxis_title')
     search_fields = ('uid',)
-    list_display_links = ('uid', 'caption_text')
+    list_display_links = ('uid', 'caption')
     list_per_page = 20
 
 

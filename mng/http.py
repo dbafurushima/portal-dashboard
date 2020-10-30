@@ -28,6 +28,9 @@ def request(
     if data:
         headers['Content-Type'] = 'application/json'
 
+    if isinstance(data, dict):
+        data = json.dumps(data).encode('utf-8')
+
     req = urllib.request.Request(uri, data, headers)
 
     body = None

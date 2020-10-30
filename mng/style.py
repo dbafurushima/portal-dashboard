@@ -127,8 +127,9 @@ class ReSTStyle(BaseStyle):
     
     def p(self, s):
         self.new_line()
-        self.doc.write('%s%s' % (' ' * 4, s))
-        self.new_paragraph()
+        [self.doc.writeln('%s%s' % (' ' * 4, line)) for line in s.split('\n')]
+        # self.doc.write('%s%s' % (' ' * 4, s))
+        self.new_line()
 
     def h1(self, s):
         self._heading(s, '*')

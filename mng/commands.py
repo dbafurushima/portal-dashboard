@@ -393,8 +393,10 @@ class BasicHelp(HelpCommand):
             arg_groups = {}
             for _, arg in self.arg_table.items():
                 arg: CustomArgument
-                doc.writeln('"%s" (%s) %s' % 
-                    (arg.cli_name, arg.cli_type_name, '(positional)' if arg.positional_arg else ''))
+                doc.writeln('"%s" (%s) "%s" %s' % 
+                    (arg.cli_name, arg.cli_type_name,
+                    arg._default,
+                    '(positional)' if arg.positional_arg else ''))
                 style.p(arg.documentation)
                 if arg.group_name is not None:
                     arg_groups.setdefault(arg.group_name, []).append(arg)
@@ -406,6 +408,6 @@ class BasicHelp(HelpCommand):
 
         if self.examples:
             style.subtitle('Examples')
-            style.codeblock(self.examples)
+            style.write_py_doc_string(self.examples)
 
         print(self.doc.getvalue().decode('utf-8'))

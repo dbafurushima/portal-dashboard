@@ -1,5 +1,10 @@
 mng graph create graph-name
     [--cid <integer>]
     [--title <string>]
+    [--capition <string>]
+    [--subcaption <string>]
+    [--type-graph <string>]
+    [--description-value <string>]
+    [--about <string>]
     [--prefix <string>]
-    [--data-format <string>]
+    [--stftime <string>]
