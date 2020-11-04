@@ -3,13 +3,15 @@ import urllib.parse
 import json
 import logging
 
+from .errors import Errors
+
 from typing import Dict, Any
 
 
 def request(
         uri: str,
         data: Dict[str, Any] or str = None,
-        params = None,
+        params: dict = None,
         headers: Dict[str, str or int] = {},
         method: str = 'POST',) -> tuple:
     """Function that will make requests to the API to send or consult the information.
@@ -31,6 +33,10 @@ def request(
     if isinstance(data, dict):
         data = json.dumps(data).encode('utf-8')
 
+    if params is not None:
+        params = urllib.parse.urlencode(params)
+        uri += '?%s' % params
+
     req = urllib.request.Request(uri, data, headers)
 
     body = None
@@ -43,11 +49,13 @@ def request(
 
     try:
         with urllib.request.urlopen(req) as response:
-            body = response.read().decode('utf-8', errors='ignore')
+            body = json.loads(response.read().decode('utf-8', errors='ignore'))
     except urllib.error.HTTPError:
         pass
     except TimeoutError:
         pass
+    except urllib.error.URLError:
+        logging.warning(Errors.name_and_error(Errors.UNABLE_TO_CONNECT_SERVER))
     except Exception as err:
         logging.warning('not cataloged error: %s' % err)
     else:
