@@ -1,6 +1,6 @@
 import pprint
 
-from .fusion_charts import FusionChart
+from ._fc import FusionChart
 from ._argv_create import ArgTableCreate
 
 from ...commands import BasicCommand
