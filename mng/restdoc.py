@@ -9,7 +9,7 @@ class ReSTDocument(object):
         self.keep_data = True
         self._writes = []
         self.hrefs = {}
-    
+
     def _write(self, s):
         if self.keep_data and s is not None:
             self._writes.append(s)

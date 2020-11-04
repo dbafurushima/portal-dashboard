@@ -5,6 +5,10 @@ import pprint
 
 
 class FusionChart(object):
+    """Create an object that represents a graphic in the web application,
+    with methods for validating and formatting the parameters and delivering
+    a structure in dict to post the API
+    """
 
     def __init__(
             self,
@@ -16,7 +20,7 @@ class FusionChart(object):
             format: str,
             type_graph: str,
             description_value: str,
-            cid=None,) -> None:
+            cid=None) -> None:
 
         self.cid = cid
         self.uid = self.__create_uid(name)
@@ -39,6 +43,7 @@ class FusionChart(object):
         # re_data = re.compile(r'^%m')
         if re.compile(r'^%m').match(strf):
             strf = '%Y-'+strf
+        # strftime to pattern "^Y-m-d"
 
         return strf
 

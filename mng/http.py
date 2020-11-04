@@ -50,10 +50,13 @@ def request(
     try:
         with urllib.request.urlopen(req) as response:
             body = json.loads(response.read().decode('utf-8', errors='ignore'))
-    except urllib.error.HTTPError:
-        pass
-    except TimeoutError:
-        pass
+    except urllib.error.HTTPError as err:
+        if '401' in err:
+            logging.warning(Errors.name_and_error(Errors.HTTP_401_UNAUTHORIZED))
+        else:
+            logging.warning('urllib.error.HTTPError: %s' % err)
+    except TimeoutError as err:
+        logging.warning('warning: %s' % err)
     except urllib.error.URLError:
         logging.warning(Errors.name_and_error(Errors.UNABLE_TO_CONNECT_SERVER))
     except Exception as err:
