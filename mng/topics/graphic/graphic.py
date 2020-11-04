@@ -9,9 +9,17 @@ class GraphicCommand(BasicCommand):
 
     DESCRIPTION = BasicCommand.FROM_FILE()
 
-    SYNOPSIS = ('mng graph {create, list, put}')
+    SYNOPSIS = (' $ mng graph {create, list, put}')
 
-    EXAMPLES = ()
+    EXAMPLES = (
+        'Criar um gráfico para representar o uso de CPU da VM01\n'
+        '\n'
+        '   $ mng graph create usage_cpu --title "Usage CPU VM01" --prefix "%/s"\n'
+        '\n'
+        'Alimentar o gráfico criado acima\n'
+        '\n'
+        '   $ mng graph put "gid" "2020-11-04 21:03,01;2020-11-04 21:04,2"\n'
+    )
 
     SUBCOMMANDS = [
         {'name': 'create', 'command_class': GraphCreateCommand},

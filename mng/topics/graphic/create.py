@@ -39,7 +39,7 @@ class GraphCreateCommand(BasicCommand):
             print('\n>> Ops... error, see log for more details.')
             return
 
-        pp = pprint.PrettyPrinter(indent=2, width=60, compact=True)
+        pp = pprint.PrettyPrinter(indent=4, width=60, compact=True)
         print('\n>> Successfully created.\n')
         pp.pprint(graph)
 

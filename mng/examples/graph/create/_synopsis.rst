@@ -1,4 +1,4 @@
-mng graph create graph-name
+ $ mng graph create graph-name
     [--cid <integer>]
     [--title <string>]
     [--capition <string>]

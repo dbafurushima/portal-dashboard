@@ -3,6 +3,7 @@ import sys
 from .argparser import MainArgParser, CommandAction, ArgTableArgParser
 from .topics.configure.configure import ConfigureCommand
 from .topics.graphic.graphic import GraphicCommand
+from .topics.environment import EnvironmentCommand
 from .topics.man import ManCommand
 from .version import __version__
 
@@ -18,6 +19,7 @@ def main():
 
     command_table['configure'] = ConfigureCommand()
     command_table['graph'] = GraphicCommand()
+    command_table['environment'] = EnvironmentCommand()
 
     parser = MainArgParser(command_table, __version__, description, argument_table, prog="mng")
 

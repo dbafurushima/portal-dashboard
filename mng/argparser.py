@@ -101,7 +101,7 @@ class CLIArgParser(argparse.ArgumentParser):
                 current = []
                 for choice in action.choices[i:i+self.ChoicesPerLine]:
                     # if choice != 'help':
-                    current.append('%-40s' % choice)
+                    current.append('%-30s' % choice)
                 msg.append(' | '.join(current))
             possible = get_close_matches(value, action.choices, cutoff=0.8)
             if possible:

@@ -24,7 +24,7 @@ class GraphPutCommand(BasicCommand):
 		'put',
 		'_description.rst')
 
-	SYNOPSIS = 'mng put gid value [--index]'
+	SYNOPSIS = ' $ mng put gid value [--index]'
 
 	EXAMPLES = BasicCommand.FROM_FILE(
 		'graph',
