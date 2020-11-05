@@ -18,7 +18,7 @@ class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
         fields = ['id', 'os_name', 'arch', 'platform', 'processor', 'hostname', 'ram',
-                  'cores', 'frequency', 'environment', 'equipment']
+                  'cores', 'frequency', 'environment', 'equipment', 'public_ip', 'private_ip']
 
 
 class InstanceSerializer(serializers.ModelSerializer):

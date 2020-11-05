@@ -37,7 +37,7 @@ def request(
         params = urllib.parse.urlencode(params)
         uri += '?%s' % params
 
-    req = urllib.request.Request(uri, data, headers)
+    req = urllib.request.Request(uri, data, headers, method=method)
 
     body = None
     did_it_work = False
