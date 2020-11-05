@@ -7,11 +7,17 @@ class HostUpdateCommand(BasicCommand):
 
     NAME = 'update'
 
-    DESCRIPTION = None
+    DESCRIPTION = BasicCommand.FROM_FILE(
+        'host',
+        'update',
+        '_description.rst')
 
-    SYNOPSIS = None
+    SYNOPSIS = ' $ mng host update hostid value key'
 
-    EXAMPLES = None
+    EXAMPLES = BasicCommand.FROM_FILE(
+        'host',
+        'update',
+        '_examples.rst')
 
     ARG_TABLE = [
         {
@@ -49,7 +55,7 @@ class HostUpdateCommand(BasicCommand):
 
         keys_values = {}
 
-        [keys_values.update({keys[x]: values[x]}) for x in range(len(keys))]
+        [keys_values.update({values[x]: keys[x]}) for x in range(len(keys))]
 
         host = self.__update_host(args, keys_values)
 
@@ -63,12 +69,11 @@ class HostUpdateCommand(BasicCommand):
     def __update_host(self, args, fields: dict) -> list or None:
         url_update = 'http://%s:%s/api/cmdb/host/%s/' % (lookup_config('address_api'), lookup_config('port_api'), args.hostid)
         headers = {'Authorization': 'Basic %s' % lookup_config('base64auth')}
-        print(url_update)
+
         sucessful, host = request(url_update, method='GET', headers=headers)
 
         if not sucessful:
             return None
-
         host.update(fields)
 
         sucessful, data = request(url_update, data=host, method='PUT', headers=headers)
