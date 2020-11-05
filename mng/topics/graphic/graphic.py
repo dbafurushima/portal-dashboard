@@ -19,6 +19,21 @@ class GraphicCommand(BasicCommand):
         'Alimentar o gráfico criado acima\n'
         '\n'
         '   $ mng graph put "gid" "2020-11-04 21:03,01;2020-11-04 21:04,2"\n'
+        '\n'
+        'Listando todos os gráficos já criados\n'
+        '\n'
+        "   [ { 'caption': 'CPU Analysis',\n"
+        "       'client': None,\n"
+        "       'id': 11,\n"
+        "       'schema': '[{\"name\": \"Time\", \"type\": \"date\", \"format\": '\n"
+        '                 "%Y-%m-%d %H:%M"}, {"name": "title", \n'
+        '                 "type": "number"}]\n'
+        "       'subcaption': 'Usage',\n"
+        "       'uid': '319a_usage_cpu_vm0',\n"
+        "       'yAxis_format_prefix': '%/min',\n"
+        "       'yAxis_plot_type': 'line',\n"
+        "       'yAxis_plot_value': 'usage cpu is',\n"
+        "       'yAxis_title': 'usage_cpu_vm0'}]\n"
     )
 
     SUBCOMMANDS = [
