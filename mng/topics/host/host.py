@@ -1,11 +1,12 @@
 from ...commands import BasicCommand
-from .update import HostUpdateCommand
-from .list import HostListCommand
 from ...http import request
 from ...utils import (
 	lookup_config, write_stdout, write_stdout_pprint,
 	get_machine_infos
 )
+
+from .update import HostUpdateCommand
+from .list import HostListCommand
 
 
 class HostCommand(BasicCommand):

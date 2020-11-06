@@ -388,6 +388,12 @@ class BasicHelp(HelpCommand):
             doc.write(self.synopsis)
             style.new_paragraph()
 
+        if self.command_table:
+            style.subtitle('Subcommands')
+            for command in self.command_table:
+                doc.writeln('  - %s' % command)
+                style.new_line()
+
         if self.arg_table:
             style.subtitle('Options')
             arg_groups = {}
@@ -400,11 +406,6 @@ class BasicHelp(HelpCommand):
                 style.p(arg.documentation)
                 if arg.group_name is not None:
                     arg_groups.setdefault(arg.group_name, []).append(arg)
-
-        if self.command_table:
-            for command in self.command_table:
-                doc.writeln('  - %s' % command)
-                style.new_line()
 
         if self.examples:
             style.subtitle('Examples')

@@ -5,6 +5,7 @@ from .topics.configure.configure import ConfigureCommand
 from .topics.graphic.graphic import GraphicCommand
 from .topics.environment import EnvironmentCommand
 from .topics.host import HostCommand
+from .topics.note import NoteCommand
 from .topics.man import ManCommand
 from .version import __version__
 
@@ -19,6 +20,7 @@ def main():
     command_table['help'] = ManCommand(command_table)
     command_table['configure'] = ConfigureCommand()
 
+    command_table['note'] = NoteCommand()
     command_table['graph'] = GraphicCommand()
     command_table['host'] = HostCommand()
     command_table['environment'] = EnvironmentCommand()
