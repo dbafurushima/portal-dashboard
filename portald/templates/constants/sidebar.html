@@ -16,25 +16,25 @@
 			<li class="nav-item ">
 				<a href="{% url 'portal-home' %}" class="nav-link">
 					<i class="link-icon" data-feather="box"></i>
-					<span class="link-title">PortalD</span>
+					<span class="link-title">PORTALD</span>
 				</a>
 			</li>
             {% if request.user.is_superuser %}
-            <li class="nav-item nav-category">Management</li>
+            <li class="nav-item nav-category">MANAGMENT</li>
 			<li class="nav-item">
 				<li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#clients" role="button" aria-expanded="" aria-controls="clients">
 					<i class="link-icon" data-feather="users"></i>
-					<span class="link-title">Clientes</span>
+					<span class="link-title">CLIENTES</span>
 					<i class="link-arrow" data-feather="chevron-down"></i>
 				</a>
 				<div class="collapse" id="clients">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-                            <a href="{% url 'clients' %}" class="nav-link ">Meus Clientes</a>
+                            <a href="{% url 'clients' %}" class="nav-link ">MEUS CLIENTES</a>
 						</li>
 						<li class="nav-item">
-							<a href="{% url 'register-client' %}" class="nav-link ">Cadastrar Cliente</a>
+							<a href="{% url 'register-client' %}" class="nav-link ">CADASTRAR CLIENTE</a>
 						</li>
 					</ul>
 				</div>
@@ -44,19 +44,18 @@
 				<li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#tools" role="button" aria-expanded="" aria-controls="tools">
 					<i class="link-icon" data-feather="terminal"></i>
-					<span class="link-title">Tools</span>
+					<span class="link-title">UTILITÁRIOS</span>
 					<i class="link-arrow" data-feather="chevron-down"></i>
 				</a>
 				<div class="collapse" id="tools">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-							<a href="{% url 'kanban' %}" class="nav-link ">Anotações</a>
+							<a href="{% url 'kanban' %}" class="nav-link ">ANOTAÇÕES</a>
 						</li>
 					</ul>
 				</div>
 			</li>
-            <li class="nav-item">
-				<li class="nav-item ">
+            <li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#cmdb" role="button" aria-expanded="" aria-controls="cmdb">
 					<i class="link-icon" data-feather="box"></i>
 					<span class="link-title">CMDB</span>
@@ -65,32 +64,44 @@
 				<div class="collapse" id="cmdb">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-							<a href="{% url 'passwords-safe' %}" class="nav-link ">Cofre de Senhas</a>
+							<a href="{% url 'passwords-safe' %}" class="nav-link ">COFRE DE SENHAS</a>
 						</li>
                         <li class="nav-item">
-							<a href="{% url 'inventory' %}" class="nav-link ">Inventário</a>
+							<a href="{% url 'inventory' %}" class="nav-link ">INVENTÁRIOS</a>
 						</li>
 					</ul>
 				</div>
 			</li>
-            <li class="nav-item nav-category">Gráficos</li>
+            <li class="nav-item ">
+                <a class="nav-link" data-toggle="collapse" href="#graphs" role="button" aria-expanded="" aria-controls="graphs">
+                    <i class="link-icon" data-feather="server"></i>
+                    <span class="link-title">ZABBIX</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="graphs">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link ">MEUS GRÁFICOS</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item nav-category">GRAPHICS</li>
             <li class="nav-item">
 				<li class="nav-item ">
-				<a class="nav-link" data-toggle="collapse" href="#graphs" role="button" aria-expanded="" aria-controls="graphs">
-					<i class="link-icon" data-feather="pie-chart"></i>
-					<span class="link-title">Zabbix</span>
+				<a class="nav-link" data-toggle="collapse" href="#clients_page" role="button" aria-expanded="" aria-controls="graphs">
+					<i class="link-icon" data-feather="bar-chart-2"></i>
+					<span class="link-title">GRÁFICOS</span>
 					<i class="link-arrow" data-feather="chevron-down"></i>
 				</a>
-				<div class="collapse" id="graphs">
+				<div class="collapse" id="clients_page">
 					<ul class="nav sub-menu">
                         <li class="nav-item">
-							<a href="{% url 'chart-line-basic' %}" class="nav-link ">basic line</a>
+							<a href="{% url 'create-charts' %}" class="nav-link ">CRIAR GRÁFICO</a>
 						</li>
                         <li class="nav-item">
-							<a href="{% url 'create-charts' %}" class="nav-link ">create charts</a>
-						</li>
-                        <li class="nav-item">
-							<a href="{% url 'show-charts' %}" class="nav-link ">show charts</a>
+							<a href="{% url 'show-charts' %}" class="nav-link ">CLIENTES</a>
 						</li>
 					</ul>
 				</div>
@@ -99,7 +110,7 @@
 			<li class="nav-item">
 				<a href="https://github.com/dbafurushima/portal-dashboard/wiki" target="_blank" class="nav-link">
 					<i class="link-icon" data-feather="hash"></i>
-					<span class="link-title">Documentação</span>
+					<span class="link-title">DOCUMENTAÇÃO</span>
 				</a>
 			</li>
 		</ul>
@@ -112,21 +123,17 @@
 			<i data-feather="settings"></i>
 		</a>
 		<div class="theme-wrapper">
-			<h6 class="text-muted mb-2">Configurações</h6>
-            <div class="form-group form-inline">
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input set-theme-light" name="theme" id="set-light" value="light">
-                        light
-                        <i class="input-frame"></i></label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input set-theme-dark" name="theme" id="set-dark" value="dark">
-                        dark
-                        <i class="input-frame"></i></label>
-                </div>
-            </div>
+
+            <h6 class="text-muted mb-2">Light Version:</h6>
+
+            <a class="theme-item" id="set-light" href="javascript:void(0);">
+                <img src="https://www.nobleui.com/laravel/template/light/assets/images/screenshots/light.jpg" alt="light version">
+            </a>
+            <h6 class="text-muted mb-2">Dark Version:</h6>
+
+            <a class="theme-item" id="set-dark" href="javascript:void(0);">
+                <img src="https://www.nobleui.com/laravel/template/light/assets/images/screenshots/dark.jpg" alt="light version">
+            </a>
             {% if 'inventory' in request.path_info %}
             <h6 class="text-muted mb-2">Inventário</h6>
                 <div class="form-group form-inline">

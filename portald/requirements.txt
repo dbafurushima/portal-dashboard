@@ -21,3 +21,4 @@ pick~=1.0.0
 aiohttp~=3.6.2
 django-otp~=0.9.4
 django-two-factor-auth~=1.12.1
+PyGithub~=1.53

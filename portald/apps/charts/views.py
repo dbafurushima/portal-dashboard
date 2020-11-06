@@ -45,9 +45,6 @@ def create_charts_view(request):
             and ('yAxis_plot_type' in request.POST) and ('yAxis_plot_value' in request.POST)\
             and ('yAxis_title' in request.POST):
 
-        step_uid = str(uuid.uuid4()).split('-')[1]
-        step_name = request.POST['yAxis_title'][:9].replace(' ', '_')
-
         data_post = {
             "client": None if not request.POST['cid'] else int(request.POST['cid']),
             "uid": request.POST['uid'],
@@ -88,6 +85,7 @@ def show_charts_view(request):
         fusion_table = FusionTable(chart.schema, data_chart)
         time_series = TimeSeries(fusion_table)
 
+        time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
         time_series.AddAttribute("caption", "{text: '%s'}" % chart.caption)
         time_series.AddAttribute("subcaption", "{text: '%s'}" % chart.caption)
         time_series.AddAttribute("yAxis", chart.yAxis)

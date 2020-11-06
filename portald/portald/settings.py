@@ -186,3 +186,5 @@ USER_API_KEY = env('USER_API_TOKEN', default='undefined')
 ZABBIX_USER = env('ZABBIX_USER', default='undefined')
 ZABBIX_PASSWORD = env('ZABBIX_PASSWORD', default='undefined')
 ZABBIX_URL = env('ZABBIX_URL', default='undefined')
+
+GITHUB_TOKEN = env('GITHUB_TOKEN', default='undefined')

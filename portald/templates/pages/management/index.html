@@ -1,0 +1,274 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} INDEX {% endblock %}
+
+{% block css %}
+    <link href="{% static 'assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/notes.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block js_plugins %}
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <!--<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>-->
+    <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
+{% endblock %}
+
+{% block js_extra %}
+<script src="{% static 'assets/plugins/chartjs/Chart.min.js' %}"></script>
+<script src="{% static 'assets/plugins/jquery.flot/jquery.flot.js' %}"></script>
+<script src="{% static 'assets/plugins/jquery.flot/jquery.flot.resize.js' %}"></script>
+<script src="{% static 'assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'assets/plugins/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'assets/plugins/progressbar-js/progressbar.min.js' %}"></script>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'assets/js/dashboard.js' %}"></script>
+    <script src="{% static 'assets/js/datepicker.js' %}"></script>
+    <script>
+    if($('#apexChart1').length) {
+        var options1 = {
+        chart: {
+        type: "line",
+        height: 60,
+        sparkline: {
+        enabled: !0
+        }
+        },
+        series: [{
+        data: {{ data.graph_01.counts }}
+        }],
+        stroke: {
+        width: 2,
+        curve: "smooth"
+        },
+        markers: {
+        size: 0
+        },
+        colors: ["#727cf5"],
+        tooltip: {
+        fixed: {
+        enabled: !1
+        },
+        x: {
+        show: !1
+        },
+        y: {
+        title: {
+        formatter: function(e) {
+        return ""
+        }
+        }
+        },
+        marker: {
+        show: !1
+        }
+        }
+        };
+        new ApexCharts(document.querySelector("#apexChart1"),options1).render();
+    }
+    if($('#apexChart2').length) {
+        var options2 = {
+        chart: {
+        type: "bar",
+        height: 60,
+        sparkline: {
+        enabled: !0
+        }
+        },
+        plotOptions: {
+        bar: {
+        columnWidth: "60%"
+        }
+        },
+        colors: ["#727cf5"],
+        series: [{
+        data: {{ data.graph_02.counts }}
+        }],
+        labels: {{ data.graph_02.labels }},
+        xaxis: {
+        crosshairs: {
+        width: 1
+        }
+        },
+        tooltip: {
+        fixed: {
+        enabled: !1
+        },
+        x: {
+        show: !1
+        },
+        y: {
+        title: {
+        formatter: function(e) {
+          return ""
+        }
+        }
+        },
+        marker: {
+        show: !1
+        }
+        }
+        };
+        new ApexCharts(document.querySelector("#apexChart2"),options2).render();
+    }
+    if($('#apexChart3').length) {
+        var options3 = {
+        chart: {
+        type: "line",
+        height: 60,
+        sparkline: {
+        enabled: !0
+        }
+        },
+        series: [{
+        data: {{ data.graph_03.counts }}
+        }],
+        stroke: {
+        width: 2,
+        curve: "smooth"
+        },
+        markers: {
+        size: 0
+        },
+        colors: ["#727cf5"],
+        tooltip: {
+        fixed: {
+        enabled: !1
+        },
+        x: {
+        show: !1
+        },
+        y: {
+        title: {
+        formatter: function(e) {
+        return ""
+        }
+        }
+        },
+        marker: {
+        show: !1
+        }
+        }
+        };
+        new ApexCharts(document.querySelector("#apexChart3"),options3).render();
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<!--  BEGIN CONTENT AREA  -->
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row">
+            <div class="col-12 col-xl-12 stretch-card">
+                <div class="row flex-grow">
+                    <div class="col-md-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline mt-3">
+                                    <h5 class="card-title mb-0">Top Paths</h5>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h2 class="mb-2">{{ data.graph_01.len }}</h2>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <div id="apexChart1" class="mt-md-3 mt-xl-0"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline mt-3">
+                                    <h5 class="card-title mb-0">TRAFFIC CLONE REPO</h5>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h2 class="mb-2">{{ data.graph_02.len }}</h2>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <div id="apexChart2" class="mt-md-3 mt-xl-0"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                                    <h5 class="card-title mb-0">TRAFFIC VIEWS REPO</h5>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h2 class="mb-2">{{ data.graph_03.len }}</h2>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <div id="apexChart3" class="mt-md-3 mt-xl-0"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- row -->
+
+        <div class="row">
+            <div class="col-12 col-xl-12 grid-margin stretch-card">
+                <div class="card overflow-hidden">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
+                            <h6 class="card-title mb-0">ZABBIX GRAPHIC</h6>
+                        </div>
+                        <div class="flot-wrapper">
+                            <div id="chart-zabbix">{{ zabbix|safe }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- row -->
+
+        <div class="row">
+            <div class="col-lg-12 col-xl-12 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-baseline mb-2">
+                            <h6 class="card-title mb-0">ISSUES</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="pt-0">#</th>
+                                        <th class="pt-0">ISSUE TITLE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for issue in issues %}
+                                    <tr>
+                                        <td>{{ issue.id }}</td>
+                                        <td>{{ issue.title }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- row -->
+
+    </div>
+
+</div>
+<!--  END CONTENT AREA  -->
+
+{% endblock %}

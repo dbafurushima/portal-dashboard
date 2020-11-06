@@ -1,8 +1,8 @@
-$('.set-theme-dark').click(function (e) {
+$('#set-dark').click(function (e) {
      post_set_theme('dark');
 });
 
-$('.set-theme-light').click(function (e) {
+$('#set-light').click(function (e) {
      post_set_theme('light');
 });
 
