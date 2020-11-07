@@ -23,7 +23,7 @@ def home_view(request):
     fusion_table = FusionTable(schema, zabbix_data)
     time_series = TimeSeries(fusion_table)
 
-    if request.session['theme'] == 'dark':
+    if request.session.get('theme', 'dark') == 'dark':
         time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
 
     time_series.AddAttribute("caption", "{text: '%s'}" % 'unknown 01')

@@ -21,8 +21,11 @@ def login_view(request):
     :return:
     """
     request.session['totp'] = False
+    if not request.session.get('theme'):
+        request.session['theme'] = 'dark'
 
     if request.method == 'POST' and (request.POST.get('username') and request.POST.get('password')):
+
         username = request.POST['username']
         password = request.POST['password']
 
