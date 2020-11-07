@@ -3,13 +3,13 @@ from ...http import request
 from ...utils import (lookup_config, write_stdout, write_stdout_pprint)
 
 
-class NoteCommentCommand(BasicCommand):
+class CommentAddCommand(BasicCommand):
 
-	NAME = 'comment'
+	NAME = 'add'
 
-	DESCRIPTION = ('Realizar um comentário em uma anotação.')
+	DESCRIPTION = ('Adicionar um comentário a uma anotação.')
 
-	SYNOPSIS = ' $ mng note comment noteid text'
+	SYNOPSIS = ' $ mng comment add noteid text'
 
 	EXAMPLES = None
 
@@ -20,7 +20,7 @@ class NoteCommentCommand(BasicCommand):
 	        'name': 'noteid',
 	        'help_text': ('ID da anotação que será feito o comentário.'),
 	        'action': 'store',
-	        'cli_type_name': 'string',
+	        'cli_type_name': 'integer',
 	        'positional_arg': True
 	    },
 	    {
@@ -46,7 +46,7 @@ class NoteCommentCommand(BasicCommand):
 		url = 'http://%s:%s/api/comment/' % (lookup_config('address_api'), lookup_config('port_api'))
 
 		data_post = {
-	        "message": args.noteid,
+	        "note": args.noteid,
 	        "comment": args.text
 	    }
 

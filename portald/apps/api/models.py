@@ -113,9 +113,6 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
     note = models.ForeignKey(Note, on_delete=models.CASCADE, blank=True, null=True)
 
-    def __str__(self):
-        return f'<Comment: {self.note.msg[:20]}{self.comment[:30]}>'
-
     class Meta:
         verbose_name_plural = "Comentários"
 

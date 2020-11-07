@@ -1,24 +1,20 @@
-import time
-
 from ...commands import BasicCommand
-from ...http import request
-from ...utils import (lookup_config, write_stdout, write_stdout_pprint)
-
-from .comment import NoteCommentCommand
+from .add import NoteAddCommand
+from .list import NoteListCommand
 
 
 class NoteCommand(BasicCommand):
 
-	NAME = 'note'
+	NAME = 'notes'
 
 	DESCRIPTION = ('Utilitário para anotações.')
 
-	SYNOPSIS = ' $ mng note subject text'
+	SYNOPSIS = None
 
 	EXAMPLES = (
-		'Criar uma nota\n'
+		'Adicionar uma nova anotação com assusto "dev"\n'
 		'\n'
-		' $ mng note "dev" "desenvolvimento do comando de notas"\n'
+		' $ mng notes add "dev" "desenvolvimento do comando de notas"\n'
 		'\n'
 		'    >> Successfully created.\n'
 		'\n'
@@ -26,55 +22,24 @@ class NoteCommand(BasicCommand):
     	"       'msg': 'desenvolvimento do comando de notas',\n"
     	"       'subject': 'dev',\n"
     	"       'timestamp': '1604624940.758522'}\n"
+    	'\n'
+    	'Listando anotações criadas\n'
+    	'\n'
+    	' $ mng notes list\n'
+    	'\n'
+    	"[   {   'comments': [],\n"
+        "	'id': 9,\n"
+        "	'msg': \"atualizar documentação do comando 'dev'\",\n"
+        "	'subject': 'dev',\n"
+        "	'timestamp': '2020-11-06 22:06:28'}]\n"
 	)
 
 	SUBCOMMANDS = [
-		{'name': 'comment', 'command_class': NoteCommentCommand}
+		{'name': 'list', 'command_class': NoteListCommand},
+		{'name': 'add', 'command_class': NoteAddCommand},
 	]
 
-	ARG_TABLE = [
-		{
-	        'name': 'subject',
-	        'help_text': ('Assusto para nota. Deve ser uma pequena frase ou \n'
-	        	'palavra que descreva sobre o que será a anotação.'),
-	        'action': 'store',
-	        'cli_type_name': 'string',
-	        'positional_arg': True
-	    },
-	    {
-	        'name': 'text',
-	        'help_text': ('Corpo da mensagem. Deve conter no máximo 255 caracteres.'),
-	        'action': 'store',
-	        'cli_type_name': 'string',
-	        'positional_arg': True
-	    }
-	]
+	ARG_TABLE = []
 
 	def _run_main(self, args, parsed_globals) -> None:
-		print(parsed_globals)
-		note = self.__create_note(args)
-
-		if note is None:
-			write_stdout('\n>> Ops... error, see log for more details.')
-			return
-
-		write_stdout('\n>> Successfully created.\n')
-		write_stdout_pprint(note, width=100, indent=4)
-
-	def __create_note(self, args) -> dict or None:
-		url = 'http://%s:%s/api/note/' % (lookup_config('address_api'), lookup_config('port_api'))
-
-		data_post = {
-	        "subject": args.subject,
-	        "timestamp": str(time.time()),
-	        "msg": args.text
-	    }
-
-		sucessful, data = request(
-			url,
-			data_post,
-			method='POST',
-			headers={'Authorization': 'Basic %s' % lookup_config('base64auth')}
-		)
-
-		return data if sucessful else None
+		self._display_help(args, parsed_globals)

@@ -214,6 +214,7 @@ class ArgTableArgParser(CLIArgParser):
                               command_table=command_table, nargs='?')
 
     def parse_known_args(self, args, namespace=None):
+        # print('ArgTableArgParser.parse_known_args().args, namespace: (%s, %s)' % (args, namespace))
         if len(args) == 1 and args[0] == 'help':
             namespace = argparse.Namespace()
             namespace.help = 'help'

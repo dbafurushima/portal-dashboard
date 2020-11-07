@@ -6,6 +6,7 @@ from .topics.graphic.graphic import GraphicCommand
 from .topics.environment import EnvironmentCommand
 from .topics.host import HostCommand
 from .topics.note import NoteCommand
+from .topics.comment import CommentCommand
 from .topics.man import ManCommand
 from .version import __version__
 
@@ -20,9 +21,10 @@ def main():
     command_table['help'] = ManCommand(command_table)
     command_table['configure'] = ConfigureCommand()
 
-    command_table['note'] = NoteCommand()
+    command_table['notes'] = NoteCommand()
     command_table['graph'] = GraphicCommand()
     command_table['host'] = HostCommand()
+    command_table['comments'] = CommentCommand()
     command_table['environment'] = EnvironmentCommand()
 
     parser = MainArgParser(command_table, __version__, description, argument_table, prog="mng")

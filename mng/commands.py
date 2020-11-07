@@ -176,6 +176,7 @@ class BasicCommand(CLICommand):
     def __init__(self, subcommand_table={}):
         self._arg_table = None
         self._subcommand_table = None
+        self._lineage = [self]
 
     def __call__(self, args, parsed_globals):
         # args são os args restantes não analisados.
@@ -196,8 +197,8 @@ class BasicCommand(CLICommand):
             # `arg_table`.
             xformed = key.replace('_', '-')
             # print('mng.commands.BasicCommand.__call__().xformed: %s' % xformed)
-            if xformed in self.ARG_TABLE:
-                cli_argument = self.ARG_TABLE[xformed]
+            if xformed in self.arg_table:
+                cli_argument = self.arg_table[xformed]
                 # print('mng.commands.BasicCommand.__call__().cli_argument: %s' % cli_argument)
         # print('BasicCommand.__call__.parsed_args: %s' % parsed_args)
 

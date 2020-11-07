@@ -41,7 +41,7 @@ router.register('comment', CommentViewSet, basename='comment')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('portal/', include('apps.portal.urls')),
+    path('', include('apps.portal.urls')),
     path('accounts/', include('apps.accounts.urls')),
     path('view_charts/', include('apps.charts.urls')),
 
