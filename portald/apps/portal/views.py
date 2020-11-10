@@ -39,7 +39,8 @@ def home_view(request):
             "},"
             "title: '%s'"
             "}]" % ('usage cpu is', 'line',
-                    '%/min', 'usage_cpu_vm0')))
+                    '%/min', 'usage_cpu_vm0'))
+    )
 
     fusion_chart = FusionCharts(
         "timeseries",

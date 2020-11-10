@@ -7,7 +7,7 @@ class ServiceCreateCommand(BasicCommand):
 
 	NAME = 'create'
 
-	DESCRIPTION = EXAMPLES = BasicCommand.FROM_FILE(
+	DESCRIPTION = BasicCommand.FROM_FILE(
 		'service',
 		'create',
         '_description.rst')
@@ -181,27 +181,27 @@ class ServiceUpdateCommand(BasicCommand):
 
         [keys_values.update({values[x]: keys[x]}) for x in range(len(keys))]
 
-        host = self.__update_service(args, keys_values)
+        service = self.__update_service(args, keys_values)
 
-        if host is None:
+        if service is None:
             write_stdout('\n>> Ops... error, see log for more details.')
             return
 
         print()
-        write_stdout_pprint(host, width=60)
+        write_stdout_pprint(service, width=60)
         print()
 
     def __update_service(self, args, fields: dict) -> list or None:
         url_update = 'http://%s:%s/api/cmdb/service/%s/' % (lookup_config('address_api'), lookup_config('port_api'), args.serviceid)
         headers = {'Authorization': 'Basic %s' % lookup_config('base64auth')}
 
-        sucessful, host = request(url_update, method='GET', headers=headers)
+        sucessful, service = request(url_update, method='GET', headers=headers)
 
         if not sucessful:
             return None
-        host.update(fields)
+        service.update(fields)
 
-        sucessful, data = request(url_update, data=host, method='PUT', headers=headers)
+        sucessful, data = request(url_update, data=service, method='PUT', headers=headers)
 
         return data if sucessful else None
 

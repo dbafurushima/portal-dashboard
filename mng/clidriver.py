@@ -8,6 +8,7 @@ from .topics.host import HostCommand
 from .topics.note import NoteCommand
 from .topics.comment import CommentCommand
 from .topics.service import ServiceCommand
+from .topics.instance import InstanceCommand
 from .topics.man import ManCommand
 from .version import __version__
 
@@ -23,11 +24,14 @@ def main():
     command_table['configure'] = ConfigureCommand()
 
     command_table['notes'] = NoteCommand()
-    command_table['graph'] = GraphicCommand()
-    command_table['host'] = HostCommand()
     command_table['comments'] = CommentCommand()
+
+    command_table['graph'] = GraphicCommand()
+
+    command_table['host'] = HostCommand()
     command_table['environment'] = EnvironmentCommand()
     command_table['service'] = ServiceCommand()
+    command_table['instance'] = InstanceCommand()
 
     parser = MainArgParser(command_table, __version__, description, argument_table, prog="mng")
 
