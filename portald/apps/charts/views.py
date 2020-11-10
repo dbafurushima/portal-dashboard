@@ -33,7 +33,7 @@ def view_chart_line_basic(request):
         })
 
 
-def make_graph(graph: Chart) -> str:
+def make_graph(graph: Chart, theme) -> str:
     obj_data = Data.objects.filter(chart_id=graph.id)
 
     data_chart = [d.data for d in obj_data]
@@ -41,7 +41,9 @@ def make_graph(graph: Chart) -> str:
     fusion_table = FusionTable(graph.schema, data_chart)
     time_series = TimeSeries(fusion_table)
 
-    time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
+    if theme == 'dark':
+        time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
+
     time_series.AddAttribute("caption", "{text: '%s'}" % graph.caption)
     time_series.AddAttribute("subcaption", "{text: '%s'}" % graph.caption)
     time_series.AddAttribute("yAxis", graph.yAxis)
@@ -67,6 +69,7 @@ def view_get_graph(request):
             })
 
     graph_uid = request.POST.get('graph-uid', None)
+    theme = request.POST.get('theme', 'dark')
 
     if graph_uid is None:
         return JsonResponse(
@@ -76,7 +79,7 @@ def view_get_graph(request):
             })
 
     graph = Chart.objects.get(uid=graph_uid)
-    render_graph = make_graph(graph)
+    render_graph = make_graph(graph, theme)
 
     return JsonResponse(
             {

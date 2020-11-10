@@ -82,6 +82,10 @@ def tree_graph_clients_view(request):
             clients_of_graph[
                 graph.client.display_name
             ].append(graph)
+        else:
+            clients_of_graph[
+                'Super Admin'
+            ].append(graph)
 
     final_cog = list()
     for cog in clients_of_graph:

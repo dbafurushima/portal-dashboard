@@ -17,12 +17,15 @@
 
 {% block js_plugins %}
     <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
     <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
 {% endblock %}
 
 {% block js %}
     <script src="{% static 'js/plugins/custom-jstree.js' %}"></script>
     <script>
+    var theme = '{{ request.session.theme }}';
+
     $('.btn-graph').click(function (e) {
         graph_uid = e.target.id;
         get_graph(graph_uid);
@@ -32,6 +35,7 @@
         let fd = new FormData();
         fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
         fd.append('graph-uid', graph);
+        fd.append('theme', theme);
 
         $.ajax({
             url: '/view_charts/render-graph',
