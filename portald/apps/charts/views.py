@@ -33,9 +33,60 @@ def view_chart_line_basic(request):
         })
 
 
-def create_charts_view(request):
-    import uuid
+def make_graph(graph: Chart) -> str:
+    obj_data = Data.objects.filter(chart_id=graph.id)
 
+    data_chart = [d.data for d in obj_data]
+
+    fusion_table = FusionTable(graph.schema, data_chart)
+    time_series = TimeSeries(fusion_table)
+
+    time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
+    time_series.AddAttribute("caption", "{text: '%s'}" % graph.caption)
+    time_series.AddAttribute("subcaption", "{text: '%s'}" % graph.caption)
+    time_series.AddAttribute("yAxis", graph.yAxis)
+
+    fusion_chart = FusionCharts(
+        "timeseries",
+        f"ex{graph.id}",
+        "100%",
+        450,
+        f"chart-{graph.id}", "json",
+        time_series
+    )
+
+    return fusion_chart.render()
+
+
+def view_get_graph(request):
+    if request.method == 'GET':
+        return JsonResponse(
+            {
+                'code': 200,
+                'msg': 'uptime.'
+            })
+
+    graph_uid = request.POST.get('graph-uid', None)
+
+    if graph_uid is None:
+        return JsonResponse(
+            {
+                'code': 400,
+                'msg': 'incorrect request.'
+            })
+
+    graph = Chart.objects.get(uid=graph_uid)
+    render_graph = make_graph(graph)
+
+    return JsonResponse(
+            {
+                'code': 200,
+                'graph': render_graph,
+                'id': graph.id
+            })
+
+
+def create_charts_view(request):
     if request.method == 'GET':
         return render(request, 'public/create-charts.html')
 

@@ -4,6 +4,8 @@ import json
 import pprint
 import datetime
 
+from collections import defaultdict
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -20,6 +22,7 @@ from .helper import (_create_client_from_post, _create_users, _create_default_us
                      __create_user)
 from apps.accounts.views import totp_check
 from .models import Client, EnterpriseUser
+from ..charts.models import Chart
 from apps.api.models import Environment, Inventory, Host, Instance, Service
 from apps.api.serializer import (InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer,
                                  ServiceSerializer)
@@ -68,13 +71,39 @@ def proxy_api_view(request):
 
 @login_required
 @user_passes_test(permission_check)
-def inventory_view(request):
-    pp = pprint.PrettyPrinter(
-        indent=2,
-        compact=False,
-        width=41,
-        sort_dicts=False)
+def tree_graph_clients_view(request):
+    graphs = Chart.objects.all()
 
+    clients_of_graph = defaultdict(list)
+
+    for graph in graphs:
+
+        if graph.client is not None:
+            clients_of_graph[
+                graph.client.display_name
+            ].append(graph)
+
+    final_cog = list()
+    for cog in clients_of_graph:
+        tmp = {
+            'name': cog,
+            'graphs': clients_of_graph[cog]
+        }
+        final_cog.append(tmp)
+
+    if request.method == 'GET':
+        return render(
+            request,
+            'pages/management/list-graph-clients.html',
+            {
+                'clients_of_graph': final_cog
+            }
+        )
+
+
+@login_required
+@user_passes_test(permission_check)
+def inventory_view(request):
     if request.method == 'GET':
         clients = Client.objects.all()
         return render(

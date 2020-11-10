@@ -1,0 +1,101 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} List Graphs {% endblock %}
+
+{% block css_plugins %}
+
+{% endblock %}
+
+{% block css %}
+    {% if request.session.theme == 'light'  %}
+        <link href="{% static 'css/plugins/custom-tree_view.light.css' %}" rel="stylesheet" />
+    {% else %}
+        <link href="{% static 'css/plugins/custom-tree_view.dark.css' %}" rel="stylesheet" />
+    {% endif %}
+{% endblock %}
+
+{% block js_plugins %}
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/plugins/custom-jstree.js' %}"></script>
+    <script>
+    $('.btn-graph').click(function (e) {
+        graph_uid = e.target.id;
+        get_graph(graph_uid);
+    });
+
+    function get_graph(graph) {
+        let fd = new FormData();
+        fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+        fd.append('graph-uid', graph);
+
+        $.ajax({
+            url: '/view_charts/render-graph',
+            method: 'post',
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+            },
+            success: function(data) {
+                $('#graph-here').html('');
+                $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
+                let div_graph = '#'+'chart-'+data.id;
+                $(div_graph).append(data.graph);
+            },
+            error: function () {
+                alert('internal error!')
+            }
+        });
+    }
+
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row perfect-scrollbar-example">
+    <div class="col-md-4 grid-margin stretch-card">
+        <!-- being card -->
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Clientes</h6>
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <ul class="file-tree">
+                            {% for cog in clients_of_graph %}
+                            <li class="file-tree-folder">{{ cog.name }}
+                                <ul>
+                                {% for graph in cog.graphs %}
+                                    <li>
+                                        <a href="javascript:void(0);" class="btn-graph" id="{{ graph.uid }}">
+                                            {{ graph.uid }}.graph
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end card -->
+    </div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div id="graph-here" class="card">
+        </div>
+    </div>
+</div>
+
+{% csrf_token %}
+
+{% endblock %}
