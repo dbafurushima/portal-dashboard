@@ -1,0 +1,90 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} Tempalte {% endblock %}
+
+{% block css_plugins %}
+
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js_plugins %}
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
+{% endblock %}
+
+{% block js %}
+<script>
+var theme = '{{ request.session.theme }}';
+
+$('.btn-graph').click(function (e) {
+    graph_uid = e.target.id;
+    get_graph(graph_uid);
+});
+
+function get_graph(graph) {
+
+    let fd = new FormData();
+
+    fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+    fd.append('graph-uid', graph);
+    fd.append('theme', theme)
+
+    $.ajax({
+        url: '/view_charts/render-graph',
+        method: 'post',
+        data: fd,
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+        },
+        success: function(data) {
+            $('#graph-here').html('');
+            $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
+            let div_graph = '#'+'chart-'+data.id;
+            $(div_graph).append(data.graph);
+        },
+        error: function () {
+            alert('internal error!')
+        }
+    });
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="container">
+                    <div class="icons-list row">
+                        {% for graph in graphs %}
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <a href="javascript:void(0);" class="btn-graph" id="{{ graph.uid }}">{{ graph.uid }}</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div id="graph-here" class="card">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

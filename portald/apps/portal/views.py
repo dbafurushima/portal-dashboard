@@ -1,18 +1,40 @@
 from datetime import datetime
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.contrib import messages
 
 from ..charts.zabbix.api import Zabbix
 from ..charts.fusioncharts import FusionTable, TimeSeries, FusionCharts
+from ..charts.models import Chart
+from ..management.models import EnterpriseUser
 
 from github import Github
 
 
 @login_required
+def view_list_graph(request):
+    graphs = Chart.objects.filter(
+        client=EnterpriseUser.objects.get(
+            user=request.user
+        ).enterprise
+    )
+
+    return render(
+        request,
+        'pages/portal/list-graph.html',
+        {
+            'graphs': graphs
+        }
+    )
+
+
+@login_required
 def home_view(request):
+
+    if not request.user.is_superuser:
+        return render(request, 'pages/portal/home.html')
+
     zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
     raw_data = zb.get_history_from_itemids('31359')
 

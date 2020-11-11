@@ -19,6 +19,16 @@
 					<span class="link-title">PORTALD</span>
 				</a>
 			</li>
+
+            {% if not request.user.is_superuser %}
+            <li class="nav-item ">
+				<a href="{% url 'list-graph' %}" class="nav-link">
+					<i class="link-icon" data-feather="bar-chart-2"></i>
+					<span class="link-title">GRÁFICOS</span>
+				</a>
+			</li>
+            {% endif %}
+
             {% if request.user.is_superuser %}
             <li class="nav-item nav-category">MANAGMENT</li>
 			<li class="nav-item">
@@ -40,6 +50,8 @@
 				</div>
 			</li>
             {% endif %}
+
+            {% if request.user.is_superuser %}
             <li class="nav-item">
 				<li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#tools" role="button" aria-expanded="" aria-controls="tools">
@@ -55,6 +67,9 @@
 					</ul>
 				</div>
 			</li>
+            {% endif %}
+
+            {% if request.user.is_superuser %}
             <li class="nav-item ">
 				<a class="nav-link" data-toggle="collapse" href="#cmdb" role="button" aria-expanded="" aria-controls="cmdb">
 					<i class="link-icon" data-feather="box"></i>
@@ -86,7 +101,9 @@
                     </ul>
                 </div>
             </li>
+            {% endif %}
 
+            {% if request.user.is_superuser %}
             <li class="nav-item nav-category">GRAPHICS</li>
             <li class="nav-item">
 				<li class="nav-item ">
@@ -106,6 +123,7 @@
 					</ul>
 				</div>
 			</li>
+            {% endif %}
 			<li class="nav-item nav-category">Docs</li>
 			<li class="nav-item">
 				<a href="https://github.com/dbafurushima/portal-dashboard/wiki" target="_blank" class="nav-link">

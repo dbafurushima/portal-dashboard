@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 
 from rest_framework import views, permissions
 from rest_framework.response import Response
@@ -15,12 +16,17 @@ from django_otp import devices_for_user
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
+def permission_check(user: User):
+    return user.is_superuser
+
+
 def login_view(request):
     """returns login view if GET or authenticates if POST
     :param request:
     :return:
     """
     request.session['totp'] = False
+
     if not request.session.get('theme'):
         request.session['theme'] = 'dark'
 
@@ -48,6 +54,7 @@ def logout_view(request):
 
 
 @login_required
+@user_passes_test(permission_check)
 def totp_view(request):
     return render(request, 'auth/totp-sign-in.html')
 
