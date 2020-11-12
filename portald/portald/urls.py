@@ -20,6 +20,11 @@ from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostV
      ServiceViewSet, InstanceViewSet
 from apps.charts.views import ChartsViewSet, DataViewSet, ListData
 from rest_framework import routers
+from apps.public.views import handler404
+from django.conf.urls.static import static
+from django.conf import settings
+
+handler404 = handler404
 
 charts_router = routers.DefaultRouter()
 
@@ -53,4 +58,4 @@ urlpatterns = [
 
     path('', include('apps.management.urls')),
     path('', include('apps.public.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.STATIC_ROOT)

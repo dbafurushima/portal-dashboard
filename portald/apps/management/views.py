@@ -95,14 +95,22 @@ def tree_graph_clients_view(request):
         }
         final_cog.append(tmp)
 
-    if request.method == 'GET':
-        return render(
-            request,
-            'pages/management/list-graph-clients.html',
-            {
-                'clients_of_graph': final_cog
-            }
-        )
+    return render(
+        request,
+        'pages/management/list-graph-clients.html',
+        {
+            'clients_of_graph': final_cog
+        }
+    )
+
+
+@login_required
+@user_passes_test(permission_check)
+def zabbix_create_view(request):
+    return render(
+        request,
+        'pages/management/graph-zabbix-create.html'
+    )
 
 
 @login_required

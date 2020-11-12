@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ERROR 500</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="shortcut icon" href="{% static '/favicon.ico' %}">
+
+	<!-- plugin css -->
+	<link href="{% static 'assets/fonts/feather-font/css/iconfont.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet" />
+	<!-- end plugin css -->
+
+	<!-- common css -->
+	<link href="{% static 'css/app.css' %}" rel="stylesheet" />
+	<!-- end common css -->
+
+</head>
+<body data-base-url="/">
+
+	<script src="{% static 'assets/js/spinner.js' %}"></script>
+
+	<div class="main-wrapper" id="app">
+		<div class="page-wrapper full-page">
+            <div class="page-content d-flex align-items-center justify-content-center">
+
+                <div class="row w-100 mx-0 auth-page">
+                    <div class="col-md-8 col-xl-6 mx-auto d-flex flex-column align-items-center">
+                        <img src="{% static 'assets/images/404.svg' %}" class="img-fluid mb-2" alt="404">
+                        <h1 class="font-weight-bold mb-22 mt-2 tx-80 text-muted">500</h1>
+                        <h4 class="mb-2">Internal server error</h4>
+                        <h6 class="text-muted mb-3 text-center">Oopps!! There wan an error. Please try agin later.</h6>
+                        <a href="/" class="btn btn-primary">Back to home</a>
+                    </div>
+                </div>
+
+            </div>
+		</div>
+	</div>
+
+    <!-- base js -->
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'assets/plugins/feather-icons/feather.min.js' %}"></script>
+    <!-- end base js -->
+
+    <!-- common js -->
+    <script src="{% static 'assets/js/template.js' %}"></script>
+    <!-- end common js -->
+</body>
+</html>

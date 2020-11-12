@@ -18,6 +18,7 @@ import sys
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -35,7 +36,8 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY', default='undefined')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG_MODE', default='undefined')
+# DEBUG = env('DEBUG_MODE', default=False)
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -152,17 +154,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets')
+    os.path.join(BASE_DIR, 'assets'),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'archives')
+
 MEDIA_URL = '/archives/'
-
 LOGIN_URL = '/accounts'
-
-from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
     messages.INFO: 'primary', messages.WARNING: 'warning', messages.SUCCESS: 'success',

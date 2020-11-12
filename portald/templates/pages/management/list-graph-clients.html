@@ -33,6 +33,7 @@
 
     function get_graph(graph) {
         let fd = new FormData();
+
         fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
         fd.append('graph-uid', graph);
         fd.append('theme', theme);
