@@ -31,3 +31,25 @@
 </p>
 
 ---
+
+```
+cloc --docstring-as-code --exclude-lang=html,JavaScript,CSS,SVG,HTML,Sass,LESS,JSON portal-dashboard
+  2147 text files.
+  2130 unique files.
+  1932 files ignored.
+
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Python                         176           2112            527           8272
+Markdown                        17            979              0           2607
+Bourne Shell                     6             40             46            308
+reStructuredText                26             95             65            270
+YAML                             8             15             13            108
+Dockerfile                       1             14              3             51
+CoffeeScript                     1              8              0             36
+make                             1              4              2              6
+-------------------------------------------------------------------------------
+SUM:                           236           3267            656          11658
+-------------------------------------------------------------------------------
+```
