@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from pathlib import Path
 import os
 import environ
 import base64
 import sys
+from pathlib import Path
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -26,7 +26,9 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(Path(BASE_DIR).joinpath('../', 'zabbix')))
 
 # load variables from env file
-env = environ.Env()
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -36,8 +38,7 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY', default='undefined')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = env('DEBUG_MODE', default=False)
-DEBUG = False
+DEBUG = env('DEBUG_MODE', default=False)
 
 ALLOWED_HOSTS = ['*']
 

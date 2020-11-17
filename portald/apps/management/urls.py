@@ -14,4 +14,5 @@ urlpatterns = [
     path('todolist', views.todolist_view, name='todolist'),
     path('inventory', views.inventory_view, name='inventory'),
     path('proxy_api', views.proxy_api_view, name='proxy_api'),
+    path('pre-view-graph-zabbix', views.zabbix_pre_view_graph, name='pre-view-graph-zabbix'),
 ]

@@ -79,7 +79,7 @@ class Zabbix:
             body = response.read()
         return decode_bytes_to_utf8(body)
 
-    def get_history_from_itemids(self, itemids):
+    def get_history_from_itemids(self, itemids: str, limit: int = 100):
         """
         returns the "N" history of a chart's values from an ID
 
@@ -90,12 +90,14 @@ class Zabbix:
         >>> len(data) > 0
         True
 
+        :param limit:
         :param itemids:
         :return:
         """
 
         payload = self._set_token(GET_DATA_HISTORY)
         payload["params"]["itemids"] = itemids
+        payload["params"]["limit"] = limit
 
         def _raw_data_to_chart_data(d):
             dt = datetime.fromtimestamp(int(d.get('clock')))

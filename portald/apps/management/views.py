@@ -27,6 +27,8 @@ from apps.api.models import Environment, Inventory, Host, Instance, Service
 from apps.api.serializer import (InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer,
                                  ServiceSerializer)
 from apps.errors import Errors
+from apps.charts.fusioncharts import FusionTable, FusionCharts, TimeSeries
+from apps.charts.zabbix.api import Zabbix
 
 
 def permission_check(user: User):
@@ -115,6 +117,77 @@ def zabbix_create_view(request):
 
 @login_required
 @user_passes_test(permission_check)
+def zabbix_pre_view_graph(request):
+
+    if (not ('itemid' in request.POST)) or (not ('numbr' in request.POST)):
+        return JsonResponse(
+            {
+                'code': 400,
+                'msg': 'incorrect request.'
+            })
+    itemid, numbr = request.POST['itemid'], request.POST['numbr']
+
+    zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
+    raw_data = zb.get_history_from_itemids(itemid, int(numbr))
+
+    if not raw_data:
+        return JsonResponse(
+            {
+                'code': 500,
+                'msg': ('could not find graph or did not return any information. '
+                        'please check information on Zabbix.')
+            }, 500)
+
+    zabbix_data = [
+        [
+            datetime.datetime.fromtimestamp(data[0]).strftime('%Y-%m-%d %H:%M'), data[1]
+        ] for data in raw_data]
+
+    schema = '[{"name": "Time","type": "date","format": "%Y-%m-%d %H:%M"}, {"name": "Usage CPU","type": "number"}]'
+
+    fusion_table = FusionTable(schema, zabbix_data)
+    time_series = TimeSeries(fusion_table)
+
+    if request.session.get('theme', 'dark') == 'dark':
+        time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
+
+    time_series.AddAttribute("caption", "{text: '%s'}" % 'unknown 01')
+    time_series.AddAttribute("subcaption", "{text: '%s'}" % 'unknown 02')
+    time_series.AddAttribute("yAxis", (
+            "[{"
+            "plot: {"
+            "value: '%s',"
+            "type: '%s'"
+            "},"
+            "format: {"
+            "prefix: '%s'"
+            "},"
+            "title: '%s'"
+            "}]" % ('unknown', 'line',
+                    '%/min', 'unknown'))
+                             )
+
+    fusion_chart = FusionCharts(
+        "timeseries",
+        "zabbix",
+        "100%",
+        450,
+        "chart-1", "json",
+        time_series
+    )
+
+    zabbix_graph = fusion_chart.render()
+
+    return JsonResponse(
+        {
+            'code': 200,
+            'graph': zabbix_graph,
+            'id': 1
+        })
+
+
+@login_required
+@user_passes_test(permission_check)
 def inventory_view(request):
     if request.method == 'GET':
         clients = Client.objects.all()
@@ -193,7 +266,7 @@ def inventory_view(request):
             if sid is None:
                 return 'None'
             try:
-                name = '/'+Service.objects.get(id=sid).name
+                name = '/' + Service.objects.get(id=sid).name
             except Exception as err:
                 name = ''
             return name
@@ -203,7 +276,7 @@ def inventory_view(request):
                 lambda i: {
                     'id': next(index),
                     'name': 'Instância',
-                    'description': i.get('database')+__service_name_by_id(i.get('service')),
+                    'description': i.get('database') + __service_name_by_id(i.get('service')),
                     'type': 'Family',
                     'uid': i.get('host'), 'uid2': i.get('service')
                 }
@@ -308,7 +381,6 @@ def kanban_view(request):
 @login_required
 @user_passes_test(permission_check)
 def passwords_safe_view(request):
-
     def __verify_expire(dt_expire: str) -> bool:
         dt_now = datetime.datetime.now()
         dt_stftime = dt_now.strftime('%H-%M-%S')
@@ -394,7 +466,6 @@ def passwords_safe_view(request):
 @login_required
 @user_passes_test(permission_check)
 def register_client(request):
-
     def __save_logo(file, client: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
             client.logo = file

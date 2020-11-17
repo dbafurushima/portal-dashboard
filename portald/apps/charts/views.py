@@ -162,7 +162,9 @@ def show_charts_view(request):
     return render(
         request,
         'public/show-charts.html',
-        {'output': render_charts}
+        {
+            'output': render_charts
+        }
     )
 
 

@@ -1,22 +1,89 @@
 {% extends 'layouts/master.html' %}
 {% load static %}
 
-{% block title %} Tempalte {% endblock %}
+{% block title %} Zabbix {% endblock %}
 
 {% block css_plugins %}
-
+    <link href="{% static 'assets/plugins/jquery-steps/jquery.steps.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block css %}
-
+    <style>
+    .wizard > .content {
+        min-height: 30rem !important;
+    }
+    </style>
 {% endblock %}
 
 {% block js_plugins %}
-    
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
 {% endblock %}
 
 {% block js %}
+    <script>
 
+    var theme = '{{ request.session.theme }}';
+    var wizard = $("#wizard");
+
+    wizard.steps({
+        headerTag: "h2",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        onStepChanging: function (event, currentIndex, newIndex) {
+
+            let itemid = $("#itemid");
+            let numbr = $("#numbr");
+
+            if (newIndex === 1) {
+
+                if (itemid.val() === "") {
+                    itemid.focus()
+                    return false;
+                }
+
+                if (numbr.val() === "") {
+                    numbr.focus()
+                    return false;
+                }
+
+                let fd = new FormData();
+
+                fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+                fd.append('theme', theme);
+
+                fd.append('itemid', itemid.val());
+                fd.append('numbr', numbr.val());
+
+                $.ajax({
+                    url: '/pre-view-graph-zabbix',
+                    method: 'post',
+                    data: fd,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                    },
+                    success: function(data) {
+                        $('#graph-here').html('');
+                        $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
+                        let div_graph = '#'+'chart-'+data.id;
+                        $(div_graph).append(data.graph);
+                    },
+                    error: function () {
+                        alert('internal error!');
+                    }
+                });
+            }
+            return true;
+        }
+    });
+    </script>
+{% endblock %}
+
+{% block js_extra %}
+    <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +92,47 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <h4 class="card-title">Replicar gráficos do Zabbix</h4>
 
+                <div id="wizard">
+                <h2>Configuração</h2>
+                <section>
+                <div class="row">
+                    <div class="col-md-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="forms-sample">
+                                    <div class="form-group">
+                                        <label for="itemid">ITEMID do gráfico</label>
+                                        <input type="text" class="form-control" id="itemid" autocomplete="off" placeholder="itemid">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="numbr">Número de registros</label>
+                                        <input type="text" class="form-control" id="numbr" placeholder="Número de registros anteriores">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </section>
+
+                <h2>Pré visualização</h2>
+                <section>
+                    <div>
+                        <div id="graph-here"></div>
+                    </div>
+                </section>
+
+                <h2>Finalizar</h2>
+                <section>
+                <h4>Heading</h4>
+                <p>Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
+                pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
+                Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
+                venenatis.</p>
+                </section>
+                </div>
             </div>
         </div>
     </div>
