@@ -1,10 +1,12 @@
 import requests
 import json
+import uuid
 
 from rest_framework import viewsets, generics
 
 from django.shortcuts import render
 from django.conf import settings
+from django.contrib import messages
 
 from .zabbix.api import Zabbix
 from .fusioncharts import FusionCharts
@@ -89,9 +91,19 @@ def view_get_graph(request):
             })
 
 
+def __make_uid(name):
+    step_uid = str(uuid.uuid4()).split('-')[1]
+    step_name = name[:14].replace(' ', '_')
+
+    return '%s_%s' % (step_uid, step_name)
+
+
 def create_charts_view(request):
     if request.method == 'GET':
         return render(request, 'public/create-charts.html')
+
+    for item in request.POST.items():
+        print(item)
 
     if ('caption_text' in request.POST) and ('cid' in request.POST)\
             and ('schema' in request.POST) and ('subcaption_text' in request.POST)\
@@ -99,26 +111,59 @@ def create_charts_view(request):
             and ('yAxis_plot_type' in request.POST) and ('yAxis_plot_value' in request.POST)\
             and ('yAxis_title' in request.POST):
 
+        # TODO :: regex validation uid
+        uid = request.POST['uid']
+        uid = __make_uid(request.POST['yAxis_title']) if uid == '' else uid
+
+        number_data = int(request.POST.get('number_data', 100)) if 'number_data' in request.POST else 100
+
+        from_zabbix = bool(request.POST.get('from_zabbix', False))
+
+        if from_zabbix:
+            itemid = request.POST.get('itemid', None)
+            if itemid is None:
+                return JsonResponse(
+                    {
+                        'code': 400,
+                        'msg': ('you are trying to create a chart from Zabbix, '
+                                'you need to enter the "itemid"')
+                    })
+        else:
+            itemid = None
+
         data_post = {
             "client": None if not request.POST['cid'] else int(request.POST['cid']),
-            "uid": request.POST['uid'],
-            "caption": request.POST['caption-text'],
+            "uid": uid,
+            "caption": request.POST['caption_text'],
             "yAxis_plot_value": request.POST['yAxis_plot_value'],
             "yAxis_plot_type": request.POST['yAxis_plot_type'],
             "yAxis_title": request.POST['yAxis_title'],
             "yAxis_format_prefix": request.POST['yAxis_format_prefix'],
             "subcaption": request.POST['subcaption_text'],
-            "schema": request.POST['schema']
+            "schema": request.POST['schema'],
+            "itemid": itemid,
+            "from_zabbix": from_zabbix,
+            "number_data": number_data
         }
 
-        return JsonResponse(
-            json.loads(
+        request_to_api = json.loads(
                 requests.post(
                     f'http://{request.headers.get("host")}/api/charts/charts/',
                     data=data_post,
                     headers={'Authorization': f'Token {settings.USER_API_KEY}'}
                 ).text
-            ))
+            )
+
+        if request_to_api.get('id', None):
+            messages.success(
+                request,
+                json.dumps(request_to_api))
+        else:
+            messages.error(
+                request,
+                json.dumps(request_to_api))
+
+        return JsonResponse(request_to_api)
     else:
         return JsonResponse(
             {

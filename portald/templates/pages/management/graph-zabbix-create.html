@@ -5,6 +5,7 @@
 
 {% block css_plugins %}
     <link href="{% static 'assets/plugins/jquery-steps/jquery.steps.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/prismjs/prism.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block css %}
@@ -19,6 +20,9 @@
     <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
     <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
     <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
+
+    <script src="{% static 'assets/plugins/prismjs/prism.js' %}"></script>
+    <script src="{% static 'assets/plugins/clipboard/clipboard.min.js' %}"></script>
 {% endblock %}
 
 {% block js %}
@@ -31,6 +35,53 @@
         headerTag: "h2",
         bodyTag: "section",
         transitionEffect: "fade",
+        onFinishing: function (event, currentIndex) {
+            if ($("#itemid").val() === "")
+                return false;
+
+            if ($("#numbr").val() === "")
+                return false;
+
+            return true;
+        },
+        onFinished: function (event, currentIndex) {
+            let fd = new FormData();
+
+            let schema = '[{"name":"Time","type":"date","format":"%Y-%m-%d %H:%M"},{"name":"title","type":"number"}]';
+
+            fd.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+            fd.append('theme', theme);
+
+            fd.append('itemid', $("#itemid").val());
+            fd.append('number_data', $("#numbr").val());
+
+            fd.append('cid', '');
+            fd.append('caption_text', 'unknown');
+            fd.append('schema', schema);
+            fd.append('subcaption_text', 'unknown');
+            fd.append('uid', '');
+            fd.append('yAxis_format_prefix', '');
+            fd.append('yAxis_plot_type', 'line');
+            fd.append('yAxis_plot_value', 'number');
+            fd.append('yAxis_title', 'unknown');
+
+            fd.append('from_zabbix', true);
+
+            $.ajax({
+                url: '/view_charts/create-charts',
+                method: 'post',
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    location.reload();
+                },
+                error: function () {
+                    alert('error!');
+                }
+            });
+        },
         onStepChanging: function (event, currentIndex, newIndex) {
 
             let itemid = $("#itemid");
@@ -63,8 +114,6 @@
                     cache: false,
                     contentType: false,
                     processData: false,
-                    beforeSend: function () {
-                    },
                     success: function(data) {
                         $('#graph-here').html('');
                         $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
@@ -72,7 +121,7 @@
                         $(div_graph).append(data.graph);
                     },
                     error: function () {
-                        alert('internal error!');
+                        alert('error when rendering graph from zabbix information!');
                     }
                 });
             }
@@ -87,6 +136,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% include 'constants/alerts/register-client.html' %}
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -124,14 +175,6 @@
                     </div>
                 </section>
 
-                <h2>Finalizar</h2>
-                <section>
-                <h4>Heading</h4>
-                <p>Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
-                pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
-                Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
-                venenatis.</p>
-                </section>
                 </div>
             </div>
         </div>

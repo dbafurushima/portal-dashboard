@@ -16,6 +16,10 @@ class Chart(models.Model):
 
     schema = models.TextField(blank=True, null=True)
 
+    from_zabbix = models.BooleanField(default=False, null=True, blank=False)
+    number_data = models.IntegerField(default=100, null=True, blank=True)
+    itemid = models.CharField(max_length=10, null=True, blank=True)
+
     @property
     def yAxis(self) -> str:
         return ("[{"
