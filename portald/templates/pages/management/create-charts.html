@@ -14,6 +14,9 @@
 .card .card-body {
     padding: 1.0rem 1.0rem;
 }
+.wizard > .content {
+    min-height: 26rem !important;
+}
 </style>
 {% endblock %}
 
@@ -45,16 +48,19 @@
             },
             onFinished: function (event, currentIndex)
             {
-                var yAxis_plot_type = $('#yAxis_plot_type').val();
+                let yAxis_plot_type = $('#yAxis_plot_type').val();
+                let name_graph = $('#name-graph').val();
 
-                var max_height = $('#max-height').val();
-                var name_graph = $('#name-graph').val();
-                var client = $('#client').val();
+                let client = $('#client').val();
 
-                var caption_text = $('#caption-text').val();
+                if (client === '0')
+                    client = '';
+
+                let strftime = $('#strftime').val();
+                let schema = '[{"name":"Time","type":"date","format":"'+strftime+'"},{"name":"title","type":"number"}]';
+
+                let caption_text = $('#caption-text').val();
                 var yAxis_format_prefix = $('#yAxis_format_prefix').val();
-                var columns = $('#columns').val();
-                var strftime = $('#strftime').val();
 
                 let fd = new FormData();
 
@@ -62,11 +68,12 @@
                 fd.append('yAxis_plot_type', yAxis_plot_type);
                 fd.append('yAxis_format_prefix', yAxis_format_prefix);
                 fd.append('yAxis_title', name_graph);
-                fd.append('client', client);
-                fd.append('columns', columns);
-                fd.append('caption-text', caption_text);
-                fd.append('strftime', strftime);
-                fd.append('max_height', max_height);
+                fd.append('cid', client);
+                fd.append('uid', '');
+                fd.append('caption', caption_text);
+                fd.append('yAxis_plot_value', 'number');
+                fd.append('schema', schema);
+                fd.append('subcaption_text', 'default');
 
                 $.ajax({
                     url: '/view_charts/create-charts',
@@ -78,19 +85,30 @@
                     beforeSend: function () {
                     },
                     success: function(data) {
-                        console.log(data);
-                        Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 1113000
-                        }).fire({
-                            icon: 'success',
-                            title: 'Gráfico criado com sucesso!'
-                        });
+                        if (data.code !== 400) {
+                            Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1113000
+                            }).fire({
+                                icon: 'success',
+                                title: 'Gráfico criado com sucesso!'
+                            });
+                        } else {
+                            Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1113000
+                            }).fire({
+                                icon: 'warning',
+                                title: 'Ops... ' + data.msg
+                            });
+                        }
                     },
-                    error: function (data) {
-                        alert('internal error!')
+                    error: function () {
+                        alert('The chart could not be created, check that the attributes are in the correct format.')
                     }
                 });
 
@@ -157,23 +175,17 @@
                     <section>
                         <h4>Sobre o Gráfico</h4>
                         <div class="form-group row">
-                            <div class="col-md-3">
-                                <label for="max-width">Max Width</label>
-                                <input id="max-width" value="700" class="form-control mb-4 mb-md-0" />
-                            </div>
-                            <div class="col-md-3">
-                                <label for="max-height">Max Height</label>
-                                <input id="max-height" value="450" class="form-control mb-4 mb-md-0" />
-                            </div>
                             <div class="col-md-6">
-                                <label>Nome para o Gráfico:</label>
-                                <input id="name-graph" maxlength="15" class="form-control mb-4 mb-md-0"  />
+                                <label for="name-graph">Nome para o Gráfico:</label>
+                                <input id="name-graph" maxlength="15" class="form-control mb-4 mb-md-0"/>
                             </div>
                             <div class="col-md-8 mt-2">
                                 <label for="client">Cliente</label>
                                 <select id="client" class="js-example-basic-single w-100">
-                                    <option value="1">Company 01</option>
-                                    <option value="2">Company 02</option>
+                                    <option value="0">None</option>
+                                    {% for client in clients %}
+                                    <option value="{{ client.id }}">{{ client.company_name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -200,14 +212,10 @@
                                 <label for="yAxis_format_prefix">Prefixo para valores</label>
                                 <input id="yAxis_format_prefix" value="" class="form-control mb-4 mb-md-0" />
                             </div>
-                            <div class="col-md-3">
-                                <label for="columns">columns</label>
-                                <input id="columns" value="12" class="form-control mb-4 mb-md-0"  />
-                            </div>
                             <div class="col-md-4">
                                 <label for="strftime">strftime</label>
                                 <input id="strftime" value="%Y-%m-%d %H:%M" class="form-control mb-4 mb-md-0"  />
-                            </div>   
+                            </div>
                         </div>
 
                     </section>

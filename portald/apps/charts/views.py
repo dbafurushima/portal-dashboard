@@ -16,6 +16,8 @@ from .fusioncharts import TimeSeries
 from .models import Chart, Data
 from .serializer import ChartSerializer, DataSerializer
 
+from apps.management.models import Client
+
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 
@@ -100,12 +102,15 @@ def __make_uid(name):
 
 def create_charts_view(request):
     if request.method == 'GET':
-        return render(request, 'public/create-charts.html')
+        return render(
+            request,
+            'pages/management/create-charts.html',
+            {
+                'clients': Client.objects.all()
+            }
+        )
 
-    for item in request.POST.items():
-        print(item)
-
-    if ('caption_text' in request.POST) and ('cid' in request.POST)\
+    if ('caption' in request.POST) and ('cid' in request.POST)\
             and ('schema' in request.POST) and ('subcaption_text' in request.POST)\
             and ('uid' in request.POST) and ('yAxis_format_prefix' in request.POST)\
             and ('yAxis_plot_type' in request.POST) and ('yAxis_plot_value' in request.POST)\
@@ -134,17 +139,19 @@ def create_charts_view(request):
         data_post = {
             "client": None if not request.POST['cid'] else int(request.POST['cid']),
             "uid": uid,
-            "caption": request.POST['caption_text'],
+            "caption": request.POST['caption'],
             "yAxis_plot_value": request.POST['yAxis_plot_value'],
             "yAxis_plot_type": request.POST['yAxis_plot_type'],
             "yAxis_title": request.POST['yAxis_title'],
             "yAxis_format_prefix": request.POST['yAxis_format_prefix'],
-            "subcaption": request.POST['subcaption_text'],
+            "subcaption": request.POST.get('subcaption_text', ''),
             "schema": request.POST['schema'],
             "itemid": itemid,
             "from_zabbix": from_zabbix,
             "number_data": number_data
         }
+
+        print(data_post)
 
         request_to_api = json.loads(
                 requests.post(
