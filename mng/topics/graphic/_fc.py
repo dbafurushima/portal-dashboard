@@ -20,6 +20,8 @@ class FusionChart(object):
             format: str,
             type_graph: str,
             description_value: str,
+            itemid: int = None,
+            ndata: int = None,
             cid=None) -> None:
 
         self.cid = cid
@@ -30,6 +32,9 @@ class FusionChart(object):
         self.yAxis_plot_type = type_graph   # line
         self.yAxis_format_prefix = prefix
         self.yAxis_title = title
+        self.itemid = itemid
+        self.from_zabbix = True if self.itemid else False
+        self.ndata = ndata
 
         self.schema = self.__create_schema(title, format)
 
@@ -85,5 +90,8 @@ class FusionChart(object):
             'yAxis_plot_type': self.yAxis_plot_type,
             'yAxis_format_prefix': self.yAxis_format_prefix,
             'yAxis_title': self.yAxis_title,
-            'schema': self.schema
+            'schema': self.schema,
+            'itemid': self.itemid,
+            'from_zabbix': self.from_zabbix,
+            'number_data': self.ndata
         }

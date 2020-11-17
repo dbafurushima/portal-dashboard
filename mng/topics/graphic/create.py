@@ -55,7 +55,9 @@ class GraphCreateCommand(BasicCommand):
             prefix=args.prefix,
             format=args.stftime,
             type_graph=args.type_graph,
-            description_value=args.description_value
+            description_value=args.description_value,
+            itemid=args.itemid,
+            ndata=args.ndata
         )
 
         url = 'http://%s:%s/api/charts/charts/' % (lookup_config('address_api'), lookup_config('port_api'))

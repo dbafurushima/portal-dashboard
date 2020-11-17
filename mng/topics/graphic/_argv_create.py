@@ -81,4 +81,24 @@ ArgTableCreate = [
         'cli_type_name': 'string',
         'group_name': 'fusioncharts'
     },
+    {
+        'name': 'itemid',
+        'help_text': 'ITEMID do gráfico no Zabbix para criação de uma replica do mesmo.',
+        'default': None,
+        'action': 'store',
+        'dest': 'itemid',
+        'required': False,
+        'cli_type_name': 'integer',
+        'group_name': 'zabbix'
+    },
+    {
+        'name': 'n-data',
+        'help_text': 'Número de registros que será consultado a API do Zabbix para criação do gráfico.',
+        'default': None,
+        'action': 'store',
+        'dest': 'ndata',
+        'required': False,
+        'cli_type_name': 'integer',
+        'group_name': 'zabbix'
+    },
 ]
