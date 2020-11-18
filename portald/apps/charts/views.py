@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 import uuid
 
 from rest_framework import viewsets, generics
@@ -38,9 +39,17 @@ def view_chart_line_basic(request):
 
 
 def make_graph(graph: Chart, theme) -> str:
-    obj_data = Data.objects.filter(chart_id=graph.id)
 
-    data_chart = [d.data for d in obj_data]
+    if graph.from_zabbix:
+        zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
+        raw_data = zb.get_history_from_itemids(graph.itemid, graph.number_data)
+        data_chart = [
+            [
+                datetime.datetime.fromtimestamp(data[0]).strftime('%Y-%m-%d %H:%M'), data[1]
+            ] for data in raw_data]
+    else:
+        obj_data = Data.objects.filter(chart_id=graph.id)
+        data_chart = [d.data for d in obj_data]
 
     fusion_table = FusionTable(graph.schema, data_chart)
     time_series = TimeSeries(fusion_table)
