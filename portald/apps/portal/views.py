@@ -92,7 +92,11 @@ def home_view(request):
     graph_03_counts = [content.count for content in contents.get('views')]
 
     open_issues = repo.get_issues(state='open')
-    issues = [{'id': issue.number, 'title': issue.title} for issue in open_issues]
+    issues = [
+        {
+            'id': issue.number,
+            'title': issue.title
+        } for issue in open_issues]
 
     return render(
         request,

@@ -1,0 +1,89 @@
+{% extends 'layouts/master.html' %}
+{% load static %}
+
+{% block title %} Gráficos do Zabbix {% endblock %}
+
+{% block css_plugins %}
+
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js_plugins %}
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <script type="text/javascript" src="{% static 'js/candy.js' %}"></script>
+{% endblock %}
+
+{% block js %}
+<script>
+    $('.btg').click(function (e) {
+        $('#input-uid').val(e.target.id);
+        $('#form-load-graph').submit();
+    })
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <p>
+                <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#adminGraphs"
+                        aria-expanded="false" aria-controls="adminGraphs">
+                    Gráficos dos Administrador
+                </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#clientGraphs"
+                        aria-expanded="false" aria-controls="clientGraphs">
+                    Gráficos dos Clientes
+                </button>
+                </p>
+                <div class="collapse mt-2" id="adminGraphs">
+                    <div class="card card-body">
+                        <div class="example">
+                            {% for graph in client_graphs %}
+                            <button type="button" id="{{ graph.uid }}" class="btn btg btn-outline-warning mb-1 mb-md-0">
+                                {{ graph.yAxis_title }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse mt-2" id="clientGraphs">
+                    <div class="card card-body">
+                        <div class="example">
+                            {% for graph in admin_graphs %}
+                            <button type="button" id="{{ graph.uid }}" class="btn btg btn-outline-warning mb-1 mb-md-0">
+                                {{ graph.yAxis_title }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if render_graph %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="flot-wrapper">
+                    <div id="chart-zabbix">{{ render_graph|safe }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<form action="{% url 'list-zabbix-graphs' %}" id="form-load-graph" method="POST">
+    {% csrf_token %}
+    <input type="hidden" id="input-uid" name="uid">
+</form>
+{% endblock %}

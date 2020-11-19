@@ -38,14 +38,16 @@ def view_chart_line_basic(request):
         })
 
 
-def make_graph(graph: Chart, theme) -> str:
+def make_graph(graph: Chart, static: bool = False, theme: str = 'dark') -> str:
 
     if graph.from_zabbix:
         zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
         raw_data = zb.get_history_from_itemids(graph.itemid, graph.number_data)
         data_chart = [
             [
-                datetime.datetime.fromtimestamp(data[0]).strftime('%Y-%m-%d %H:%M'), data[1]
+                datetime.datetime.fromtimestamp(data[0]).strftime(
+                    json.loads(graph.schema)[0].get('format')
+                ), data[1]
             ] for data in raw_data]
     else:
         obj_data = Data.objects.filter(chart_id=graph.id)
@@ -63,10 +65,10 @@ def make_graph(graph: Chart, theme) -> str:
 
     fusion_chart = FusionCharts(
         "timeseries",
-        f"ex{graph.id}",
+        f"ex{graph.id}" if not static else 'zabbix',
         "100%",
         450,
-        f"chart-{graph.id}", "json",
+        f"chart-{graph.id}" if not static else 'chart-zabbix', "json",
         time_series
     )
 
@@ -92,7 +94,7 @@ def view_get_graph(request):
             })
 
     graph = Chart.objects.get(uid=graph_uid)
-    render_graph = make_graph(graph, theme)
+    render_graph = make_graph(graph, theme=theme)
 
     return JsonResponse(
             {
@@ -159,8 +161,6 @@ def create_charts_view(request):
             "from_zabbix": from_zabbix,
             "number_data": number_data
         }
-
-        print(data_post)
 
         request_to_api = json.loads(
                 requests.post(

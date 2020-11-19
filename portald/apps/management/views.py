@@ -29,10 +29,31 @@ from apps.api.serializer import (InventorySerializer, EnvironmentSerializer, Hos
 from apps.errors import Errors
 from apps.charts.fusioncharts import FusionTable, FusionCharts, TimeSeries
 from apps.charts.zabbix.api import Zabbix
+from apps.charts.views import make_graph
 
 
 def permission_check(user: User):
     return user.is_superuser
+
+
+@login_required
+@user_passes_test(permission_check)
+def zabbix_list_graphs_view(request):
+    admin_graphs = Chart.objects.filter(client_id__gt=0)
+    client_graphs = Chart.objects.filter(client_id__isnull=True)
+
+    dict_resp = {
+            'client_graphs': client_graphs,
+            'admin_graphs': admin_graphs}
+    uid = request.POST.get('uid', None)
+    if uid:
+        graph = Chart.objects.get(uid=uid)
+        if graph:
+            dict_resp['render_graph'] = make_graph(graph, static=True, theme=request.session.get('theme'))
+
+    return render(
+        request, 'pages/management/list-graph-zabbix.html', dict_resp
+    )
 
 
 @login_required
@@ -49,6 +70,7 @@ def proxy_api_view(request):
         payload_for_api[item] = payload_for_api[item][0]
 
     route = payload_for_api.get('route')
+
     payload_for_api.pop('route')
     payload_for_api.pop('csrfmiddlewaretoken')
 
@@ -85,9 +107,10 @@ def tree_graph_clients_view(request):
                 graph.client.display_name
             ].append(graph)
         else:
-            clients_of_graph[
-                'Super Admin'
-            ].append(graph)
+            # clients_of_graph[
+            #     'Super Admin'
+            # ].append(graph)
+            pass
 
     final_cog = list()
     for cog in clients_of_graph:

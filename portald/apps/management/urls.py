@@ -15,4 +15,5 @@ urlpatterns = [
     path('inventory', views.inventory_view, name='inventory'),
     path('proxy_api', views.proxy_api_view, name='proxy_api'),
     path('pre-view-graph-zabbix', views.zabbix_pre_view_graph, name='pre-view-graph-zabbix'),
+    path('list-zabbix-graphs', views.zabbix_list_graphs_view, name='list-zabbix-graphs'),
 ]

@@ -45,13 +45,11 @@
             cache: false,
             contentType: false,
             processData: false,
-            beforeSend: function () {
-            },
             success: function(data) {
                 $('#graph-here').html('');
-                $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
-                let div_graph = '#'+'chart-'+data.id;
-                $(div_graph).append(data.graph);
+                $('#graph-here').append('<div id="chart-'+data.id+'"></div>');
+                let query_div_graph = '#'+'chart-'+data.id;
+                $(query_div_graph).append(data.graph);
             },
             error: function () {
                 alert('internal error!')

@@ -29,42 +29,42 @@
     <script>
     if($('#apexChart1').length) {
         var options1 = {
-        chart: {
-        type: "line",
-        height: 60,
-        sparkline: {
-        enabled: !0
-        }
-        },
-        series: [{
-        data: {{ data.graph_01.counts }}
-        }],
-        stroke: {
-        width: 2,
-        curve: "smooth"
-        },
-        markers: {
-        size: 0
-        },
-        colors: ["#727cf5"],
-        tooltip: {
-        fixed: {
-        enabled: !1
-        },
-        x: {
-        show: !1
-        },
-        y: {
-        title: {
-        formatter: function(e) {
-        return ""
-        }
-        }
-        },
-        marker: {
-        show: !1
-        }
-        }
+            chart: {
+                type: "line",
+                height: 60,
+                sparkline: {
+                    enabled: !0
+                }
+            },
+            series: [{
+                data: {{ data.graph_01.counts }}
+            }],
+            stroke: {
+                width: 2,
+                curve: "smooth"
+            },
+            markers: {
+                size: 0
+            },
+            colors: ["#727cf5"],
+            tooltip: {
+                fixed: {
+                    enabled: !1
+                },
+                x: {
+                    show: !1
+                },
+                y: {
+                    title: {
+                    formatter: function(e) {
+                        return ""
+                        }
+                    }
+                },
+                marker: {
+                    show: !1
+                }
+            }
         };
         new ApexCharts(document.querySelector("#apexChart1"),options1).render();
     }
