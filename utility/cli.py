@@ -1,3 +1,4 @@
-from utilities.cpu import cpu
+from utilities.cli import cli
 
-cpu(per='second', turn=0)
+if __name__ == '__main__':
+    cli()
