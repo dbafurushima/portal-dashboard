@@ -1,4 +1,5 @@
 import click
+from ._cli import _cli
 from .utils_constants import (CHOICES_TYPE_RESOURCE, CHOICES_PER_TIME, DEFAULT_CLI_ENABLE_BACKUP)
 
 
@@ -14,5 +15,9 @@ from .utils_constants import (CHOICES_TYPE_RESOURCE, CHOICES_PER_TIME, DEFAULT_C
               help=('Number of data you are recovering. To get the metrics while the tool is running, just choose "0".'))
 @click.option('--backup/--no-backup', default=DEFAULT_CLI_ENABLE_BACKUP, is_flag=True,
               help=('If the sending of any information fails, the data will be saved in a temporary file.'))
-def cli(resource, config_file, verbose, per, turn):
-    pass
+def cli(resource, config_file, debug, per, turn, backup):
+    _cli(
+        resource=resource,
+        turn=turn,
+        per=per,
+        backup=backup)
