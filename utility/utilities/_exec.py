@@ -19,11 +19,8 @@ from ._load_work import WORKER
 INDEX = 0
 
 
-def _callback_cpu(data: dict) -> None:
-    put_data_to_graph(data)
-
-
-def cpu(
+def execute(
+        resource,
         graph: int or str,
         turn: int = DEFAULT_TURN,
         per: str = 'second', # CHOICES_PER_TIME.keys()[3],
@@ -32,16 +29,22 @@ def cpu(
         priority: int = CHOICES_PRIORITY[0],
         sch: sched.scheduler = None) -> None:
 
-    def _cpu(callback, graph, format, bk: bool = False):
+    def _exec(resource, graph, format, bk: bool = False):
         global INDEX
         INDEX += 1
+
+        if resource.lower() == 'cpu':
+            value = psutil.cpu_percent(interval=1)
+        if resource.lower() == 'mem':
+            value = psutil.virtual_memory().percent
 
         data_post = {
             'index': INDEX,
             'chart': graph,
             'value': '%s,%s' % (
-                datetime.datetime.now().strftime(format), psutil.cpu_percent(interval=1))}
-        callback(data_post)
+                datetime.datetime.now().strftime(format), value
+                )}
+        put_data_to_graph(data_post)
 
     try:
         obj_graph = get_graph_by_id(graph, throw=True) \
@@ -77,9 +80,9 @@ def cpu(
                 sch.enter(
                     wait * i,
                     priority,
-                    _cpu,
+                    _exec,
                     argument=(
-                        _callback_cpu, obj_graph.get('id'), strtime, backup
+                        resource, obj_graph.get('id'), strtime, backup
                     )
                 )
             sch.run()
