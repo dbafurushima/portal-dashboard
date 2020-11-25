@@ -32,5 +32,3 @@ else:
         os.environ["DEFAULT_WORKER_PATH"] = new_tempfile
         DEFAULT_WORKER_PATH = new_tempfile
         debug('new WORKER from tempfile %s' % new_tempfile)
-
-debug('%s' % WORKER, is_enabled_log=False)

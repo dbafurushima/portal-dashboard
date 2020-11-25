@@ -3,3 +3,6 @@ class ChoicePerTimeIsNotValid(Exception):
 
 class ResourceNotIsValid(Exception):
     """The feature you chose does not exist or has not been implemented."""
+
+class GraphDoesNotExist(Exception):
+    """The Chart does not exist."""

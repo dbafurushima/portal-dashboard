@@ -14,12 +14,14 @@ def debug(
     if is_enabled_log:
         with open(DEFAULT_DEBUG_LOG, mode='a+', encoding='utf-8') as fp:
             fp.write('%s %s\n' % (timestamp, text))
-    
+
     if is_enabled_debug:
         print('%s %s' % (timestamp, text))
 
 
+def error_to_user(msg):
+    print('\n>> Ops... error, %s\n' % msg)
+
+
 def save_working_status(worker, path):
-    # os.remove(path)
     pickle.dump(worker, open(path, 'wb'))
-    debug('save_working_status() updating WORKER status in file')

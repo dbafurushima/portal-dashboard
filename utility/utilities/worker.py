@@ -29,6 +29,7 @@ class Worker:
 
     def put(self, pid: int, params: dict) -> None:
         debug('add new process with pid %s and with parameters "%s"' % (pid, params))
+
         try:
             ps = psutil.Process(pid=pid)
             self.running.append(
@@ -46,6 +47,7 @@ class Worker:
 
     def update(self, pid: int) -> None:
         debug('updating process status with pid "%s" to stopped' % pid)
+
         index_pid = None
         for index, task in enumerate(self.running):
             if task.pid == pid:
@@ -73,7 +75,8 @@ class Worker:
         pass
 
     def _update_status_process(self):
-        save_working_status(self, DEFAULT_WORKER_PATH)
+        # save_working_status(self, DEFAULT_WORKER_PATH)
+        pass
 
     def __str__(self):
         output = 'RUNNING:\n'
