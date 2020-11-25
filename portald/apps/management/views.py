@@ -299,7 +299,7 @@ def inventory_view(request):
                 lambda i: {
                     'id': next(index),
                     'name': 'Instância',
-                    'description': i.get('database') + __service_name_by_id(i.get('service')),
+                    'description': str(i.get('database', 'void')) + __service_name_by_id(i.get('service')),
                     'type': 'Family',
                     'uid': i.get('host'), 'uid2': i.get('service')
                 }

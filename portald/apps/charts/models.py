@@ -46,4 +46,4 @@ class Data(models.Model):
 
     @property
     def data(self) -> list:
-        return [self.value.split(',')[0], int(self.value.split(',')[1])]
+        return [self.value.split(',')[0], float(self.value.split(',')[1])]
