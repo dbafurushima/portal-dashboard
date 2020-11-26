@@ -4,7 +4,7 @@ from .utils_constants import (CHOICES_TYPE_RESOURCE, CHOICES_PER_TIME, DEFAULT_C
 
 
 @click.command(name='utils', help='Utility to feed graphs with data, in an automated way.')
-@click.version_option('0.0.1', '-v', '--version', message='%(version)s')
+@click.version_option('0.0.2', '-v', '--version', message='%(version)s')
 @click.argument('graph', type=str, metavar='[<graph-id>|<graph-uid>]')
 @click.argument('resource', default='cpu', type=click.Choice(CHOICES_TYPE_RESOURCE, case_sensitive=False))
 @click.option('--config-file', default=None, type=click.Path(), help=('Configuration file with resource access credentials.'))

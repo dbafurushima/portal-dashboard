@@ -106,10 +106,7 @@ class GraphPutCommand(BasicCommand):
 			graph_filter = {'key': 'chartuid', 'value': args.gid}
 			# Obtains chart ID from the UID so that POST requests can be
 			# made to add charts to a chart.
-			sucessful, response = request(
-				url_get_id,
-				method='GET',
-				headers=headers)
+			sucessful, response = request(url_get_id, method='GET', headers=headers)
 
 			for graph in response:
 				if graph.get('uid') == args.gid:
