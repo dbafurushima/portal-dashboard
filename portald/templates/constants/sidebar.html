@@ -157,12 +157,19 @@
             </a>
             {% if 'inventory' in request.path_info %}
             <h6 class="text-muted mb-2">Inventário</h6>
-                <div class="form-group form-inline">
-                    <button type="button" id="btn-create-env" class="btn btn-primary btn-block">Criar Ambiente</button>
-                    <button type="button" id="btn-create-host" class="btn btn-primary btn-block">Criar Host</button>
-                    <button type="button" id="btn-create-instance" class="btn btn-primary btn-block">Criar Instância</button>
-                    <button type="button" id="btn-create-service" class="btn btn-primary btn-block">Criar Serviço</button>
-                </div>
+            <div class="form-group form-inline">
+                <button type="button" id="btn-create-env" class="btn btn-primary btn-block">Criar Ambiente</button>
+                <button type="button" id="btn-create-host" class="btn btn-primary btn-block">Criar Host</button>
+                <button type="button" id="btn-create-instance" class="btn btn-primary btn-block">Criar Instância</button>
+                <button type="button" id="btn-create-service" class="btn btn-primary btn-block">Criar Serviço</button>
+            </div>
+            {% endif %}
+            {% if 'notes' in request.path_info %}
+                <!--
+            <button type="button" id="btn-create-env" class="btn btn-primary addTask btn-block">
+                Adicionar Anotação
+            </button>
+            -->
             {% endif %}
 		</div>
 	</div>

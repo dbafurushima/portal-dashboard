@@ -70,25 +70,48 @@ def proxy_api_view(request):
         payload_for_api[item] = payload_for_api[item][0]
 
     route = payload_for_api.get('route')
+    method = payload_for_api.get('method', 'POST')
+    isjson = payload_for_api.get('isjson', 'false')
+
+    func = requests.get
+    if method == 'POST':
+        func = requests.post
+    elif method == 'PUT':
+        func = requests.put
+    elif method == 'DELETE':
+        func = requests.delete
+    elif method == 'GET':
+        pass
 
     payload_for_api.pop('route')
     payload_for_api.pop('csrfmiddlewaretoken')
+    try:
+        payload_for_api.pop('method')
+    except:
+        pass
 
-    response_api = json.loads(
-        requests.post(
+    response_api = func(
             f'http://{request.headers.get("Host")}{route}',
-            payload_for_api,
+            data=payload_for_api,
             headers={'Authorization': f'Token {settings.USER_API_KEY}'}
-        ).text)
+        ).text
+
+    try:
+        response_api = json.loads(response_api)
+    except json.JSONDecodeError:
+        return JsonResponse({'data': True})
 
     if response_api.get('id'):
         messages.success(
             request,
-            f'Item com id "{response_api.get("id")}" criado com sucesso!')
+            'Response: %s' % response_api)
     else:
         messages.error(
             request,
             response_api)
+
+    if isjson == 'true':
+        return JsonResponse({'data': response_api})
 
     return redirect('inventory')
 
