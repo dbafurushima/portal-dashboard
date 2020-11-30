@@ -12,7 +12,7 @@ HOME_PATH_INSTALL="$HOME/.portal-dashboard"
 if [ -d $HOME_PATH_INSTALL ]; then
     echo "\n[+] atualizando repostório...\n"
     cd $HOME_PATH_INSTALL
-    git pull origin dev
+    git pull origin master
     exit 0
 fi
 
@@ -57,7 +57,7 @@ git clone $REPOSITORY "$HOME/.portal-dashboard"
 echo "\n[+] clone repository portal-dashboard...\n"
 
 cd "$HOME/.portal-dashboard"
-git pull origin dev
+git pull origin master
 
 python3 -m pip install -r mng-requirements.txt || exit 1
 echo "\n[+] install pip requirements\n"
@@ -67,6 +67,6 @@ POINT_MODULE="$HOME_PATH_INSTALL/mngcli.py"
 # optional alias to put in the user's bashrc
 # echo "echo \"alias mng=\"python3 $POINT_MODULE\"\" >> ~/.bashrc"
 echo 'echo "alias mng=\"python3 ~/.portal-dashboard/mngcli.py\"" >> ~/.bashrc'
-echo "exec \"$SHELL\""
+echo "exec \"bash\""
 
 echo "\ninstall sucessful"
