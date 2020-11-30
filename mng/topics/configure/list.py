@@ -32,7 +32,6 @@ class ConfigureListCommand(BasicCommand):
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
-        print('ConfigureListCommand._run_main()')
         self._display_config_value(ConfigValue('Value', 'Type', 'Location'),
                                    'Name')
         self._display_config_value(ConfigValue('-----', '----', '--------'),

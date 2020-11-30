@@ -50,6 +50,9 @@ ENV LANG pt_BR.UTF-8
 ENV LANGUAGE pt_BR:pt:en
 ENV LC_ALL pt_BR.UTF-8
 
+RUN echo "America/Sao_Paulo" > /etc/timezone
+RUN ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
 RUN apt remove -y && apt clean apt autoclean apt autoremove -y
 RUN mkdir /var/www/portald/
 WORKDIR /var/www/portald
