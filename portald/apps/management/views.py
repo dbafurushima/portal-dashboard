@@ -73,7 +73,7 @@ def proxy_api_view(request):
     method = payload_for_api.get('method', 'POST')
     isjson = payload_for_api.get('isjson', 'false')
 
-    func = requests.get
+    func = requests.post
     if method == 'POST':
         func = requests.post
     elif method == 'PUT':
@@ -81,7 +81,7 @@ def proxy_api_view(request):
     elif method == 'DELETE':
         func = requests.delete
     elif method == 'GET':
-        pass
+        func = requests.post
 
     payload_for_api.pop('route')
     payload_for_api.pop('csrfmiddlewaretoken')
