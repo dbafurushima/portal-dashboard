@@ -49,7 +49,7 @@ class Notification(models.Model):
 
 
 class PasswordSafe(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     password = models.CharField(max_length=255)
     updated_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
@@ -59,7 +59,7 @@ class PasswordSafe(models.Model):
 
 class EnterpriseUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    enterprise = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+    enterprise = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'<{self.enterprise.display_name}:{self.user.username}>'
