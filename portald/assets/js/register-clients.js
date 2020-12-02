@@ -25,59 +25,56 @@ $(function() {
     }
 
     $('#submit-form').click(function (e) {
-        if (input_users_json.val() === "") {
-            $('#add-user').modal('show');
-        } else {
-            let token = $('input[name="csrfmiddlewaretoken"]').val();
-            let company_name = $('#company-name').val();
-            let display_name = $('#display-name').val();
-            let cnpj = $('#cnpj').val();
-            let city = $('#city').val();
-            let state = $('#state').val();
-            let cep = $('#cep').val();
-            let district = $('#district').val();
-            let address = $('#address').val();
-            let state_registration = $('#state-registration').val();
-            let municipal_registration = $('#municipal-registration').val();
-            let email = $('#email').val();
-            let users_json = $('#users-json').val();
-            let files = $('#logo')[0].files[0];
+        let token = $('input[name="csrfmiddlewaretoken"]').val();
+        let company_name = $('#company-name').val();
+        let display_name = $('#display-name').val();
+        let cnpj = $('#cnpj').val();
+        let city = $('#city').val();
+        let state = $('#state').val();
+        let cep = $('#cep').val();
+        let district = $('#district').val();
+        let address = $('#address').val();
+        let state_registration = $('#state-registration').val();
+        let municipal_registration = $('#municipal-registration').val();
+        let email = $('#email').val();
+        let users_json = $('#users-json').val();
+        let files = $('#logo')[0].files[0];
 
-            let fd = new FormData();
+        let fd = new FormData();
 
-            fd.append('file', files);
-            fd.append('csrfmiddlewaretoken',token);
-            fd.append('company-name', company_name);
-            fd.append('display-name',display_name);
-            fd.append('cnpj', cnpj);
-            fd.append('city', city);
-            fd.append('state', state);
-            fd.append('cep', cep);
-            fd.append('district', district);
-            fd.append('address', address);
-            fd.append('state-registration', state_registration);
-            fd.append('municipal-registration', municipal_registration);
-            fd.append('email', email);
-            fd.append('users-json', users_json);
+        fd.append('file', files);
+        fd.append('csrfmiddlewaretoken',token);
+        fd.append('company-name', company_name);
+        fd.append('display-name',display_name);
+        fd.append('cnpj', cnpj);
+        fd.append('city', city);
+        fd.append('state', state);
+        fd.append('cep', cep);
+        fd.append('district', district);
+        fd.append('address', address);
+        fd.append('state-registration', state_registration);
+        fd.append('municipal-registration', municipal_registration);
+        fd.append('email', email);
+        fd.append('users-json', users_json);
 
-            $.ajax({
-                url: "/register-client",
-                method: 'post',
-                data: fd,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(data) {
-                    if (data.code === 200)
-                        $('#alerts').append(create_alert(data.msg, 'success', ''))
-                    else
-                        $('#alerts').append(create_alert(data.msg, 'danger', 'Algo está errado!'))
-                },
-                error: function (data) {
-                    $('#alerts').append(create_alert(data.msg, 'danger', 'Ocorreu um erro interno!'))
-                }
-            });
-        }
+        $.ajax({
+            url: "/register-client",
+            method: 'post',
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.code === 200)
+                    $('#alerts').append(create_alert(data.msg, 'success', ''))
+                else
+                    $('#alerts').append(create_alert(data.msg, 'danger', 'Algo está errado!'))
+            },
+            error: function (data) {
+                $('#alerts').append(create_alert(data.msg, 'danger', 'Ocorreu um erro interno!'))
+            }
+        });
+
     });
 
     $('#btn-add-user-modal').click(function (e) {

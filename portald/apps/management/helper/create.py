@@ -111,7 +111,7 @@ def _create_users(post: dict, enterprise: Client) -> None:
         # raw_password = _user.get('password') if _user.get('password') else 'mudar123'
         __create_user(
             _user.get('username'),
-            _user.get('email'),
+            _user.get('username')+enterprise.mail.split('@')[-1],
             _user.get('password') if _user.get('password') else 'mudar123',
             enterprise)
 
@@ -216,15 +216,16 @@ def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
         True,
         '',
         Client(
-            company_name=company_name,
-            display_name=display_name,
-            cnpj=cnpj,
-            city=city,
-            state=state,
-            cep=cep,
-            district=district,
-            address=address,
-            state_registration=state_registration,
-            municipal_registration=municipal_registration
+            company_name=company_name.strip(),
+            display_name=display_name.strip(),
+            cnpj=cnpj.strip(),
+            city=city.strip(),
+            state=state.strip(),
+            cep=cep.strip(),
+            district=district.strip(),
+            address=address.strip(),
+            state_registration=state_registration.strip(),
+            municipal_registration=municipal_registration.strip(),
+            mail=email.strip()
         )
     )

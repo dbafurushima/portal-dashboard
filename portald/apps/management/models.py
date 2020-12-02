@@ -19,6 +19,7 @@ class Client(models.Model):
                              blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.datetime.now, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    mail = models.CharField(verbose_name="E-Mail", max_length=120, blank=True, null=True)
 
     class Meta:
         verbose_name = _('clients')

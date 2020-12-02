@@ -512,17 +512,18 @@ def passwords_safe_view(request):
 @login_required
 @user_passes_test(permission_check)
 def register_client(request):
-    def __save_logo(file, client: Client) -> None:
+
+    def __save_logo(file, client_: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
-            client.logo = file
+            client_.logo = file
             FileSystemStorage().save(file.name, file)
 
     if request.method != 'POST':
         return render(request, 'pages/management/clients-register.html')
 
-    itworked, message, client = _create_client_from_post(request.POST)
+    it_worked, message, client = _create_client_from_post(request.POST)
 
-    if not itworked:
+    if not it_worked:
         return JsonResponse(
             {
                 'code': 400,
