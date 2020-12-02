@@ -25,7 +25,7 @@ class Note(models.Model):
 
 
 class Inventory(models.Model):
-    enterprise = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+    enterprise = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"<Inventory: {self.enterprise.company_name}>"

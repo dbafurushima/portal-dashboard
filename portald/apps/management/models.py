@@ -22,8 +22,8 @@ class Client(models.Model):
     mail = models.CharField(verbose_name="E-Mail", max_length=120, blank=True, null=True)
 
     class Meta:
-        verbose_name = _('clients')
-        verbose_name_plural = _('clients')
+        verbose_name = _('Cliente')
+        verbose_name_plural = _('Clientes')
 
     @property
     def cnpj_text(self):
@@ -59,8 +59,12 @@ class PasswordSafe(models.Model):
 
 
 class EnterpriseUser(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     enterprise = models.ForeignKey(Client, on_delete=models.CASCADE, blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('Cliente-Usuário')
+        verbose_name_plural = _('Cliente-Usuários')
 
     def __str__(self):
         return f'<{self.enterprise.display_name}:{self.user.username}>'

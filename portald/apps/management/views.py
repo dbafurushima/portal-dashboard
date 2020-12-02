@@ -515,8 +515,8 @@ def register_client(request):
 
     def __save_logo(file, client_: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
-            client_.logo = file
-            FileSystemStorage().save(file.name, file)
+            client.logo = file
+            FileSystemStorage().save('logos/%s' % file.name, file)
 
     if request.method != 'POST':
         return render(request, 'pages/management/clients-register.html')

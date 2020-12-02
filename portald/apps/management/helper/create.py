@@ -175,8 +175,8 @@ def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
     cep = post.get('cep')
     district = post.get('district')
     address = post.get('address')
-    state_registration = post.get('state-registration')
-    municipal_registration = post.get('municipal-registration')
+    state_registration = post.get('state-registration', 'ISENTO')
+    municipal_registration = post.get('municipal-registration', 'ISENTO')
     email = post.get('email')
 
     if not __company_name(company_name):

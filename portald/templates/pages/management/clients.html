@@ -1,7 +1,7 @@
 {% extends 'layouts/master.html' %}
 {% load static %}
 
-{% block title %} Meus Clientes {% endblock %}
+{% block title %} Listagem de Clientes {% endblock %}
 
 {% block css_plugins %}
 
@@ -47,7 +47,11 @@
                         <div class="card text-center">
                             <div class="card-body" style="padding: 15px">
                                 <h5 class="card-title">
-                                    <img style="border-radius: 50%" src="{% static 'images/company.png' %}"/>
+                                    {% if client.logo %}
+                                        <img style="border-radius: 50%" src="archives/{{ client.logo }}"/>
+                                    {% else %}
+                                        <img style="border-radius: 50%" src="{% static 'images/company.png' %}"/>
+                                    {% endif %}
                                 </h5>
                                 <p class="card-text">{{ client.display_name }}</p>
                             </div>

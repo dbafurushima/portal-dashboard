@@ -1,5 +1,6 @@
 from django.db import models
 from apps.management.models import Client
+from django.utils.translation import ugettext_lazy as _
 
 
 class Chart(models.Model):
@@ -35,7 +36,11 @@ class Chart(models.Model):
                         self.yAxis_format_prefix, self.yAxis_title))
 
     def __str__(self):
-        return f'<Chart: {self.uid}:{self.caption}>'
+        return f'<Graph: {self.uid}:{self.caption}>'
+
+    class Meta:
+        verbose_name = _('Gráfico')
+        verbose_name_plural = _('Gráficos')
 
 
 class Data(models.Model):
