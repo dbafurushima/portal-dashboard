@@ -10,6 +10,14 @@ debug = pprint.PrettyPrinter(indent=2, width=41, compact=False)
 uribase = settings.ZABBIX_URL
 
 
+class AccessDeniedCredentialException(Exception):
+    def __init__(
+            self,
+            message="Could not authenticate with the API, check the access URL and access credentials.") -> None:
+        self.message = message
+        super().__init__(self.message)
+
+
 class Zabbix:
     """
     Zabbix class for API consumption
@@ -21,7 +29,10 @@ class Zabbix:
 
         self.api_token = None
 
-        self._auth_zabbix(user, password)
+        try:
+            self._auth_zabbix(user, password)
+        except ValueError:
+            pass
 
     def _auth_zabbix(self, user: str, passwd: str) -> None:
         """

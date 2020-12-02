@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-from ..charts.zabbix.api import Zabbix
+from ..charts.zabbix.api import Zabbix, AccessDeniedCredentialException
 from ..charts.fusioncharts import FusionTable, TimeSeries, FusionCharts
 from ..charts.models import Chart
 from ..management.models import EnterpriseUser
@@ -35,45 +35,51 @@ def home_view(request):
     if not request.user.is_superuser:
         return render(request, 'pages/portal/home.html')
 
-    zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
-    raw_data = zb.get_history_from_itemids('31359')
+    zabbix_graph = 'void'
+    try:
+        zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
+        raw_data = zb.get_history_from_itemids('31359')
 
-    zabbix_data = [[datetime.fromtimestamp(data[0]).strftime('%Y-%m-%d %H:%M'), data[1]] for data in raw_data]
+        zabbix_data = [[datetime.fromtimestamp(data[0]).strftime('%Y-%m-%d %H:%M'), data[1]] for data in raw_data]
 
-    schema = '[{"name": "Time","type": "date","format": "%Y-%m-%d %H:%M"}, {"name": "Usage CPU","type": "number"}]'
+        schema = '[{"name": "Time","type": "date","format": "%Y-%m-%d %H:%M"}, {"name": "Usage CPU","type": "number"}]'
 
-    fusion_table = FusionTable(schema, zabbix_data)
-    time_series = TimeSeries(fusion_table)
+        fusion_table = FusionTable(schema, zabbix_data)
+        time_series = TimeSeries(fusion_table)
 
-    if request.session.get('theme', 'dark') == 'dark':
-        time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
+        if request.session.get('theme', 'dark') == 'dark':
+            time_series.AddAttribute("chart", "{showLegend: 0, theme: 'candy'}")
 
-    time_series.AddAttribute("caption", "{text: '%s'}" % 'unknown 01')
-    time_series.AddAttribute("subcaption", "{text: '%s'}" % 'unknown 02')
-    time_series.AddAttribute("yAxis", (
-            "[{"
-            "plot: {"
-            "value: '%s',"
-            "type: '%s'"
-            "},"
-            "format: {"
-            "prefix: '%s'"
-            "},"
-            "title: '%s'"
-            "}]" % ('usage cpu is', 'line',
-                    '%/min', 'usage_cpu_vm0'))
-    )
+        time_series.AddAttribute("caption", "{text: '%s'}" % 'unknown 01')
+        time_series.AddAttribute("subcaption", "{text: '%s'}" % 'unknown 02')
+        time_series.AddAttribute("yAxis", (
+                "[{"
+                "plot: {"
+                "value: '%s',"
+                "type: '%s'"
+                "},"
+                "format: {"
+                "prefix: '%s'"
+                "},"
+                "title: '%s'"
+                "}]" % ('usage cpu is', 'line',
+                        '%/min', 'usage_cpu_vm0'))
+        )
 
-    fusion_chart = FusionCharts(
-        "timeseries",
-        "zabbix",
-        "100%",
-        450,
-        "chart-zabbix", "json",
-        time_series
-    )
+        fusion_chart = FusionCharts(
+            "timeseries",
+            "zabbix",
+            "100%",
+            450,
+            "chart-zabbix", "json",
+            time_series
+        )
 
-    zabbix_graph = fusion_chart.render()
+        zabbix_graph = fusion_chart.render()
+    except AccessDeniedCredentialException:
+        pass
+    except Exception as err:
+        pass
 
     g = Github(settings.GITHUB_TOKEN)
     repo = g.get_repo("dbafurushima/portal-dashboard")

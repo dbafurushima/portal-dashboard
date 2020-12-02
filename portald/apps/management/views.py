@@ -83,11 +83,11 @@ def proxy_api_view(request):
     elif method == 'GET':
         func = requests.post
 
-    payload_for_api.pop('route')
-    payload_for_api.pop('csrfmiddlewaretoken')
     try:
+        payload_for_api.pop('route')
+        payload_for_api.pop('csrfmiddlewaretoken')
         payload_for_api.pop('method')
-    except:
+    except KeyError:
         pass
 
     response_api = func(
