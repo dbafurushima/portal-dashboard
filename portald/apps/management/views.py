@@ -9,6 +9,7 @@ from collections import defaultdict
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
@@ -65,6 +66,15 @@ def proxy_api_view(request):
                 'proxy': 'running'
             })
 
+    if not settings.USER_API_KEY:
+        token = Token.objects.filter(user_id=request.user.id)
+        if not token:
+            token = Token.objects.create(user=request.user)
+        else:
+            token = token[0]
+    else:
+        token = Token.objects.get(user_id=request.user.id)
+
     payload_for_api = dict(request.POST)
     for item in payload_for_api:
         payload_for_api[item] = payload_for_api[item][0]
@@ -93,7 +103,7 @@ def proxy_api_view(request):
     response_api = func(
             f'http://{request.headers.get("Host")}{route}',
             data=payload_for_api,
-            headers={'Authorization': f'Token {settings.USER_API_KEY}'}
+            headers={'Authorization': 'Token %s' % token}
         ).text
 
     try:
