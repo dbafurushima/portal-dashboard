@@ -1,7 +1,7 @@
 import requests
 import logging
 import json
-import pprint
+import  pprint
 import datetime
 
 from collections import defaultdict
@@ -10,6 +10,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from rest_framework import viewsets
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAdminUser
 
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
@@ -18,6 +21,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db import (DatabaseError, DataError, InternalError, IntegrityError)
 
+from .serializer import ClientSerializer
 from .helper import (_create_client_from_post, _create_users, _create_default_user,
                      _save_password_safe, passwd_from_username,
                      __create_user)
@@ -245,8 +249,34 @@ def zabbix_pre_view_graph(request):
 @login_required
 @user_passes_test(permission_check)
 def inventory_view(request):
+    clients = Client.objects.all()
+
+    tree_items = [
+        {
+            'id': client.company_name,
+            'parent': '#',
+            'text': client.display_name,
+            "icon": "/static/images/min-enterprise.png"
+        } for client in clients]
+    for inventory in Inventory.objects.all():
+        enterprise = inventory.enterprise
+        for env in Environment.objects.filter(inventory=inventory):
+            tree_items.append({
+                'id': env.name,
+                'parent': enterprise.company_name,
+                'text': env.name,
+                'icon': '/static/images/min-hosting.png'
+            })
+            hosts = Host.objects.filter(environment_id=env.id)
+            for host in hosts:
+                tree_items.append({
+                    'id': 'host-%s' % host.hostname,
+                    'parent': env.name,
+                    'text': host.hostname,
+                    'icon': '/static/images/min-data-server.png'
+                })
+
     if request.method == 'GET':
-        clients = Client.objects.all()
         return render(
             request,
             'pages/management/inventory.html',
@@ -256,7 +286,8 @@ def inventory_view(request):
                     'inventories': Inventory.objects.all(),
                     'envs': Environment.objects.all(),
                     'services': Service.objects.all(),
-                    'hosts': Host.objects.all()
+                    'hosts': Host.objects.all(),
+                    'tree': tree_items
                 }
             })
 
@@ -569,3 +600,11 @@ def register_client(request):
                 'code': 200,
                 'msg': 'Cadastro da empresa "%s" realizado com sucesso!' % client.display_name
             })
+
+
+class ClientViewSet(viewsets.ModelViewSet):
+
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAdminUser]

@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from apps.api.views import NotesViewSet, CommentViewSet, InventoryViewSet, HostViewSet, EnvironmentViewSet,\
      ServiceViewSet, InstanceViewSet
+from apps.management.views import ClientViewSet
 from apps.charts.views import ChartsViewSet, DataViewSet, ListData
 from rest_framework import routers
 from apps.public.views import handler404
@@ -43,6 +44,7 @@ router = routers.DefaultRouter()
 
 router.register('note', NotesViewSet, basename='Note')
 router.register('comment', CommentViewSet, basename='comment')
+router.register('client', ClientViewSet, basename='client')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

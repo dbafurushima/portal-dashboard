@@ -8,6 +8,7 @@
     <link href="{% static 'css/extra/modal.css' %}" rel="stylesheet" />
     <link href="{% static 'css/d3-mitch-tree.min.css' %}" rel="stylesheet" />
     <link href="{% static 'css/d3-mitch-tree-theme-default.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.10/themes/default/style.min.css" integrity="sha512-P8BwDSUInKMA7I116Z1RFg/Dfk85uFdliEUYO7vQlwtxLVMNvZimfMAQsaf++9EhlAGOVX6yhDQAIY3/70jDUg==" crossorigin="anonymous" />
 {% endblock %}
 
 {% block css %}
@@ -31,6 +32,8 @@
 {% endblock %}
 
 {% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.10/jstree.min.js" integrity="sha512-fgHQj3Fsk5TtG3XglZ/JkE06lx/gJdBZ+Lll785gf5RW3NWcGsyTBwauFtwrlZvpsuv6XSjzB97fBNagkT6uDg==" crossorigin="anonymous"></script>
+
     <script>
         $('#btn-create-env').click(function (e) {
            $('#modal-create-env').modal('show');
@@ -96,6 +99,43 @@
             });
         });
 
+        var jsondata = {{ data.tree|safe }};
+
+        $('#tree-inv')
+            .on("changed.jstree", function (e, data) {
+                if(data.selected.length) {
+                    let instance = data.instance.get_node(data.selected[0]).id
+                    if ( instance.indexOf("host-") > -1 ) {
+                        $('#modal-host').modal('show');
+                    }
+                }
+            })
+            .jstree({
+            "core": {
+                'data': jsondata
+            },
+            "plugins": ["search", "types", "wholerow"],
+            "search": {
+                "case_sensitive":false,
+                "show_only_matches": true
+            },
+            "types": {
+                "root": {
+                    "icon": "/static/images/min-enterprise.png"
+                },
+                "file" : {
+                    "icon": "/static/images/min-enterprise.png"
+                }
+            },
+        });
+
+        $(document).ready(function () {
+            $(".search-input").keyup(function () {
+                var searchString = $(this).val();
+                $('#tree-inv').jstree('search', searchString);
+            });
+        });
+
     </script>
 {% endblock %}
 
@@ -104,22 +144,61 @@
 {% include 'constants/alerts/register-client.html' %}
 
 <div class="row">
-    {% for client in data.clients %}
-    <div class="col-12 col-lg-4">
-        <div class="box" id="{{ client.id }}" style="border: 2px solid white; border-radius: 10px;">
-            <div class="box-body">
-                <div class="text-center">
-                    <div class="user-contact list-inline text-center">
-                        <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="server"></i></a>
-                        <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="database"></i></a>
-                    </div>
-                    <h6 class="user-info mt-0 mb-10 text-fade text-white">{{ client.display_name }}</h6>
-                    <p class="text-fade w-p85 mb-1 mx-auto text-white">{{ client.company_name }}</p>
+    <div class="col-5 col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="p-item">Pesquisar item</label>
+                    <input type="text" class="form-control search-input" id="p-item" placeholder="Nome do Host...">
                 </div>
+                <div id="tree-inv"></div>
             </div>
         </div>
     </div>
-    {% endfor %}
+    <div class="col-7 col-lg-7">
+    <div class="row">
+        {% for client in data.clients %}
+        <div class="col-6 col-lg-6">
+            <div class="box mb-4" id="{{ client.id }}" style="border: 2px solid white; border-radius: 10px;">
+                <div class="box-body">
+                    <div class="text-center">
+                        <div class="user-contact list-inline text-center">
+                            <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="server"></i></a>
+                            <a href="#" class="btn btn-circle mt-3 mb-4 btn-warning"><i data-feather="database"></i></a>
+                        </div>
+                        <h6 class="user-info mt-0 mb-10 text-fade text-white">{{ client.display_name }}</h6>
+                        <p class="text-fade w-p85 mb-1 mx-auto text-white">{{ client.company_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-host" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button style="color: white" type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Razão Social: </b> <span id="company_name"></span> </p>
+                <p><b>Cidade: </b> <span id="city"></span> </p>
+                <p><b>UF: </b> <span id="state"></span> </p>
+                <p><b>CEP: </b> <span id="cep"></span> </p>
+                <p><b>Bairro: </b> <span id="district"></span> </p>
+                <p><b>Endereço: </b> <span id="address"></span> </p>
+                <p><b>CNPJ: </b> <span id="cnpj"></span> </p>
+                <p><b>Insc. Estadual: </b> <span id="state_registration"></span> </p>
+                <p><b>Insc. Municipal: </b> <span id="municipal_registration"></span> </p>
+                <p><b>CNPJ sem ponto: </b> <span id="cnpj_s"></span> </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
