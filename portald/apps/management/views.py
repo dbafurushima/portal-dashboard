@@ -287,6 +287,7 @@ def inventory_view(request):
                     'envs': Environment.objects.all(),
                     'services': Service.objects.all(),
                     'hosts': Host.objects.all(),
+                    'json_hosts': [json.dumps(dict(HostSerializer(host).data)) for host in Host.objects.all()],
                     'tree': tree_items
                 }
             })

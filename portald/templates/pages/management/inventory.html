@@ -99,6 +99,8 @@
             });
         });
 
+        var hosts = {{ data.json_hosts|safe }};
+
         var jsondata = {{ data.tree|safe }};
 
         $('#tree-inv')
@@ -106,7 +108,11 @@
                 if(data.selected.length) {
                     let instance = data.instance.get_node(data.selected[0]).id
                     if ( instance.indexOf("host-") > -1 ) {
-                        $('#modal-host').modal('show');
+                        for (let i=0; i < hosts.length; i++) {
+                            if (instance.indexOf(hosts[i].hostname)) {
+                                console.log(JSON.parse(hosts[i]));
+                            }
+                        }
                     }
                 }
             })
