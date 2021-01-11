@@ -439,6 +439,15 @@ def clients_view(request):
 @login_required
 @user_passes_test(permission_check)
 def todolist_view(request):
+    if not settings.USER_API_KEY:
+        token = Token.objects.filter(user_id=request.user.id)
+        if not token:
+            token = Token.objects.create(user=request.user)
+        else:
+            token = token[0]
+    else:
+        token = Token.objects.get(user_id=request.user.id)
+
     return render(
         request,
         'pages/management/todolist.html',
@@ -446,7 +455,7 @@ def todolist_view(request):
             'notes': json.loads(
                 requests.get(
                     'http://localhost:8000/api/message/',
-                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}
+                    headers={'Authorization': f'Token {token}'}
                 ).text)
         })
 
@@ -454,6 +463,15 @@ def todolist_view(request):
 @login_required
 @user_passes_test(permission_check)
 def kanban_view(request):
+    if not settings.USER_API_KEY:
+        token = Token.objects.filter(user_id=request.user.id)
+        if not token:
+            token = Token.objects.create(user=request.user)
+        else:
+            token = token[0]
+    else:
+        token = Token.objects.get(user_id=request.user.id)
+
     return render(
         request,
         'pages/management/kanban.html',
@@ -461,7 +479,7 @@ def kanban_view(request):
             'notes': json.loads(
                 requests.get(
                     f'http://{request.headers.get("host")}/api/note/',
-                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}
+                    headers={'Authorization': f'Token {token}'}
                 ).text)
         })
 
