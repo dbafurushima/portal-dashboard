@@ -57,8 +57,9 @@ def request(
             logging.warning('urllib.error.HTTPError: %s' % err)
     except TimeoutError as err:
         logging.warning('warning: %s' % err)
-    except urllib.error.URLError:
+    except urllib.error.URLError as http_err:
         logging.warning(Errors.name_and_error(Errors.UNABLE_TO_CONNECT_SERVER))
+        logging.critical(http_err)
     except Exception as err:
         logging.warning('not cataloged error: %s' % err)
     else:
