@@ -32,6 +32,8 @@ def view_list_graph(request):
 @login_required
 def home_view(request):
 
+    return render(request, 'pages/portal/home.html')
+
     if not request.user.is_superuser:
         return render(request, 'pages/portal/home.html')
 

@@ -17,6 +17,7 @@ done
 >&2 echo "mysql is up - executing command"
 >&2 echo "exec migrations"
 
+python3 /var/www/portald/manage.py makemigrations --merge
 python3 /var/www/portald/manage.py makemigrations
 python3 /var/www/portald/manage.py migrate
 python3 /var/www/portald/manage.py collectstatic --no-input
