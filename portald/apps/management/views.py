@@ -1,7 +1,6 @@
 import requests
 import logging
 import json
-import  pprint
 import datetime
 
 from collections import defaultdict
@@ -20,9 +19,10 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db import (DatabaseError, DataError, InternalError, IntegrityError)
+from django.core.exceptions import ObjectDoesNotExist
 
 from .serializer import ClientSerializer
-from .helper import (_create_client_from_post, _create_users, _create_default_user,
+from .helper import (create_client_from_post, _create_users, _create_default_user,
                      _save_password_safe, passwd_from_username,
                      __create_user)
 from apps.accounts.views import totp_check
@@ -36,29 +36,37 @@ from apps.charts.fusioncharts import FusionTable, FusionCharts, TimeSeries
 from apps.charts.zabbix.api import Zabbix
 from apps.charts.views import make_graph
 
+logger = logging.getLogger(__name__)
+
 
 def permission_check(user: User):
     return user.is_superuser
 
 
-@login_required
-@user_passes_test(permission_check)
-def zabbix_list_graphs_view(request):
-    admin_graphs = Chart.objects.filter(client_id__gt=0)
-    client_graphs = Chart.objects.filter(client_id__isnull=True)
+def get_token_user(request) -> str or None:
+    """
+    get user token for authentication to the application API
+    """
+    def _get_token(user):
+        _token = Token.objects.filter(user_id=user.id)
+        if not _token:
+            _token = Token.objects.create(user=user)
+        else:
+            _token = _token[0]
+        return _token
 
-    dict_resp = {
-            'client_graphs': client_graphs,
-            'admin_graphs': admin_graphs}
-    uid = request.POST.get('uid', None)
-    if uid:
-        graph = Chart.objects.get(uid=uid)
-        if graph:
-            dict_resp['render_graph'] = make_graph(graph, static=True, theme=request.session.get('theme'))
+    token = None
+    if not settings.USER_API_KEY:
+        token = _get_token(request.user)
+    else:
+        try:
+            token = Token.objects.get(user_id=request.user.id)
+        except ObjectDoesNotExist:
+            token = _get_token(request.user)
+        except Exception as err:
+            logger.critical('[CODE] %s' % err)
 
-    return render(
-        request, 'pages/management/list-graph-zabbix.html', dict_resp
-    )
+    return token
 
 
 @login_required
@@ -70,14 +78,7 @@ def proxy_api_view(request):
                 'proxy': 'running'
             })
 
-    if not settings.USER_API_KEY:
-        token = Token.objects.filter(user_id=request.user.id)
-        if not token:
-            token = Token.objects.create(user=request.user)
-        else:
-            token = token[0]
-    else:
-        token = Token.objects.get(user_id=request.user.id)
+    token = get_token_user(request)
 
     payload_for_api = dict(request.POST)
     for item in payload_for_api:
@@ -85,7 +86,7 @@ def proxy_api_view(request):
 
     route = payload_for_api.get('route')
     method = payload_for_api.get('method', 'POST')
-    isjson = payload_for_api.get('isjson', 'false')
+    isjson = payload_for_api.get('isjson', False)
 
     func = requests.post
     if method == 'POST':
@@ -97,37 +98,63 @@ def proxy_api_view(request):
     elif method == 'GET':
         func = requests.post
 
-    try:
-        payload_for_api.pop('route')
-        payload_for_api.pop('csrfmiddlewaretoken')
-        payload_for_api.pop('method')
-    except KeyError:
-        pass
+    keys = ['route', 'csrfmiddlewaretoken', 'method']
+    for key in keys:
+        try:
+            payload_for_api.pop(key)
+        except KeyError:
+            pass
 
-    response_api = func(
+    try:
+        response_api = func(
             f'http://{request.headers.get("Host")}{route}',
             data=payload_for_api,
             headers={'Authorization': 'Token %s' % token}
         ).text
+    except (ConnectionRefusedError, requests.exceptions.ConnectionError) as err:
+        # TODO, error when connecting to the A
+        if isjson:
+            return JsonResponse(
+                {'data':  '%s Details: %s' % (Errors.CONNECTION_REFUSED.value.text, err)})
+        messages.error(request,
+                       'Ops... %s Details: %s' % (Errors.CONNECTION_REFUSED.value.text, err))
+        return redirect('inventory')
 
     try:
         response_api = json.loads(response_api)
     except json.JSONDecodeError:
-        return JsonResponse({'data': True})
+        return JsonResponse(
+            {'data': True})
 
     if response_api.get('id'):
-        messages.success(
-            request,
-            'Response: %s' % response_api)
+        messages.success(request, '%s' % response_api)
     else:
-        messages.error(
-            request,
-            response_api)
+        messages.error(request, response_api)
 
     if isjson == 'true':
         return JsonResponse({'data': response_api})
 
     return redirect('inventory')
+
+
+@login_required
+@user_passes_test(permission_check)
+def zabbix_list_graphs_view(request):
+    admin_graphs = Chart.objects.filter(client_id__gt=0)
+    client_graphs = Chart.objects.filter(client_id__isnull=True)
+
+    dict_resp = {
+        'client_graphs': client_graphs,
+        'admin_graphs': admin_graphs}
+    uid = request.POST.get('uid', None)
+    if uid:
+        graph = Chart.objects.get(uid=uid)
+        if graph:
+            dict_resp['render_graph'] = make_graph(graph, static=True, theme=request.session.get('theme'))
+
+    return render(
+        request, 'pages/management/list-graph-zabbix.html', dict_resp
+    )
 
 
 @login_required
@@ -178,7 +205,6 @@ def zabbix_create_view(request):
 @login_required
 @user_passes_test(permission_check)
 def zabbix_pre_view_graph(request):
-
     if (not ('itemid' in request.POST)) or (not ('numbr' in request.POST)):
         return JsonResponse(
             {
@@ -439,49 +465,33 @@ def clients_view(request):
 @login_required
 @user_passes_test(permission_check)
 def todolist_view(request):
-    if not settings.USER_API_KEY:
-        token = Token.objects.filter(user_id=request.user.id)
-        if not token:
-            token = Token.objects.create(user=request.user)
-        else:
-            token = token[0]
-    else:
-        token = Token.objects.get(user_id=request.user.id)
+    token = get_token_user(request)
+
+    response_api = requests.get(
+        'http://localhost:8000/api/message/',
+        headers={'Authorization': f'Token {token}'}
+    ).text
 
     return render(
-        request,
-        'pages/management/todolist.html',
-        {
-            'notes': json.loads(
-                requests.get(
-                    'http://localhost:8000/api/message/',
-                    headers={'Authorization': f'Token {token}'}
-                ).text)
-        })
+        request, 'pages/management/todolist.html', {'notes': json.loads(response_api)})
 
 
 @login_required
 @user_passes_test(permission_check)
 def kanban_view(request):
-    if not settings.USER_API_KEY:
-        token = Token.objects.filter(user_id=request.user.id)
-        if not token:
-            token = Token.objects.create(user=request.user)
-        else:
-            token = token[0]
-    else:
-        token = Token.objects.get(user_id=request.user.id)
+    token = get_token_user(request)
+    notes = {}
+    try:
+        response_api = requests.get(
+            f'http://{request.headers.get("host")}/api/note/',
+            headers={'Authorization': f'Token {token}'}
+        ).text
+        notes = json.loads(response_api)
+    except (ConnectionRefusedError, requests.exceptions.ConnectionError) as err:
+        logger.critical('[CODE] %s %s' % (Errors.CONNECTION_REFUSED.value.text, err))
 
     return render(
-        request,
-        'pages/management/kanban.html',
-        {
-            'notes': json.loads(
-                requests.get(
-                    f'http://{request.headers.get("host")}/api/note/',
-                    headers={'Authorization': f'Token {token}'}
-                ).text)
-        })
+        request, 'pages/management/kanban.html', {'notes': notes})
 
 
 @login_required
@@ -572,7 +582,6 @@ def passwords_safe_view(request):
 @login_required
 @user_passes_test(permission_check)
 def register_client(request):
-
     def __save_logo(file, client_: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
             client.logo = file
@@ -581,7 +590,7 @@ def register_client(request):
     if request.method != 'POST':
         return render(request, 'pages/management/clients-register.html')
 
-    it_worked, message, client = _create_client_from_post(request.POST)
+    it_worked, message, client = create_client_from_post(request.POST)
 
     if not it_worked:
         return JsonResponse(
@@ -622,7 +631,6 @@ def register_client(request):
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     authentication_classes = [BasicAuthentication, TokenAuthentication]

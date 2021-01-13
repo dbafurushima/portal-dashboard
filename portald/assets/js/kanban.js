@@ -9,7 +9,6 @@ $(function() {
             refreshPosition: true,
             stop: function( event, ui ) {
                 var parent_ui = ui.item.parent().attr('data-section');
-
             },
             update: function( event, ui ) {
                 console.log(ui);
@@ -405,6 +404,5 @@ addTask();
 $_taskEdit();
 $_taskDelete();
 $_taskSortable();
-
 
 });

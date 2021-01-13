@@ -7,9 +7,13 @@ import string
 from django.contrib.auth.models import User
 from typing import Tuple, Any
 
-from ..models import Client, PasswordSafe, EnterpriseUser
-from .encrypt import _encrypt, _decrypt
 from apps.errors import Errors
+
+from .encrypt import _encrypt, _decrypt
+from .constants import (LEN_COMPANY_NAME_MAX, LEN_COMPANY_NAME_MIN, LEN_DISPLAY_NAME_MIN,
+                        LEN_CNPJ_MIN, LEN_CNPJ_MAX)
+
+from ..models import Client, PasswordSafe, EnterpriseUser
 
 FIELDS = ['company-name', 'display-name', 'cnpj', 'city', 'state', 'cep', 'district', 'address', 'state-registration',
           'municipal-registration', 'email']
@@ -39,19 +43,20 @@ def __len(text, length):
 
 
 def __company_name(company_name):
-    return __len_min(company_name, 4) and __len_max(company_name, 50)
+    return __len_min(company_name, LEN_COMPANY_NAME_MIN) and __len_max(company_name, LEN_COMPANY_NAME_MAX)
 
 
 def __display_name(display_name):
-    return __len_min(display_name, 3)
+    return __len_min(display_name, LEN_DISPLAY_NAME_MIN)
 
 
 def __cnpj(cnpj):
-    return (__len_min(cnpj, 14) or __len_max(cnpj, 18)) and (re.match(r'^\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}$', cnpj))
+    return (__len_min(cnpj, LEN_CNPJ_MIN) or __len_max(cnpj, LEN_CNPJ_MAX)) and (re.match(r'^\d{2}\.?\d{3}\.?\d{'
+                                                                                          r'3}/?\d{4}-?\d{2}$', cnpj))
 
 
 def __city(city):
-    return __len_min(city, 5)
+    return __len_min(city, 2)
 
 
 def __state(state):
@@ -63,11 +68,11 @@ def __cep(cep):
 
 
 def __district(district):
-    return __len_min(district, 4) and __len_max(district, 40)
+    return __len_min(district, 2) and __len_max(district, 100)
 
 
 def __address(address):
-    return __len_min(address, 4) and __len_max(address, 60)
+    return __len_min(address, 2) and __len_max(address, 100)
 
 
 def __state_registration(state_registration):
@@ -75,12 +80,12 @@ def __state_registration(state_registration):
 
 
 def __municipal_registration(municipal_registration):
-    return __len_min(municipal_registration, 3)
+    return __len_min(municipal_registration, 2)
 
 
 def __email(email):
-    return (__len_min(email, 8) and __len_max(email, 50)) and \
-           re.match(r'^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$', email)
+    return __len_min(email, 2) and __len_max(email, 100)  # and \
+    # re.match(r'^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$', email)
 
 
 def _rand_passwd(length):
@@ -111,7 +116,7 @@ def _create_users(post: dict, enterprise: Client) -> None:
         # raw_password = _user.get('password') if _user.get('password') else 'mudar123'
         __create_user(
             _user.get('username'),
-            _user.get('username')+enterprise.mail.split('@')[-1],
+            _user.get('username') + enterprise.mail.split('@')[-1],
             _user.get('password') if _user.get('password') else 'mudar123',
             enterprise)
 
@@ -152,7 +157,7 @@ def _save_password_safe(password: str, user: User):
     ps.save()
 
 
-def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
+def create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
     """Does the necessary validations and tries to create an object Client.
 
     Args:
@@ -213,8 +218,7 @@ def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
         return False, __field_not_found_error('email'), None
 
     return (
-        True,
-        '',
+        True, '',
         Client(
             company_name=company_name.strip(),
             display_name=display_name.strip(),
@@ -227,5 +231,4 @@ def _create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
             state_registration=state_registration.strip(),
             municipal_registration=municipal_registration.strip(),
             mail=email.strip()
-        )
-    )
+        ))
