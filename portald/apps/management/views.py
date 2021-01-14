@@ -2,6 +2,7 @@ import requests
 import logging
 import json
 import datetime
+import django
 
 from collections import defaultdict
 
@@ -20,21 +21,22 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.db import (DatabaseError, DataError, InternalError, IntegrityError)
 from django.core.exceptions import ObjectDoesNotExist
+from apps.accounts.views import totp_check
 
 from .serializer import ClientSerializer
-from .helper import (create_client_from_post, _create_users, _create_default_user,
-                     _save_password_safe, passwd_from_username,
-                     __create_user)
-from apps.accounts.views import totp_check
 from .models import Client, EnterpriseUser
-from ..charts.models import Chart
 from apps.api.models import Environment, Inventory, Host, Instance, Service
-from apps.api.serializer import (InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer,
-                                 ServiceSerializer)
 from apps.errors import Errors
 from apps.charts.fusioncharts import FusionTable, FusionCharts, TimeSeries
 from apps.charts.zabbix.api import Zabbix
 from apps.charts.views import make_graph
+from apps.api.serializer import (InventorySerializer, EnvironmentSerializer, HostSerializer, InstanceSerializer,
+                                 ServiceSerializer)
+from .helper import (create_client_from_post, create_users, create_default_user,
+                     save_password_safe, passwd_from_username,
+                     __create_user)
+
+from ..charts.models import Chart
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +141,15 @@ def proxy_api_view(request):
 
 @login_required
 @user_passes_test(permission_check)
+def zabbix_create_view(request):
+    return render(
+        request,
+        'pages/management/graph-zabbix-create.html'
+    )
+
+
+@login_required
+@user_passes_test(permission_check)
 def zabbix_list_graphs_view(request):
     admin_graphs = Chart.objects.filter(client_id__gt=0)
     client_graphs = Chart.objects.filter(client_id__isnull=True)
@@ -160,9 +171,8 @@ def zabbix_list_graphs_view(request):
 @login_required
 @user_passes_test(permission_check)
 def tree_graph_clients_view(request):
-    graphs = Chart.objects.all()
-
     clients_of_graph = defaultdict(list)
+    graphs = Chart.objects.all()
 
     for graph in graphs:
 
@@ -189,17 +199,7 @@ def tree_graph_clients_view(request):
         'pages/management/list-graph-clients.html',
         {
             'clients_of_graph': final_cog
-        }
-    )
-
-
-@login_required
-@user_passes_test(permission_check)
-def zabbix_create_view(request):
-    return render(
-        request,
-        'pages/management/graph-zabbix-create.html'
-    )
+        })
 
 
 @login_required
@@ -214,7 +214,14 @@ def zabbix_pre_view_graph(request):
     itemid, numbr = request.POST['itemid'], request.POST['numbr']
 
     zb = Zabbix(settings.ZABBIX_USER, settings.ZABBIX_PASSWORD)
-    raw_data = zb.get_history_from_itemids(itemid, int(numbr))
+    raw_data = None
+    if not zb.assert_zabbix():
+        return JsonResponse(
+            {'code': 500, 'msg': 'unable to close connection to Zabbix API'})
+    try:
+        raw_data = zb.get_history_from_itemids(itemid, int(numbr))
+    except KeyError:
+        logger.critical('%s' % Errors.ENVIRONMENT_VARIABLES_WERE_NOT_SET.value.text)
 
     if not raw_data:
         return JsonResponse(
@@ -254,16 +261,9 @@ def zabbix_pre_view_graph(request):
                              )
 
     fusion_chart = FusionCharts(
-        "timeseries",
-        "zabbix",
-        "100%",
-        450,
-        "chart-1", "json",
-        time_series
-    )
+        "timeseries", "zabbix", "100%", 450, "chart-1", "json", time_series)
 
     zabbix_graph = fusion_chart.render()
-
     return JsonResponse(
         {
             'code': 200,
@@ -582,9 +582,9 @@ def passwords_safe_view(request):
 @login_required
 @user_passes_test(permission_check)
 def register_client(request):
-    def __save_logo(file, client_: Client) -> None:
+    def __save_logo(file, client_to_logo: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
-            client.logo = file
+            client_to_logo.logo = file
             FileSystemStorage().save('logos/%s' % file.name, file)
 
     if request.method != 'POST':
@@ -597,25 +597,35 @@ def register_client(request):
             {
                 'code': 400,
                 'msg': message
-            }
-        )
+            })
 
     if request.FILES:
         __save_logo(request.FILES['file'], client)
 
     try:
         client.save()
-        _create_users(request.POST, client)
-        password, user = _create_default_user(request.POST['email'], client)  # create user for enterprise
-        _save_password_safe(password, user)  # save password in password safe (table)
-
-        try:
-            Inventory(enterprise=client).save()
-        except (DatabaseError, DataError, InternalError, IntegrityError):
-            logging.critical('%s -> %s' % Errors.name_and_error(Errors.DATABASE_UNKNOWN_INTERNAL_ERROR))
-
+    except django.db.utils.IntegrityError as err:
+        return JsonResponse(
+            {'code': 500, 'msg': 'Customer is already registered in the database with this name. %s' % err})
+    try:
+        create_users(request.POST, client)
     except Exception as err:
-        logging.critical(err)
+        logger.critical('[CODE] Error in function create_users(%s, %s): %s' % (request.POST, client, err))
+    try:
+        password, user = create_default_user(request.POST['email'], client)  # create user for enterprise
+    except Exception as err:
+        logger.critical('[CODE] Error in function create_default_user(%s, %s): %s' % (
+            request.POST['email'], client, err))
+    else:
+        save_password_safe(password, user)  # save password in password safe (table)
+
+    try:
+        Inventory(enterprise=client).save()
+    except (DatabaseError, DataError, InternalError, IntegrityError):
+        logging.critical('[CODE] Inventory(enterprise=%s).save(): %s' % (
+            client, Errors.name_and_error(Errors.DATABASE_UNKNOWN_INTERNAL_ERROR)))
+    except Exception as err:
+        logging.critical('[CODE] Unknown Error: %s' % err)
 
         return JsonResponse(
             {

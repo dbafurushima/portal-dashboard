@@ -105,20 +105,23 @@ def __create_user(username: str, email: str, password: str, enterprise=None):
     return PasswordSafe(user=user, password=passwd).save()
 
 
-def _create_users(post: dict, enterprise: Client) -> None:
+def create_users(post: dict, enterprise: Client) -> None:
     _users = post.get('users-json')
 
     if not len(_users) > 0:
         return
 
-    users_json = json.loads(_users)
-    for _user in users_json:
-        # raw_password = _user.get('password') if _user.get('password') else 'mudar123'
-        __create_user(
-            _user.get('username'),
-            _user.get('username') + enterprise.mail.split('@')[-1],
-            _user.get('password') if _user.get('password') else 'mudar123',
-            enterprise)
+    try:
+        users_json = json.loads(_users)
+        for _user in users_json:
+            # raw_password = _user.get('password') if _user.get('password') else 'mudar123'
+            __create_user(
+                _user.get('username'),
+                _user.get('username') + enterprise.mail.split('@')[-1],
+                _user.get('password') if _user.get('password') else 'mudar123',
+                enterprise)
+    except json.decoder.JSONDecodeError:
+        pass
 
 
 def passwd_from_username(username: str) -> str or None:
@@ -132,7 +135,7 @@ def passwd_from_username(username: str) -> str or None:
         return None
 
 
-def _create_default_user(email: str, client: Client) -> tuple:
+def create_default_user(email: str, client: Client) -> tuple:
     username = email.split('@')[0]
     password = _rand_passwd(LENGTH_PASSWORD)
 
@@ -149,7 +152,7 @@ def _create_default_user(email: str, client: Client) -> tuple:
     return password, user
 
 
-def _save_password_safe(password: str, user: User):
+def save_password_safe(password: str, user: User):
     """save password in the password vault
     """
     passwd = _encrypt(password).decode('utf-8')

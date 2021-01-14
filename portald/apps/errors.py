@@ -43,6 +43,11 @@ class Errors(enum.Enum):
         'Could not close connection to the host, check if it is available or accessible.'
     )
 
+    ENVIRONMENT_VARIABLES_WERE_NOT_SET = Error(
+        31,
+        'The environment variables in the .env file have not been set or are not correct.'
+    )
+
     @classmethod
     def name_and_error(cls, error) -> tuple:
         return error.code, error.name

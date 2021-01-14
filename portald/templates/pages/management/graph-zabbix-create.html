@@ -115,10 +115,16 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        $('#graph-here').html('');
-                        $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
-                        let div_graph = '#'+'chart-'+data.id;
-                        $(div_graph).append(data.graph);
+                        console.log(data);
+
+                        if (data.code === 500) {
+                            alert('ops... erro interno no servidor, verificar log...')
+                        } else {
+                            $('#graph-here').html('');
+                            $('#graph-here').append('<div id="chart-'+data.id+'"></id>');
+                            let div_graph = '#'+'chart-'+data.id;
+                            $(div_graph).append(data.graph);
+                        }
                     },
                     error: function () {
                         alert('error when rendering graph from zabbix information!');

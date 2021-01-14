@@ -1,10 +1,13 @@
 import json
 import pprint
+import logging
 import urllib.request
 from datetime import datetime
 from .data_info_requests import GET_DATA_HISTORY, LOGIN_DATA
 from django.conf import settings
 from .utils import decode_bytes_to_utf8, json_decode
+
+logger = logging.getLogger(__name__)
 
 debug = pprint.PrettyPrinter(indent=2, width=41, compact=False)
 uribase = settings.ZABBIX_URL
@@ -31,8 +34,16 @@ class Zabbix:
 
         try:
             self._auth_zabbix(user, password)
-        except ValueError:
-            pass
+        except (ValueError, urllib.error.HTTPError) as err:
+            logger.critical('[CODE] error communicating with Zabbix. %s' % err)
+
+    def assert_zabbix(self) -> bool:
+        try:
+            self._auth_zabbix(self.__api_user, self.__api_password)
+        except (ValueError, urllib.error.HTTPError) as err:
+            return False
+        else:
+            return True
 
     def _auth_zabbix(self, user: str, passwd: str) -> None:
         """
