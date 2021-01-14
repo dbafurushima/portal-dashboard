@@ -56,7 +56,8 @@ def logout_view(request):
 @login_required
 @user_passes_test(permission_check)
 def totp_view(request):
-    return render(request, 'auth/totp-sign-in.html')
+    return render(
+        request, 'auth/totp-sign-in.html', {'current_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')})
 
 
 def get_user_totp_device(user, confirmed=None):

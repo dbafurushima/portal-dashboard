@@ -8,7 +8,18 @@
 {% endblock %}
 
 {% block js %}
+<script>
+var myVar = setInterval(myTimer , 1000);
 
+var fromDateTime = new Date("{{ current_time }}");
+var isFirst = 0;
+console.log(new Date());
+
+function myTimer() {
+    fromDateTime.setSeconds(fromDateTime.getSeconds() + 1);
+    document.getElementById("current-datetime").innerHTML = fromDateTime.toLocaleTimeString();
+}
+</script>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +31,10 @@
 					<div class="col-md-12 pl-md-0">
 						<div class="auth-form-wrapper px-4 py-4" style="padding-left: 2rem !important;">
 							<a href="#" class="noble-ui-logo logo-light d-block mb-2">Portal<span>D</span></a>
-							<h5 class="text-muted font-weight-normal mb-4">Confirme o <b>token</b> com seu aplicativo.</h5>
+							<h5 class="text-muted font-weight-normal">Confirme o <b>token</b> com seu aplicativo.</h5>
+                            <h5 class="text-muted font-weight-normal mb-4">
+                                Horário atual: <b><span data-from="{{ current_time }}" id="current-datetime"></span></b>
+                            </h5>
 							<form class="forms-sample" method="post" action="{% url 'totp-login' %}">
                                 {% csrf_token %}
 								<div class="form-group">

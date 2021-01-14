@@ -511,15 +511,13 @@ def passwords_safe_view(request):
 
         return True
 
-    # print('password_safe_view().request.session.get("totp"): %s' % request.session.get('totp'))
-    # print('password_safe_view().totp_check(...): %s' % totp_check(request.user, request.session.get('token')))
+    logger.info('password_safe_view().request.session.get("totp"): %s' % request.session.get('totp'))
+    logger.info('password_safe_view().totp_check(...): %s' % totp_check(request.user, request.session.get('token')))
 
     if (not request.session.get('totp')) or (not totp_check(request.user, request.session.get('token'))):
-        # print('redirect() -> first condition')
         return redirect('totp-sign-in')
 
     if not __verify_expire(request.session.get('totp_expire')):
-        # print('redirect() -> __verify_expire()')
         return redirect('totp-sign-in')
 
     if request.method == 'GET':
@@ -558,30 +556,22 @@ def passwords_safe_view(request):
         __create_user(username, email, request.POST['passwd'], client)
 
         return JsonResponse(
-            {
-                'code': 200,
-                'msg': 'user created!'
-            })
+            {'code': 200, 'msg': 'user created!'})
 
     if 'username' not in request.POST.keys():
         return JsonResponse(
-            {
-                'code': 400,
-                'msg': 'incorrect request'
-            })
+            {'code': 400, 'msg': 'incorrect request'})
 
     pwd = passwd_from_username(request.POST['username'])
 
     return JsonResponse(
-        {
-            'code': 200 if pwd is not None else 404,
-            'msg': pwd or 'user not found!'
-        })
+        {'code': 200 if pwd is not None else 404, 'msg': pwd or 'user not found!'})
 
 
 @login_required
 @user_passes_test(permission_check)
 def register_client(request):
+
     def __save_logo(file, client_to_logo: Client) -> None:
         if (file.name[-4:] == '.jpg') or (file.name[-4:] == '.png'):
             client_to_logo.logo = file
@@ -593,11 +583,7 @@ def register_client(request):
     it_worked, message, client = create_client_from_post(request.POST)
 
     if not it_worked:
-        return JsonResponse(
-            {
-                'code': 400,
-                'msg': message
-            })
+        return JsonResponse({'code': 400, 'msg': message})
 
     if request.FILES:
         __save_logo(request.FILES['file'], client)
@@ -628,16 +614,10 @@ def register_client(request):
         logging.critical('[CODE] Unknown Error: %s' % err)
 
         return JsonResponse(
-            {
-                'code': 500,
-                'msg': '%s -> %s' % Errors.name_and_error(Errors.HTTP_500_INTERNAL_ERROR)
-            })
+            {'code': 500, 'msg': '%s -> %s' % Errors.name_and_error(Errors.HTTP_500_INTERNAL_ERROR)})
     else:
         return JsonResponse(
-            {
-                'code': 200,
-                'msg': 'Cadastro da empresa "%s" realizado com sucesso!' % client.display_name
-            })
+            {'code': 200, 'msg': 'Cadastro da empresa "%s" realizado com sucesso!' % client.display_name})
 
 
 class ClientViewSet(viewsets.ModelViewSet):
