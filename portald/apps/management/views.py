@@ -530,7 +530,9 @@ def passwords_safe_view(request):
                         {
                             'id': eu.enterprise.id,
                             'username': eu.user.username,
+                            'display_username': ('%-20s' % eu.user.username).replace(' ', '&nbsp;'),
                             'email': eu.user.email,
+                            'display_email': ('%-50s' % eu.user.email).replace(' ', '&nbsp;'),
                             'display_name': eu.enterprise.display_name,
                             'username2': eu.user.username.replace('.', '-')
                         } for eu in EnterpriseUser.objects.all()

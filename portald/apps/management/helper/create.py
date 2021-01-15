@@ -186,6 +186,7 @@ def create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
     state_registration = post.get('state-registration', 'ISENTO')
     municipal_registration = post.get('municipal-registration', 'ISENTO')
     email = post.get('email')
+    description = post.get('description')
 
     if not __company_name(company_name):
         return False, __field_not_found_error('company name'), None
@@ -233,5 +234,6 @@ def create_client_from_post(post: dict) -> Tuple[bool, str, Any]:
             address=address.strip(),
             state_registration=state_registration.strip(),
             municipal_registration=municipal_registration.strip(),
-            mail=email.strip()
+            mail=email.strip(),
+            description=description
         ))

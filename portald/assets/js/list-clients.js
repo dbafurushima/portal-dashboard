@@ -15,6 +15,7 @@ $(function() {
         let state_registration = e.currentTarget.getAttribute('data-state_registration');
         let municipal_registration = e.currentTarget.getAttribute('data-municipal_registration');
         let created_at = e.currentTarget.getAttribute('data-created_at');
+        let description = e.currentTarget.getAttribute('data-description');
 
         $('#company_name').text(company_name);
         $('#display_name').text(display_name);
@@ -28,6 +29,7 @@ $(function() {
         $('#state_registration').text(state_registration);
         $('#municipal_registration').text(municipal_registration);
         $('#created_at').text(created_at);
+        $('#description').text(description);
 
         $('#info-modal').modal('show');
     });

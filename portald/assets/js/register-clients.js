@@ -37,6 +37,7 @@ $(function() {
         let state_registration = $('#state-registration').val();
         let municipal_registration = $('#municipal-registration').val();
         let email = $('#email').val();
+        let description = $('#description').val();
         let users_json = $('#users-json').val();
         let files = $('#logo')[0].files[0];
 
@@ -55,6 +56,7 @@ $(function() {
         fd.append('state-registration', state_registration);
         fd.append('municipal-registration', municipal_registration);
         fd.append('email', email);
+        fd.append('description', description);
         fd.append('users-json', users_json);
 
         $.ajax({

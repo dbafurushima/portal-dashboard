@@ -37,20 +37,20 @@
                 <div class="row">
 
                     {% for client in clients %}
-                    <div class="col-sm-3 mt-3 show-info" data-company_name="{{ client.company_name }}"
+                    <div class="col-lg-2 col-md-3 col-sm-8 mt-3 show-info" data-company_name="{{ client.company_name }}"
                          data-display_name="{{ client.display_name }}" data-cnpj="{{ client.cnpj }}"
                          data-city="{{ client.city }}" data-state="{{ client.state }}" data-cep="{{ client.cep }}"
                          data-state_registration="{{ client.state_registration }}" data-district="{{ client.district }}"
                          data-municipal_registration="{{ client.municipal_registration }}"
                          data-created_at="{{ client.created_at }}" data-cnpj_s="{{ client.cnpj_text }}"
-                         data-address="{{ client.address }}">
+                         data-address="{{ client.address }}" data-description="{{ client.description }}">
                         <div class="card text-center">
                             <div class="card-body" style="padding: 15px">
                                 <h5 class="card-title">
                                     {% if client.logo %}
-                                        <img style="border-radius: 50%" src="archives/{{ client.logo }}"/>
+                                        <img style="border-radius: 50%; width: 100px; height: 100px" src="archives/{{ client.logo }}"/>
                                     {% else %}
-                                        <img style="border-radius: 50%" src="{% static 'images/company.png' %}"/>
+                                        <img style="border-radius: 50%; width: 100px; height: 100px" src="{% static 'images/company.png' %}"/>
                                     {% endif %}
                                 </h5>
                                 <p class="card-text">{{ client.display_name }}</p>
@@ -85,6 +85,12 @@
                 <p><b>Insc. Estadual: </b> <span id="state_registration"></span> </p>
                 <p><b>Insc. Municipal: </b> <span id="municipal_registration"></span> </p>
                 <p><b>CNPJ sem ponto: </b> <span id="cnpj_s"></span> </p>
+                <p><a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">detalhes</a></p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <span id="description"></span>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

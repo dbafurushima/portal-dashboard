@@ -19,5 +19,6 @@ class ClientSerializer(serializers.ModelSerializer):
             'municipal_registration',
             'logo',
             'user',
-            'mail'
+            'mail',
+            'description'
         ]

@@ -2,6 +2,7 @@ import requests
 import json
 import datetime
 import uuid
+import logging
 
 from rest_framework import viewsets, generics
 
@@ -21,8 +22,38 @@ from apps.management.models import Client
 
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser
+from rest_framework.authtoken.models import Token
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
+
+logger = logging.getLogger(__name__)
+
+
+def get_token_user(request) -> str or None:
+    """
+    get user token for authentication to the application API
+    """
+    def _get_token(user):
+        _token = Token.objects.filter(user_id=user.id)
+        if not _token:
+            _token = Token.objects.create(user=user)
+        else:
+            _token = _token[0]
+        return _token
+
+    token = None
+    if not settings.USER_API_KEY:
+        token = _get_token(request.user)
+    else:
+        try:
+            token = Token.objects.get(user_id=request.user.id)
+        except ObjectDoesNotExist:
+            token = _get_token(request.user)
+        except Exception as err:
+            logger.critical('[CODE] %s' % err)
+
+    return token
 
 
 def view_chart_line_basic(request):
@@ -162,11 +193,12 @@ def create_charts_view(request):
             "number_data": number_data
         }
 
+        token = get_token_user(request)
         request_to_api = json.loads(
                 requests.post(
                     f'http://{request.headers.get("host")}/api/charts/charts/',
                     data=data_post,
-                    headers={'Authorization': f'Token {settings.USER_API_KEY}'}
+                    headers={'Authorization': f'Token {token}'}
                 ).text
             )
 

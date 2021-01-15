@@ -77,7 +77,7 @@ def main():
     print('========================')
     print('\n\tTestando conexão com Zabbix...')
     zabbix_connection(config.get('zabbix_url'), config.get('zabbix_user'), config.get('zabbix_passwd'))
-    print("========================\n")
+    print("\n========================\n")
 
 if __name__ == '__main__':
     main()
