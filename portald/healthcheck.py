@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent
 def print_and_exit(msg):
     sys.exit(msg)
 
+
 def decode_bytes_to_utf8(text: bytes):
     """bytes to str with utf-8 encoding and ignore erros
 
@@ -23,6 +24,7 @@ def decode_bytes_to_utf8(text: bytes):
     if isinstance(text, bytes):
         return text.decode('utf-8', errors='ignore')
     return text
+
 
 def load_config() -> dict:    
     config_file = BASE_DIR / 'portald' / '.env'
@@ -41,6 +43,7 @@ def load_config() -> dict:
         'zabbix_user': env('ZABBIX_USER', default='undefined'),
         'zabbix_passwd': env('ZABBIX_PASSWORD', default='undefined')
     }
+
 
 def zabbix_connection(url: str, user: str, passwd: str) -> bool:
     LOGIN_DATA = {
@@ -64,11 +67,15 @@ def zabbix_connection(url: str, user: str, passwd: str) -> bool:
             body = response.read()
     except urllib.error.HTTPError as err:
         print('\t- está inacessível... %s' % err)
+        return False
     else:
-        response = decode_bytes_to_utf8(body)
+        response = json.loads(decode_bytes_to_utf8(body))
 
         if not response.get('result'):
             print('\t- não foi possível autenticar usuário %s' % user)
+
+        return True
+
 
 def main():
     config = load_config()
@@ -78,6 +85,7 @@ def main():
     print('\n\tTestando conexão com Zabbix...')
     zabbix_connection(config.get('zabbix_url'), config.get('zabbix_user'), config.get('zabbix_passwd'))
     print("\n========================\n")
+
 
 if __name__ == '__main__':
     main()

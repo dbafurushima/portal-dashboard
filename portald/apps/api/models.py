@@ -36,7 +36,7 @@ class Inventory(models.Model):
 
 class Environment(models.Model):
     name = models.CharField(verbose_name="ambiente", max_length=50)
-    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'<Environment: {self.name}>'
