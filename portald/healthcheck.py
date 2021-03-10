@@ -85,7 +85,7 @@ def main():
     print('\n\tTestando conexão com Zabbix...')
     try:
         zabbix_connection(config.get('zabbix_url'), config.get('zabbix_user'), config.get('zabbix_passwd'))
-    except KeyError as err:
+    except (KeyError, ValueError) as err:
         print('make sure the .env file contains the information needed for the test. For more details: %' % err)
     print("\n========================\n")
 
