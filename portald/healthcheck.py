@@ -83,7 +83,10 @@ def main():
     print(' Health Check [PortalD] ')
     print('========================')
     print('\n\tTestando conexão com Zabbix...')
-    zabbix_connection(config.get('zabbix_url'), config.get('zabbix_user'), config.get('zabbix_passwd'))
+    try:
+        zabbix_connection(config.get('zabbix_url'), config.get('zabbix_user'), config.get('zabbix_passwd'))
+    except KeyError as err:
+        print('make sure the .env file contains the information needed for the test. For more details: %' % err)
     print("\n========================\n")
 
 
