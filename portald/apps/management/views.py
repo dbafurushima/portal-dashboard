@@ -301,6 +301,14 @@ def inventory_view(request):
                     'text': host.hostname,
                     'icon': '/static/images/min-data-server.png'
                 })
+                instances = Instance.objects.filter(host=host)
+                for instance in instances:
+                    tree_items.append({
+                        'id': 'instance-%s' % instance.name,
+                        'parent': 'host-%s' % host.hostname,
+                        'text': instance.name,
+                        'icon': '/static/images/instance.png'
+                    })
 
     if request.method == 'GET':
         return render(
