@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path('', views.clients_view),
-    path('clients', views.clients_view, name='clients'),
+    path('clientes', views.clients_view, name='clients'),
     path('list-graph-clients', views.tree_graph_clients_view, name='list-graph-clients'),
     path('zabbix-graph-create', views.zabbix_create_view, name='zabbix-graph-create'),
     path('passwords-safe', views.passwords_safe_view, name='passwords-safe'),

@@ -171,6 +171,14 @@
             </button>
             -->
             {% endif %}
+			{% if 'client' in request.path_info %}
+			<button type="button" id="edit-mode" class="btn btn-primary btn-block btn-icon-text">
+				<i class="btn-icon-prepend" data-feather="edit"></i>
+				<span id="text-edit-mode">
+					Habilitar Modo Edição
+				</span>
+			</button>
+            {% endif %}
 		</div>
 	</div>
 </nav>

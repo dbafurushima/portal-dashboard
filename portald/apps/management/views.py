@@ -275,7 +275,7 @@ def zabbix_pre_view_graph(request):
 @login_required
 @user_passes_test(permission_check)
 def inventory_view(request):
-    clients = Client.objects.all()
+    clients = Client.objects.filter(enabled=True)
 
     tree_items = [
         {
@@ -454,12 +454,25 @@ def inventory_view(request):
 @login_required
 @user_passes_test(permission_check)
 def clients_view(request):
-    return render(
-        request,
-        'pages/management/clients.html',
-        {
-            'clients': Client.objects.all()
-        })
+    if request.method == 'POST':
+        body = request.POST
+        try:
+            company_name = body['client']
+        except (IndexError, KeyError):
+            return JsonResponse({'code': 401, 'msg': 'incorrect request'})
+        else:
+            client = Client.objects.get(company_name=company_name)
+            client.enabled = False
+            client.save()
+
+            return JsonResponse({'code': 200, 'msg': 'Client "%s" has been disabled' % company_name})
+    else:
+        return render(
+            request,
+            'pages/management/clients.html',
+            {
+                'clients': Client.objects.filter(enabled=True)
+            })
 
 
 @login_required
@@ -535,13 +548,13 @@ def passwords_safe_view(request):
                             'display_email': ('%-50s' % eu.user.email).replace(' ', '&nbsp;'),
                             'display_name': eu.enterprise.display_name,
                             'username2': eu.user.username.replace('.', '-')
-                        } for eu in EnterpriseUser.objects.all()
+                        } for eu in EnterpriseUser.objects.filter(enterprise__enabled=True)
                     ],
                     'clients': [
                         {
                             'id': client.id,
                             'display_name': client.display_name
-                        } for client in Client.objects.all()
+                        } for client in Client.objects.filter(enabled=True)
                     ]
                 }
             })

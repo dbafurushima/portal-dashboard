@@ -22,6 +22,8 @@ class Client(models.Model):
     mail = models.CharField(verbose_name="E-Mail", max_length=120, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
+    enabled = models.BooleanField(default=True, verbose_name="Habilitado", null=True, blank=True)
+
     class Meta:
         verbose_name = _('Cliente')
         verbose_name_plural = _('Clientes')
