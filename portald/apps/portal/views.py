@@ -153,8 +153,20 @@ def home_view(request):
         }
     )
     """
+    notes_by_topics = [
+        {
+            topic: AppNote.objects.filter(topic=topic)
+        } for topic in Topic.objects.filter(owner=request.user)
+    ]
 
-    return render(request, 'pages/portal/home.html')
+    return render(
+        request,
+        'pages/portal/home.html',
+        {
+            'topics': Topic.objects.filter(owner=request.user),
+            'notes': AppNote.objects.filter(owner=request.user),
+            'notes_by_topics': notes_by_topics
+        })
 
 
 @login_required

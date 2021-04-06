@@ -91,11 +91,18 @@ $(document).ready(function() {
         let topicColor = document.getElementById('color-picker').value;
 
         let htmlTopic = '<li class="nav-item">' +
-            '<a class="nav-link list-actions g-dot-success" id="note-'+titleTopic+'" style="color: '+topicColor+'">' +
+            '<a class="nav-link list-actions g-dot-primary" id="note-'+titleTopic+'" style="color: '+topicColor+'">' +
             titleTopic+'</a>' +
             '</li>';
         $('#pills-tab').append(htmlTopic);
+
+        $('#topicModal').modal('hide');
     });
+
+    $('#topicModal').on('hidden.bs.modal', function (event) {
+        event.preventDefault();
+        document.getElementById('topic-title').value = '';
+    })
 
     // Button add
     $("#btn-n-add").on('click', function(event) {

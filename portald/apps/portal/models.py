@@ -29,6 +29,10 @@ class AppNote(models.Model):
     favorite = models.BooleanField(default=True, verbose_name="Favorito", null=True, blank=True)
     display = models.BooleanField(default=True, verbose_name="Visível", null=True, blank=True)
 
+    @property
+    def date_only(self):
+        return self.created_at.strftime('%d/%m/%Y')
+
     class Meta:
         verbose_name = _('Anotação')
         verbose_name_plural = _('Anotações')
