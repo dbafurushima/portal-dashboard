@@ -31,3 +31,13 @@ function post_set_theme(theme) {
         }
     });
 }
+
+$('.nav-note-link').click(function (e){
+    $('#text-editor').modal('show');
+});
+
+if ($("#editor").length) {
+    var simplemde = new SimpleMDE({
+        element: $("#editor")[0]
+    });
+}

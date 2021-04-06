@@ -3,6 +3,13 @@ from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.http import JsonResponse
+from django.db import DatabaseError
+
+from jsonschema import validate
+from jsonschema import ValidationError
+
+from .models import AppNote, Topic
 
 from ..charts.zabbix.api import Zabbix, AccessDeniedCredentialException
 from ..charts.fusioncharts import FusionTable, TimeSeries, FusionCharts
@@ -10,6 +17,24 @@ from ..charts.models import Chart
 from ..management.models import EnterpriseUser
 
 from github import Github
+
+SCHEMA_CREATE_TOPIC = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string"},
+        "color": {"type": "string"},
+    }
+}
+
+SCHEMA_CREATE_NOTE = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string"},
+        "text": {"type": "string"},
+        "topic": {"type": "string"},
+        "favorite": {"type": "bool"},
+    }
+}
 
 
 @login_required
@@ -31,9 +56,7 @@ def view_list_graph(request):
 
 @login_required
 def home_view(request):
-
-    return render(request, 'pages/portal/home.html')
-
+    """
     if not request.user.is_superuser:
         return render(request, 'pages/portal/home.html')
 
@@ -129,3 +152,48 @@ def home_view(request):
             'zabbix': zabbix_graph
         }
     )
+    """
+
+    return render(request, 'pages/portal/home.html')
+
+
+@login_required
+def create_topic(request):
+    if request.method != 'POST':
+        return JsonResponse({})
+
+    raw_data = dict(request.POST)
+    try:
+        validate(SCHEMA_CREATE_TOPIC, raw_data)
+    except ValidationError as err:
+        return JsonResponse(
+            {'code': 400, 'msg': err})
+
+    topic = Topic(
+        name=raw_data.get('name'),
+        color=raw_data.get('color'),
+        owner=request.user
+    )
+
+    try:
+        topic.save()
+    except DatabaseError as err:
+        return JsonResponse(
+            {'code': 500, 'msg': 'error to create topic "%s". %s' % (raw_data, err)})
+
+    return JsonResponse(
+        {'code': 200, 'msg': '%s' % topic})
+
+
+@login_required
+def create_note(request):
+    if request.method != 'POST':
+        return JsonResponse({})
+
+    raw_data = dict(request.POST)
+    try:
+        validate(SCHEMA_CREATE_NOTE, raw_data)
+    except ValidationError as err:
+        return JsonResponse({'code': 400, 'msg': err})
+
+    return JsonResponse({})
