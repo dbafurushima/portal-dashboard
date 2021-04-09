@@ -10,6 +10,11 @@ class Topic(models.Model):
     color = models.CharField(verbose_name="Cor", max_length=10, unique=True, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
+    @property
+    def other_color(self):
+        new_color = str(hex(int(self.color.split('#')[-1], 16) + 100)).replace('0x', '')
+        return '#'+new_color
+
     class Meta:
         verbose_name = _('Tópico')
         verbose_name_plural = _('Tópicos')
@@ -26,7 +31,7 @@ class AppNote(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
-    favorite = models.BooleanField(default=True, verbose_name="Favorito", null=True, blank=True)
+    favorite = models.BooleanField(default=False, verbose_name="Favorito", null=True, blank=True)
     display = models.BooleanField(default=True, verbose_name="Visível", null=True, blank=True)
 
     @property

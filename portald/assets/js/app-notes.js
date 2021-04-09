@@ -2,15 +2,50 @@ $(document).ready(function() {
 
     function deleteNote() {
         $(".delete-note").off('click').on('click', function(event) {
-          event.stopPropagation();
-          $(this).parents('.note-item').remove();
+            event.stopPropagation();
+
+            var item = $(this).parents('.note-item'); // .remove();
+
+            let token = $('input[name="csrfmiddlewaretoken"]').val();
+            let titleNote = $(this).parents('.note-item')[0].attributes["data-title"].nodeValue;
+
+            $.post("/remove-note", {title: titleNote, csrfmiddlewaretoken: token}, function(data)  {
+                console.log(data);
+                if ( data.code === 500 )
+                    Swal.fire({icon: 'error', title: 'Oops...', text: data.msg})
+                else
+                    item.remove();
+            })
+            .done(function() {})
+            .fail(function() {})
+            .always(function() {});
         })
     }
 
     function favNote() {
         $(".fav-note").off('click').on('click', function(event) {
-          event.stopPropagation();
-          $(this).parents('.note-item').toggleClass('note-fav');
+        event.stopPropagation();
+
+            let token = $('input[name="csrfmiddlewaretoken"]').val();
+            let titleNote = $(this).parents('.note-item')[0].attributes["data-title"].nodeValue;
+            let isFav = $(this).parents('.note-item')[0].classList.contains("note-fav");
+            $(this).parents('.note-item').toggleClass('note-fav');
+
+            $.post("/fav-note", {name: titleNote, act: !isFav, csrfmiddlewaretoken: token}, function(data)  {
+                console.log(data);
+
+                if ( data.code === 500 ) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg
+                    })
+                } else {
+                }
+            })
+            .done(function() {})
+            .fail(function() {})
+            .always(function() {});
         })
     }
 
@@ -19,7 +54,9 @@ $(document).ready(function() {
           event.preventDefault();
           /* Act on the event */
           var getclass = this.className;
+          console.log(getclass);
           var getSplitclass = getclass.split(' ')[0];
+          console.log(getSplitclass);
           if ($(this).hasClass('label-personal')) {
             $(this).parents('.note-item').removeClass('note-social');
             $(this).parents('.note-item').removeClass('note-work');
@@ -92,11 +129,44 @@ $(document).ready(function() {
 
         let htmlTopic = '<li class="nav-item">' +
             '<a class="nav-link list-actions g-dot-primary" id="note-'+titleTopic+'" style="color: '+topicColor+'">' +
-            titleTopic+'</a>' +
-            '</li>';
-        $('#pills-tab').append(htmlTopic);
+            titleTopic+'</a></li>';
 
-        $('#topicModal').modal('hide');
+        let token = $('input[name="csrfmiddlewaretoken"]').val();
+
+        let jqxhr = $.post("/create-topic", {name: titleTopic, color: topicColor, csrfmiddlewaretoken: token}, function(data)  {
+            console.log(data);
+            if ( data.code === 500 ) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.msg,
+                    footer: '<a href>Why do I have this issue?</a>'
+                })
+
+            } else {
+                $('#pills-tab').append(htmlTopic);
+                $('#topicModal').modal('hide');
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1113000
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Tópico criado com sucesso!'
+                })
+            }
+        })
+        .done(function() {})
+        .fail(function() {})
+        .always(function() {});
+
+        // Perform other work here ...
+
+        // Set another completion function for the request above
+        jqxhr.always(function() {});
     });
 
     $('#topicModal').on('hidden.bs.modal', function (event) {
@@ -117,6 +187,8 @@ $(document).ready(function() {
         var $_noteTitle = document.getElementById('n-title').value;
         var $_noteDescription = document.getElementById('n-description').value;
 
+        let token = $('input[name="csrfmiddlewaretoken"]').val();
+
         $html = '<div class="note-item all-notes">' +
                     '<div class="note-inner-content">' +
                         '<div class="note-content">' +
@@ -132,45 +204,57 @@ $(document).ready(function() {
                         '</div>' +
                         '<div class="note-footer">' +
                             '<div class="tags-selector btn-group">' +
-                                '<a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">' +
-                                    '<span>' +
-                                        '<div class="tags">' +
-                                            '<div class="g-dot-personal"></div>' +
-                                            '<div class="g-dot-work"></div>' +
-                                            '<div class="g-dot-social"></div>' +
-                                            '<div class="g-dot-important"></div>' +
-                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>' +
-                                        '</div>' +
-                                    '</span>' +
-                                '</a>' +
-                                '<div class="dropdown-menu dropdown-menu-right d-icon-menu">' +
-                                    '<a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>' +
-                                    '<a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>' +
-                                    '<a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>' +
-                                    '<a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>' +
-                                '</div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                 '</div> ';
 
-        $("#ct").prepend($html);
-        $('#notesMailModal').modal('hide');
+        let jqxhr = $.post("/create-note", {title: $_noteTitle, text: $_noteDescription, csrfmiddlewaretoken: token},  function(data)  {
+            console.log(data);
+            if ( data.code === 500 ) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.msg,
+                    footer: '<a href>Why do I have this issue?</a>'
+                })
+
+            } else {
+                $('#topicModal').modal('hide');
+                let Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1113000
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Tópico criado com sucesso!'
+                });
+
+                $("#ct").prepend($html);
+                $('#notesMailModal').modal('hide');
+            }
+        })
+        .done(function() {})
+        .fail(function() {})
+        .always(function() {});
 
         deleteNote();
         favNote();
-        addLabelGroups();
+        // addLabelGroups();
     });
 
     $('#notesMailModal').on('hidden.bs.modal', function (event) {
         event.preventDefault();
         document.getElementById('n-title').value = '';
         document.getElementById('n-description').value = '';
-    })
+    });
 
     deleteNote();
     favNote();
-    addLabelGroups();
+    // addLabelGroups();
 })
 
 // Validation Process

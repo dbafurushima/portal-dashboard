@@ -6,9 +6,37 @@
 {% block css %}
     <link href="{% static 'css/notes.css' %}" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker2/dist/spectrum.min.css">
+    <style>
+    {% for topic in topics %}
+        .note-container.note-grid  .note-{{ topic.name }} {
+            background: {{ topic.color }};
+        }
+
+        .note-container.note-grid .note-item .note-inner-content .note-footer .tags-selector .dropdown-menu a.g-dot-{{ topic.name }}::before {
+            background: {{ topic.color }};
+            border: 2px solid {{ topic.other_color }};
+        }
+
+        .tab-title .nav-pills.group-list .nav-item a.g-dot-{{ topic.name }}::before {
+            background: {{ topic.color }};
+            border: 2px solid {{ topic.other_color }};
+        }
+        .note-container.note-grid .note-item .note-inner-content .note-footer .tags .g-dot-{{ topic.name }} {
+            background: {{ topic.color }};
+            border: 2px solid {{ topic.other_color }};
+        }
+
+    {% endfor %}
+    </style>
+{% endblock %}
+
+{% block css_plugins %}
+    <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block js_plugins %}
+    <script src="{% static 'assets/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
 {% endblock %}
 
 {% block js %}
@@ -20,6 +48,9 @@
             type: "component"
         });
     });
+    $(document).ready(function() {
+
+    })
     </script>
 {% endblock %}
 
@@ -67,8 +98,11 @@
                                     <ul class="nav nav-pills d-block group-list" id="pills-tab" role="tablist">
                                         {% for topic in topics %}
                                         <li class="nav-item">
-                                            <a class="nav-link list-actions g-dot-primary"
-                                               style="color: {{ topic.color }}" id="note-{{ topic.name }}">{{ topic.name }}</a>
+                                            <a
+                                                    class="nav-link list-actions g-dot-{{ topic.name }}"
+                                                    id="note-{{ topic.name }}">
+                                                {{ topic.name }}
+                                            </a>
                                         </li>
                                         {% endfor %}
                                         <li class="nav-item">
@@ -91,7 +125,7 @@
                             {% for item in notes_by_topics %}
                                 {% for topic, notes in item.items %}
                                     {% for note in notes %}
-                            <div class="note-item all-notes note-{{ topic }}" style="background: {{ topic.color }}!important;">
+                            <div data-title="{{ note.title }}" class="note-item all-notes note-{{ topic.name }} {% if note.favorite %}note-fav{% endif %}" >
                                 <div class="note-inner-content">
                                     <div class="note-content">
                                         <p class="note-title" data-noteTitle="{{ note.title }}">{{ note.title }}</p>
@@ -108,27 +142,26 @@
                                     </div>
                                     <div class="note-footer">
                                         <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+                                            <!--<a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
                                                 <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
+                                                    {% for topic in topics %}
+                                                        <div class="g-dot-{{ topic.name }}"></div>
+                                                    {% endfor %}
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                                                 </div>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right d-icon-menu">
                                                 {% for topic in topics %}
-                                                    <b>
-                                                        <a style="color: {{ topic.color }}" class="note-{{ topic.name }} label-group-item label-personal dropdown-item position-relative g-dot-primary" href="javascript:void(0);">
-                                                            {{ topic.name }}
-                                                        </a>
-                                                    </b>
+                                                    <a
+                                                            style="background: transparent !important;"
+                                                            class="note-{{ topic.name }} label-{{ topic.name }} label-group-item dropdown-item position-relative g-dot-{{ topic.name }}" href="javascript:void(0);">
+                                                        {{ topic.name }}
+                                                    </a>
                                                 {% endfor %}
                                                 <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
                                                 <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
                                                 <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>

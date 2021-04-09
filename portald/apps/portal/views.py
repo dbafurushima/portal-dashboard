@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import JsonResponse
-from django.db import DatabaseError
+from django.db import DatabaseError, DataError, IntegrityError, InternalError
 
 from jsonschema import validate
 from jsonschema import ValidationError
@@ -17,24 +17,6 @@ from ..charts.models import Chart
 from ..management.models import EnterpriseUser
 
 from github import Github
-
-SCHEMA_CREATE_TOPIC = {
-    "type": "object",
-    "properties": {
-        "title": {"type": "string"},
-        "color": {"type": "string"},
-    }
-}
-
-SCHEMA_CREATE_NOTE = {
-    "type": "object",
-    "properties": {
-        "title": {"type": "string"},
-        "text": {"type": "string"},
-        "topic": {"type": "string"},
-        "favorite": {"type": "bool"},
-    }
-}
 
 
 @login_required
@@ -155,7 +137,7 @@ def home_view(request):
     """
     notes_by_topics = [
         {
-            topic: AppNote.objects.filter(topic=topic)
+            topic: AppNote.objects.filter(topic=topic).filter(display=True)
         } for topic in Topic.objects.filter(owner=request.user)
     ]
 
@@ -164,17 +146,26 @@ def home_view(request):
         'pages/portal/home.html',
         {
             'topics': Topic.objects.filter(owner=request.user),
-            'notes': AppNote.objects.filter(owner=request.user),
+            'notes': AppNote.objects.filter(owner=request.user).filter(display=True),
             'notes_by_topics': notes_by_topics
         })
 
 
+SCHEMA_CREATE_TOPIC = {
+    "type": "object",
+    "properties": {"title": {"type": "string"}, "color": {"type": "string"}, }}
+
+
 @login_required
-def create_topic(request):
+def route_create_topic(request):
     if request.method != 'POST':
         return JsonResponse({})
 
     raw_data = dict(request.POST)
+    try:
+        raw_data = {key: value[0] for (key, value) in raw_data.items()}
+    except IndexError:
+        pass
     try:
         validate(SCHEMA_CREATE_TOPIC, raw_data)
     except ValidationError as err:
@@ -182,7 +173,7 @@ def create_topic(request):
             {'code': 400, 'msg': err})
 
     topic = Topic(
-        name=raw_data.get('name'),
+        name=raw_data.get('name').lower(),
         color=raw_data.get('color'),
         owner=request.user
     )
@@ -191,21 +182,113 @@ def create_topic(request):
         topic.save()
     except DatabaseError as err:
         return JsonResponse(
-            {'code': 500, 'msg': 'error to create topic "%s". %s' % (raw_data, err)})
+            {'code': 500, 'msg': '%s' % err})
 
     return JsonResponse(
         {'code': 200, 'msg': '%s' % topic})
 
 
+SCHEMA_CREATE_NOTE = {
+    "type": "object",
+    "properties": {"title": {"type": "string"}, "text": {"type": "string"}}}
+
+
 @login_required
-def create_note(request):
+def route_create_note(request):
     if request.method != 'POST':
         return JsonResponse({})
 
     raw_data = dict(request.POST)
     try:
+        raw_data = {key: value[0] for (key, value) in raw_data.items()}
+    except IndexError:
+        pass
+    try:
         validate(SCHEMA_CREATE_NOTE, raw_data)
     except ValidationError as err:
         return JsonResponse({'code': 400, 'msg': err})
 
-    return JsonResponse({})
+    note = AppNote(
+        title=raw_data.get('title'),
+        text=raw_data.get('text'),
+        owner=request.user,
+        display=True
+    )
+
+    try:
+        note.save()
+    except DatabaseError as err:
+        return JsonResponse(
+            {'code': 500, 'msg': '%s' % err})
+
+    return JsonResponse(
+        {'code': 200, 'msg': '%s' % note})
+
+
+SCHEMA_FAVORITE_NOTE = {
+    "type": "object",
+    "properties": {"title": {"type": "string"}, "act": {"type": "string"}}}
+
+
+@login_required
+def route_fav_note(request):
+    if request.method != 'POST':
+        return JsonResponse({})
+
+    raw_data = dict(request.POST)
+    try:
+        raw_data = {key: value[0] for (key, value) in raw_data.items()}
+    except IndexError:
+        pass
+    try:
+        validate(SCHEMA_FAVORITE_NOTE, raw_data)
+    except ValidationError as err:
+        return JsonResponse({'code': 400, 'msg': err})
+
+    try:
+        note = AppNote.objects.get(title=raw_data.get('name'))
+    except DatabaseError as err:
+        return JsonResponse({'code': 500, 'msg': err})
+    else:
+        note.favorite = True if raw_data.get('act') == "true" else False
+        try:
+            note.save()
+        except (DatabaseError, DataError, InternalError, IntegrityError) as err:
+            return JsonResponse({'code': 500, 'msg': err})
+        else:
+            return JsonResponse({'code': 200, 'msg': note.favorite})
+
+
+SCHEMA_DELETE_NOTE = {
+    "type": "object",
+    "properties": {"title": {"type": "string"}}}
+
+
+@login_required
+def route_delete_note(request):
+    if request.method != 'POST':
+        return JsonResponse({})
+
+    raw_data = dict(request.POST)
+    try:
+        raw_data = {key: value[0] for (key, value) in raw_data.items()}
+    except IndexError:
+        pass
+    print(raw_data)
+    try:
+        validate(SCHEMA_FAVORITE_NOTE, raw_data)
+    except ValidationError as err:
+        return JsonResponse({'code': 400, 'msg': err})
+
+    try:
+        note = AppNote.objects.get(title=raw_data.get('title'))
+    except DatabaseError as err:
+        return JsonResponse({'code': 500, 'msg': err})
+    else:
+        note.display = False
+        try:
+            note.save()
+        except (DatabaseError, DataError, InternalError, IntegrityError) as err:
+            return JsonResponse({'code': 500, 'msg': err})
+        else:
+            return JsonResponse({'code': 200, 'msg': note.favorite})
