@@ -323,7 +323,15 @@
 		  color: #acb0c3; }
 	.note-container.note-grid .note-item.note-personal .note-inner-content .note-footer .nav-link .feather-more-vertical, .note-container.note-grid .note-item.note-work .note-inner-content .note-footer .nav-link .feather-more-vertical, .note-container.note-grid .note-item.note-social .note-inner-content .note-footer .nav-link .feather-more-vertical, .note-container.note-grid .note-item.note-important .note-inner-content .note-footer .nav-link .feather-more-vertical {
 	  display: none; }
-
+.edit-note {
+    padding: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #c2d5ff;
+    width: 28px;
+    height: 28px;
+    fill: rgba(0, 23, 55, 0.08);
+}
 /*
 	Note Container
 */

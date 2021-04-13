@@ -105,15 +105,6 @@
                                             </a>
                                         </li>
                                         {% endfor %}
-                                        <li class="nav-item">
-                                            <a class="nav-link list-actions g-dot-warning" id="note-work">Work</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link list-actions g-dot-success" id="note-social">Social</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link list-actions g-dot-danger" id="note-important">Important</a>
-                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -125,13 +116,15 @@
                             {% for item in notes_by_topics %}
                                 {% for topic, notes in item.items %}
                                     {% for note in notes %}
-                            <div data-title="{{ note.title }}" class="note-item all-notes note-{{ topic.name }} {% if note.favorite %}note-fav{% endif %}" >
+                            <div data-title="{{ note.title }}" data-text="{{ note.text }}" data-topic="{{ topic.name }}" data-id="{{ note.id }}"
+                                 id="note-{{ note.id }}"
+                                 class="note-item all-notes note-{{ topic.name }} {% if note.favorite %}note-fav{% endif %}" >
                                 <div class="note-inner-content">
                                     <div class="note-content">
-                                        <p class="note-title" data-noteTitle="{{ note.title }}">{{ note.title }}</p>
+                                        <p class="note-title" id="title-note-{{ note.id }}" data-noteTitle="{{ note.title }}">{{ note.title }}</p>
                                         <p class="meta-time">{{ note.date_only }}</p>
                                         <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="{{ note.text }}">
+                                            <p class="note-description" id="text-note-{{ note.id }}" data-noteDescription="{{ note.text }}">
                                                 {{ note.text }}
                                             </p>
                                         </div>
@@ -139,6 +132,7 @@
                                     <div class="note-action">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit edit-note"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                     </div>
                                     <div class="note-footer">
                                         <div class="tags-selector btn-group">
@@ -170,286 +164,6 @@
                                 {% endfor %}
                             {% endfor %}
 
-                            <div class="note-item all-notes note-personal">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Meeting with Kelly">Meeting with Kelly</p>
-                                        <p class="meta-time">11/01/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Curabitur facilisis vel elit sed dapibus sodales purus rhoncus.">Curabitur facilisis vel elit sed dapibus sodales purus rhoncus.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes note-fav">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Receive Package">Receive Package</p>
-                                        <p class="meta-time">11/01/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Curabitur facilisis vel elit sed dapibus sodales purus.">Facilisis curabitur facilisis vel elit sed dapibus sodales purus.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes note-work">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Imporant Infomation">Download Docs</p>
-                                        <p class="meta-time">11/04/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Proin a dui malesuada, laoreet mi vel, imperdiet diam quam laoreet.">Proin a dui malesuada, laoreet mi vel, imperdiet diam quam laoreet.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Meeting Scheduled at 4:50pm">Meeting at 4:50pm</p>
-                                        <p class="meta-time">11/08/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Excepteur sint occaecat cupidatat non proident, anim id est laborum.">Excepteur sint occaecat cupidatat non proident, anim id est laborum.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Backup Files EOD">Backup Files EOD</p>
-                                        <p class="meta-time">11/09/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Maecenas condimentum neque mollis, egestas leo ut, gravida.">Maecenas condimentum neque mollis, egestas leo ut, gravida.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes note-social">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Download Server Logs">Download Server Logs</p>
-                                        <p class="meta-time">11/09/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Suspendisse efficitur diam quis gravida. Nunc molestie est eros.">Suspendisse efficitur diam quis gravida. Nunc molestie est eros.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Team meet at Starbucks">Team meet at Starbucks</p>
-                                        <p class="meta-time">11/10/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Etiam a odio eget enim aliquet laoreet lobortis sed ornare nibh.">Etiam a odio eget enim aliquet laoreet lobortis sed ornare nibh.</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="note-item all-notes note-important">
-                                <div class="note-inner-content">
-                                    <div class="note-content">
-                                        <p class="note-title" data-noteTitle="Create new users Profile">Create new users Profile</p>
-                                        <p class="meta-time">11/10/2020</p>
-                                        <div class="note-description-content">
-                                            <p class="note-description" data-noteDescription="Duis aute irure dolor in voluptate nulla pariatur.">Duis aute irure  in nulla pariatur. Etiam a odio eget enim aliquet</p>
-                                        </div>
-                                    </div>
-                                    <div class="note-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star fav-note"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 delete-note"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    </div>
-                                    <div class="note-footer">
-                                        <div class="tags-selector btn-group">
-                                            <a class="nav-link dropdown-toggle d-icon label-group" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                                                <div class="tags">
-                                                    <div class="g-dot-personal"></div>
-                                                    <div class="g-dot-work"></div>
-                                                    <div class="g-dot-social"></div>
-                                                    <div class="g-dot-important"></div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                                                </div>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right d-icon-menu">
-                                                <a class="note-personal label-group-item label-personal dropdown-item position-relative g-dot-personal" href="javascript:void(0);"> Personal</a>
-                                                <a class="note-work label-group-item label-work dropdown-item position-relative g-dot-work" href="javascript:void(0);"> Work</a>
-                                                <a class="note-social label-group-item label-social dropdown-item position-relative g-dot-social" href="javascript:void(0);"> Social</a>
-                                                <a class="note-important label-group-item label-important dropdown-item position-relative g-dot-important" href="javascript:void(0);"> Important</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
 
                     </div>
@@ -475,7 +189,15 @@
                                                 <div class="col-md-12">
                                                     <div class="d-flex note-title">
                                                         <input type="text" id="n-title" class="form-control"
-                                                               maxlength="250" placeholder="Title">
+                                                               maxlength="50" placeholder="Title">
+                                                    </div>
+                                                    <span class="validation-text"></span>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="d-flex note-title">
+                                                        <input type="text" id="n-topic" class="form-control"
+                                                               maxlength="50" placeholder="Tópico">
                                                     </div>
                                                     <span class="validation-text"></span>
                                                 </div>
@@ -483,8 +205,7 @@
                                                 <div class="col-md-12">
                                                     <div class="d-flex note-description">
                                                         <textarea id="n-description" class="form-control"
-                                                                  maxlength="60" placeholder="Description" rows="3">
-                                                        </textarea>
+                                                                  maxlength="250" placeholder="Description" rows="3"></textarea>
                                                     </div>
                                                     <span class="validation-text"></span>
                                                 </div>
@@ -496,12 +217,12 @@
                             </div>
                             <div class="modal-footer">
                                 <button id="btn-n-save" class="float-left btn">Save</button>
-                                <button class="btn" data-dismiss="modal"> <svg xmlns="http://www.w3.org/2000/svg"
+                                <button class="btn" data-dismiss="modal" style="padding-top: 0px;"> <svg xmlns="http://www.w3.org/2000/svg"
                                                                                width="24" height="24" viewBox="0 0 24 24"
                                                                                fill="none" stroke="currentColor"
                                                                                stroke-width="2" stroke-linecap="round"
                                                                                stroke-linejoin="round"
-                                                                               class="feather feather-trash">
+                                                                               class="feather feather-trash" style="padding-top: 7px;">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                                     </path></svg> Discard</button>
@@ -536,7 +257,17 @@
 
                                                 <div class="col-md-12">
                                                     <div class="d-flex note-description">
-                                                        <input id="color-picker" value='#276cb8' />
+                                                        <input id="color-picker" value='#276cb8'
+                                                               style="border: 1px solid #262f43;
+                                                               font-weight: 400;
+                                                               font-size: 0.875rem;
+                                                               box-shadow: none;
+                                                               outline: none;
+                                                               color: white;
+                                                               background-color: #0c1427;
+                                                               background-clip: padding-box;
+                                                               border-radius: 2px;
+                                                               transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" />
                                                     </div>
                                                 </div>
 
@@ -548,7 +279,70 @@
                             </div>
                             <div class="modal-footer">
                                 <button id="btn-topic-cancel" class="float-left btn">cancel</button>
-                                <button id="btn-topic-save" class="btn">Add</button>
+                                <button id="btn-topic-save" class="btn">add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog"
+                     aria-labelledby="notesMailModalTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18">
+
+                                </line></svg>
+                                <div class="notes-box">
+                                    <div class="notes-content">
+                                        <form action="javascript:void(0);" id="notesMailModalTitle">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" id="edit-id-note" class="form-control">
+                                                    <div class="d-flex note-title">
+                                                        <input type="text" id="edit-n-title" class="form-control"
+                                                               maxlength="50" placeholder="Title">
+                                                    </div>
+                                                    <span class="validation-text"></span>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="d-flex note-title">
+                                                        <input type="text" id="edit-n-topic" class="form-control"
+                                                               maxlength="50" placeholder="Tópico">
+                                                    </div>
+                                                    <span class="validation-text"></span>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="d-flex note-description">
+                                                        <textarea id="edit-n-description" class="form-control"
+                                                                  maxlength="250" placeholder="Description" rows="3"></textarea>
+                                                    </div>
+                                                    <span class="validation-text"></span>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="edit-btn-n-save" class="float-left btn">Save</button>
+                                <button class="btn" id="cancel-edit-note" data-dismiss="modal" style="padding-top: 0px;"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                                               width="24" height="24" viewBox="0 0 24 24"
+                                                                               fill="none" stroke="currentColor"
+                                                                               stroke-width="2" stroke-linecap="round"
+                                                                               stroke-linejoin="round"
+                                                                               class="feather feather-trash" style="padding-top: 7px;">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path></svg> <span style="padding-bottom: 10px;">Discard</span></button>
+                                <button id="edit-btn-n-add" class="btn">Add</button>
                             </div>
                         </div>
                     </div>

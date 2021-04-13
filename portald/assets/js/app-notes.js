@@ -9,7 +9,7 @@ $(document).ready(function() {
             let token = $('input[name="csrfmiddlewaretoken"]').val();
             let titleNote = $(this).parents('.note-item')[0].attributes["data-title"].nodeValue;
 
-            $.post("/remove-note", {title: titleNote, csrfmiddlewaretoken: token}, function(data)  {
+            $.post("/delete-note", {title: titleNote, csrfmiddlewaretoken: token}, function(data)  {
                 console.log(data);
                 if ( data.code === 500 )
                     Swal.fire({icon: 'error', title: 'Oops...', text: data.msg})
@@ -22,6 +22,85 @@ $(document).ready(function() {
         })
     }
 
+    function editNote() {
+        $(".edit-note").off('click').on('click', function(event) {
+            event.stopPropagation();
+            $('#editNoteModal').modal('show');
+            $('#edit-btn-n-save').show();
+            $('#edit-btn-n-add').hide();
+
+            let idNote = $(this).parents('.note-item')[0].attributes["data-id"].nodeValue;
+            let titleNote = $(this).parents('.note-item')[0].attributes["data-title"].nodeValue;
+            let textNote = $(this).parents('.note-item')[0].attributes["data-text"].nodeValue;
+            let topicNote = $(this).parents('.note-item')[0].attributes["data-topic"].nodeValue;
+
+            $('#edit-id-note').val(idNote);
+            $('#edit-n-title').val(titleNote);
+            $('#edit-n-description').val(textNote);
+            $('#edit-n-topic').val(topicNote);
+        })
+    }
+
+    $('#cancel-edit-note').on('click', function(event) {
+        $('#editNoteModal').modal('hide');
+    });
+
+    $('#edit-btn-n-save').on('click', function(event) {
+
+        let token = $('input[name="csrfmiddlewaretoken"]').val();
+
+        let idNote = document.getElementById('edit-id-note').value;
+        let titleNote = document.getElementById('edit-n-title').value;
+        let topicNote = document.getElementById('edit-n-topic').value;
+        let textNote = document.getElementById('edit-n-description').value;
+
+        let divNoteId = '#note-'+idNote;
+        let titleNoteId = '#title-note-'+idNote;
+        let textNoteId = '#text-note-'+idNote;
+
+        console.log('id: ', idNote);
+        console.log('titleNote: ', titleNote);
+        console.log('topicNote: ', topicNote);
+        console.log('textNote: ', textNote);
+
+        $.post("/edit-note", {
+                id: idNote, title: titleNote, topic: topicNote, text: textNote, csrfmiddlewaretoken: token
+        }, function(data)  {
+            console.log(data);
+            if ( data.code === 500 ) {
+                $('#editNoteModal').modal('hide');
+                $('#edit-btn-n-save').hide();
+                $('#edit-btn-n-add').show();
+                Swal.fire({icon: 'error', title: 'Oops...', text: data.msg});
+            }
+            else {
+                let pTitle = $(titleNoteId)[0];
+                let pText = $(textNoteId)[0];
+                let divNote = $(divNoteId)[0];
+
+                let classDiv = divNote.classList;
+                classDiv.remove(classDiv[2]);
+                classDiv.add('note-'+topicNote);
+
+                divNote.attributes['data-title'].nodeValue = titleNote;
+
+                console.log(divNote);
+                console.log(pTitle);
+
+                pTitle.textContent = titleNote;
+                pTitle.attributes['data-notetitle'].nodeValue = titleNote;
+
+                pText.textContent = textNote;
+                pText.attributes['data-noteDescription'].nodeValue = textNote;
+
+                $('#editNoteModal').modal('hide');
+            }
+        })
+        .done(function() {})
+        .fail(function() {})
+        .always(function() {});
+    });
+
     function favNote() {
         $(".fav-note").off('click').on('click', function(event) {
         event.stopPropagation();
@@ -30,6 +109,9 @@ $(document).ready(function() {
             let titleNote = $(this).parents('.note-item')[0].attributes["data-title"].nodeValue;
             let isFav = $(this).parents('.note-item')[0].classList.contains("note-fav");
             $(this).parents('.note-item').toggleClass('note-fav');
+
+            console.log('anc');
+            console.log($(this).parents('.note-item')[0]);
 
             $.post("/fav-note", {name: titleNote, act: !isFav, csrfmiddlewaretoken: token}, function(data)  {
                 console.log(data);
@@ -107,7 +189,11 @@ $(document).ready(function() {
         }
         $btns.removeClass('active');
         $(this).addClass('active');
-    })
+    });
+
+    $('#btn-topic-cancel').on('click', function(event) {
+        $('#topicModal').modal('hide');
+    });
 
     $('#btn-add-notes').on('click', function(event) {
         $('#notesMailModal').modal('show');
@@ -185,11 +271,12 @@ $(document).ready(function() {
         var today = mm + '/' + dd + '/' + yyyy;
 
         var $_noteTitle = document.getElementById('n-title').value;
+        var $_noteTopic = document.getElementById('n-topic').value;
         var $_noteDescription = document.getElementById('n-description').value;
 
         let token = $('input[name="csrfmiddlewaretoken"]').val();
 
-        $html = '<div class="note-item all-notes">' +
+        $html = '<div class="note-item all-notes note-'+$_noteTopic+'">' +
                     '<div class="note-inner-content">' +
                         '<div class="note-content">' +
                             '<p class="note-title" data-noteTitle="'+$_noteTitle+'">'+$_noteTitle+'</p>' +
@@ -209,14 +296,16 @@ $(document).ready(function() {
                     '</div>' +
                 '</div> ';
 
-        let jqxhr = $.post("/create-note", {title: $_noteTitle, text: $_noteDescription, csrfmiddlewaretoken: token},  function(data)  {
+        let jqxhr = $.post("/create-note", {
+                title: $_noteTitle, text: $_noteDescription, csrfmiddlewaretoken: token, topic: $_noteTopic
+            }, function(data)  {
             console.log(data);
             if ( data.code === 500 ) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: data.msg,
-                    footer: '<a href>Why do I have this issue?</a>'
+                    footer: '<a href="https://github.com/dbafurushima/portal-dashboard/issues">Why do I have this issue?</a>'
                 })
 
             } else {
@@ -254,6 +343,7 @@ $(document).ready(function() {
 
     deleteNote();
     favNote();
+    editNote();
     // addLabelGroups();
 })
 
