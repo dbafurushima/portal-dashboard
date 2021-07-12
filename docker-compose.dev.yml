@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  database:
+    image: mysql
+    container_name: portald-mysql
+    networks:
+      - us-east-1
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${MYSQL_DATA}:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  portald:
+    build: .
+    container_name: portald
+    networks:
+      - us-east-1
+    volumes:
+      - ${PORTAL_HOME}:/var/www/portald
+    ports:
+      - "${PORTALD_PORT}:8100"
+      - "9000:80"
+    tty: true
+    command: ["/wait-for-mysql.sh", "${MYSQL_HOST}", "${MYSQL_ROOT_PASSWORD}", "/usr/bin/python3", "manage.py", "runserver", "0.0.0.0:8100", "--insecure"]
+    depends_on:
+      - database
+
+networks:
+  us-east-1:
+    driver: bridge
+
+volumes:
+  data_mysql:
+  dbdata:

@@ -22,6 +22,6 @@ python3 /var/www/portald/manage.py makemigrations
 python3 /var/www/portald/manage.py migrate
 python3 /var/www/portald/manage.py collectstatic --no-input
 
-python3 /var/www/portald/healthcheck.py
+# python3 /var/www/portald/healthcheck.py
 
 $cmd
