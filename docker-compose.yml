@@ -11,4 +11,5 @@ services:
     volumes:
       - ./portald:/usr/src/app
     tty: true
-    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]
+    command: [
+      "python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]
