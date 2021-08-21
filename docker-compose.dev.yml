@@ -9,7 +9,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"
     volumes:
       - ${MYSQL_DATA}:/var/lib/mysql
     environment:
@@ -30,10 +30,11 @@ services:
       - "${PORTALD_PORT}:8000"
     tty: true
     command: [
-      "/root/wait-for-mysql.sh",
-      "${MYSQL_HOST}",
-      "${MYSQL_USER}",
-      "${MYSQL_PASSWORD}",
+      # "/root/wait-for-mysql.sh",
+      # "${MYSQL_HOST}",
+      # "${MYSQL_PORT}",
+      # "${MYSQL_USER}",
+      # "${MYSQL_PASSWORD}",
       "python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]
     depends_on:
       - database
@@ -41,7 +42,3 @@ services:
 networks:
   us-east-1:
     driver: bridge
-
-volumes:
-  data_mysql:
-  dbdata:

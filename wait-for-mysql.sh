@@ -1,9 +1,10 @@
 #!/bin/bash
-# wait-for-mysql.sh
 
 set -e
 
 host="$1"
+shift
+port="$1"
 shift
 mysql_user="$1"
 shift
@@ -11,10 +12,9 @@ mysql_password="$1"
 shift
 cmd="$@"
 
-until mysql -u ${mysql_user} "-p$mysql_password" -h "$host" -e 'show databases' 2> /tmp/mysql_connect_output; do
-  cat /tmp/mysql_connect_output
+until mysql -u ${mysql_user} "-p$mysql_password" -h "$host" -p ${port} -e 'show databases' 2> /dev/null; do
   >&2 echo "ops... mysql down - sleeping"
-  sleep 5
+  sleep 1
 done
   
 >&2 echo "mysql is up - executing command"
