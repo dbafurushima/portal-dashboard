@@ -29,7 +29,7 @@ RUN pip3 install --upgrade --no-cache-dir --quiet -r /tmp/requirements.txt
 
 COPY ./wait-for-mysql.sh /root
 
-RUN sed -i -e 's/\r$//' /root//wait-for-mysql.sh
+RUN sed -i -e 's/\r$//' /root/wait-for-mysql.sh
 RUN chmod u+x /root/wait-for-mysql.sh
 
 EXPOSE 8000

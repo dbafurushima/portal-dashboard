@@ -3,7 +3,7 @@ version: '3'
 services:
   database:
     image: mysql:8.0
-    container_name: portald-mysql
+    container_name: portald-database
     networks:
       - us-east-1
     command: --default-authentication-plugin=mysql_native_password
