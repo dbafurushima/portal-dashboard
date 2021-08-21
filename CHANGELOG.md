@@ -7,3 +7,7 @@
 * Mudança na lib de carregamento de variaveis, agora é utilizado o `python-dotenv`.
 * Carregamento de credenciais de acesso ao banco `MySQL` a partir de variáveis de ambiente.
 * Arquivo `portald/example.env` com variáveis de acesso ao banco.
+* Novo arquivo `Makefile` para ajudar no deploy e inicialização da aplicação. Possui os seguintes comandos:
+    * `make compose` faz deploy da aplicação com `docker-compose` a partir do `docker-compose.dev.yml`
+    * `make createsuperuser` cria um usuário admin na aplicação.
+    * `make migrate` cria migrações no banco.
