@@ -2,10 +2,13 @@ version: '3'
 
 services:
   portald:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: portald
-    network_mode: "host"
+    ports:
+      - ${PORTALD_PORT}:8000
     volumes:
-      - ${PORTAL_HOME}:/var/www/portald
+      - ./portald:/usr/src/app
     tty: true
-    command: ["/wait-for-mysql.sh", "${MYSQL_HOST}", "${MYSQL_ROOT_PASSWORD}", "/usr/bin/python3", "manage.py", "runserver", "0.0.0.0:${PORTALD_PORT}", "--insecure"]
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]

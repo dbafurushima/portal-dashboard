@@ -1,0 +1,37 @@
+FROM python:3.8.6
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null
+RUN apt-get update -y -qq
+RUN apt-get install -y -qq --no-install-recommends locales default-libmysqlclient-dev mariadb-client
+
+RUN sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
+
+ENV LANG pt_BR.UTF-8
+ENV LANGUAGE pt_BR:pt:en
+ENV LC_ALL pt_BR.UTF-8
+
+RUN rm -rf /etc/localtime
+RUN echo "America/Sao_Paulo" > /etc/timezone
+RUN ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
+WORKDIR /usr/src/app
+
+COPY ./portald/ /usr/src/app
+COPY ./requirements.txt /tmp/requirements.txt
+
+RUN pwd && ls -la
+
+RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade --no-cache-dir --quiet -r /tmp/requirements.txt
+
+COPY ./wait-for-mysql.sh /root
+
+RUN sed -i -e 's/\r$//' /root//wait-for-mysql.sh
+RUN chmod u+x /root/wait-for-mysql.sh
+
+EXPOSE 8000
+
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

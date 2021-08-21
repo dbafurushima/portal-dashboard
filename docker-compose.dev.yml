@@ -2,7 +2,7 @@ version: '3'
 
 services:
   database:
-    image: mysql
+    image: mysql:8.0
     container_name: portald-mysql
     networks:
       - us-east-1
@@ -17,19 +17,24 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-
   portald:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: portald
     networks:
       - us-east-1
     volumes:
-      - ${PORTAL_HOME}:/var/www/portald
+      - ${PORTAL_HOME}:/usr/src/app
     ports:
-      - "${PORTALD_PORT}:8100"
-      - "9000:80"
+      - "${PORTALD_PORT}:8000"
     tty: true
-    command: ["/wait-for-mysql.sh", "${MYSQL_HOST}", "${MYSQL_ROOT_PASSWORD}", "/usr/bin/python3", "manage.py", "runserver", "0.0.0.0:8100", "--insecure"]
+    command: [
+      "/root/wait-for-mysql.sh",
+      "${MYSQL_HOST}",
+      "${MYSQL_USER}",
+      "${MYSQL_PASSWORD}",
+      "python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]
     depends_on:
       - database
 
