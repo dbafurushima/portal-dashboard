@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # load variables from env file
 config = {
-    **dotenv_values(str(BASE_DIR.joinpath('.env').absolute())),
+    **dotenv_values(str(BASE_DIR.parent.joinpath('.portald.env').absolute())),
     **os.environ,
 }
 

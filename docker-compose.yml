@@ -10,6 +10,8 @@ services:
       - ${PORTALD_PORT}:8000
     volumes:
       - ./portald:/usr/src/app
+    env_file:
+      - .portald.env
     tty: true
     command: [
       "python3", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]

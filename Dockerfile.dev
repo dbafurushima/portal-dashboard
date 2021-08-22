@@ -27,11 +27,6 @@ RUN pwd && ls -la
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade --no-cache-dir --quiet -r /tmp/requirements.txt
 
-COPY ./wait-for-mysql.sh /root
-
-RUN sed -i -e 's/\r$//' /root/wait-for-mysql.sh
-RUN chmod u+x /root/wait-for-mysql.sh
-
 EXPOSE 8000
 
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
