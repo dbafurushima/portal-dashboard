@@ -11,34 +11,36 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-import environ
 import base64
 import sys
+
 from pathlib import Path
+
+from dotenv import dotenv_values
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-sys.path.append(str(Path(BASE_DIR).joinpath('../', 'zabbix')))
-
 # load variables from env file
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-env.read_env(os.path.join(BASE_DIR, '.env'))
+config = {
+    **dotenv_values(str(BASE_DIR.parent.joinpath('.portald.env').absolute())),
+    **os.environ,
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='undefined')
+SECRET_KEY = config.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG_MODE', default=False)
+DEBUG = config.get('DEBUG_MODE', False)
 
 ALLOWED_HOSTS = ['*']
 
@@ -100,24 +102,16 @@ WSGI_APPLICATION = 'portald.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-if not os.path.exists(os.path.join(BASE_DIR, 'config/my.cnf')):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config.get('MYSQL_DATABASE'),
+        'USER': config.get('MYSQL_USER'),
+        'PASSWORD': config.get('MYSQL_PASSWORD'),
+        'HOST': config.get('MYSQL_HOST'),
+        'PORT': int(config.get('MYSQL_PORT', 3306)),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {
-                'read_default_file': os.path.join(BASE_DIR, 'config/my.cnf'),
-                'init_command': 'SET default_storage_engine=INNODB'
-            }
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -169,7 +163,7 @@ MESSAGE_TAGS = {
     messages.DEBUG: 'info', messages.ERROR: 'danger'
 }
 
-password_provided = env('PASSWORD_PROVIDED', default='undefined')  # This is input in the form of a string
+password_provided = config.get('PASSWORD_PROVIDED', 'undefined')  # This is input in the form of a string
 password = password_provided.encode()  # Convert to type bytes
 salt = b'salt_'  # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
 kdf = PBKDF2HMAC(
@@ -181,10 +175,10 @@ kdf = PBKDF2HMAC(
 )
 KEY = base64.urlsafe_b64encode(kdf.derive(password))
 
-USER_API_KEY = env('USER_API_TOKEN', default='undefined')
+USER_API_KEY = config.get('USER_API_TOKEN', 'undefined')
 
-ZABBIX_USER = env('ZABBIX_USER', default='undefined')
-ZABBIX_PASSWORD = env('ZABBIX_PASSWORD', default='undefined')
-ZABBIX_URL = env('ZABBIX_URL', default='undefined')
+ZABBIX_USER = config.get('ZABBIX_USER', 'undefined')
+ZABBIX_PASSWORD = config.get('ZABBIX_PASSWORD', 'undefined')
+ZABBIX_URL = config.get('ZABBIX_URL', 'undefined')
 
-GITHUB_TOKEN = env('GITHUB_TOKEN', default='undefined')
+GITHUB_TOKEN = config.get('GITHUB_TOKEN', 'undefined')

@@ -1,6 +1,0 @@
-[client]
-host = database
-database = portald
-user = portald
-password = portald
-default-character-set = utf8
